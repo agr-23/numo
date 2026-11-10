@@ -22,7 +22,7 @@ dependencies:
   isar_flutter_libs: ^3.1.0+1
 
   # Estado
-  flutter_riverpod: ^2.5.1
+  flutter_riverpod: ^3.5.0
 
   # Navegación
   go_router: ^12.1.3
