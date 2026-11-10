@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/constants/dimens.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/amount_input.dart';
 import '../../../../data/models/savings_goal.dart';
 import '../../../../providers/savings_goals_provider.dart';
@@ -59,10 +58,7 @@ class _AportarSheetState extends ConsumerState<AportarSheet> {
           const SizedBox(height: 20),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              minimumSize: const Size.fromHeight(50),
-            ),
+                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
             onPressed: _submit,
             child: Text(context.l10n.goalContribute),
           ),

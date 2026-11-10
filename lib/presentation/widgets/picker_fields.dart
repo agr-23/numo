@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/numo_palette.dart';
 import '../../core/constants/app_icons.dart';
 import '../../core/theme/app_colors.dart';
 
@@ -61,7 +62,7 @@ class IconPickerGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = AppColors.accent;
+    final p = context.palette;
     return Wrap(
       spacing: 10,
       runSpacing: 10,
@@ -73,19 +74,13 @@ class IconPickerGrid extends StatelessWidget {
               width: 46,
               height: 46,
               decoration: BoxDecoration(
-                color: name == selectedIcon
-                    ? accent.withValues(alpha: 0.18)
-                    : Theme.of(context).colorScheme.surface,
+                color: name == selectedIcon ? p.ink : p.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: name == selectedIcon
-                      ? accent
-                      : Theme.of(context).dividerColor,
-                  width: name == selectedIcon ? 2 : 1,
-                ),
+                    color: name == selectedIcon ? p.ink : p.border),
               ),
               child: Icon(AppIcons.resolve(name),
-                  color: name == selectedIcon ? accent : null),
+                  color: name == selectedIcon ? p.onInk : p.ink),
             ),
           ),
       ],

@@ -1,34 +1,13 @@
 import 'package:flutter/material.dart';
 
-/// Tokens de color de Numo. Ver brief "Tokens de diseño".
+/// Colores que NO dependen del tema: la paleta para categorías, cuentas y
+/// metas, y la conversión hex ↔ [Color]. Los colores de interfaz (tinta,
+/// fondos, ingresos/gastos…) están en `NumoPalette` (`context.palette`).
 class AppColors {
   AppColors._();
 
-  // Marca / compartidos entre temas
-  static const Color primary = Color(0xFF1A1033);
-  static const Color accent = Color(0xFFF0B429);
-  static const Color income = Color(0xFF1DD18F);
-  static const Color expense = Color(0xFFF6465D);
-  static const Color transfer = Color(0xFF3B82F6);
-  static const Color warning = Color(0xFFF59E0B);
-
-  // Tema claro
-  static const Color lightBackground = Color(0xFFF5F5F0);
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightTextPrimary = Color(0xFF1A1033);
-  static const Color lightTextSecondary = Color(0xFF6B6B80);
-  static const Color lightTextHint = Color(0xFFA0A0B0);
-  static const Color lightBorder = Color(0xFFEBEBEB);
-
-  // Tema oscuro
-  static const Color darkBackground = Color(0xFF0D0D1A);
-  static const Color darkSurface = Color(0xFF1C1C2E);
-  static const Color darkTextPrimary = Color(0xFFF0F0F0);
-  static const Color darkTextSecondary = Color(0xFF8888A0);
-  static const Color darkTextHint = Color(0xFF6B6B80);
-  static const Color darkBorder = Color(0xFF2A2A40);
-
-  /// Colores predefinidos para cuentas / metas (12 opciones).
+  /// Colores que el usuario puede elegir para cuentas, metas y categorías
+  /// propias (12 opciones). Se guardan como hex en Isar.
   static const List<Color> palette = [
     Color(0xFFF0B429),
     Color(0xFF1DD18F),

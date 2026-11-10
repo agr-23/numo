@@ -99,10 +99,7 @@ class _AddSavingsGoalScreenState extends ConsumerState<AddSavingsGoalScreen> {
           const SizedBox(height: 24),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              minimumSize: const Size.fromHeight(50),
-            ),
+                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
             onPressed: _save,
             child: Text(l10n.goalCreate),
           ),

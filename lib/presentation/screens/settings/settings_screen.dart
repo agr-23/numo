@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/currencies.dart';
 import '../../../core/constants/dimens.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/pin_hasher.dart';
 import '../../../data/models/app_settings.dart';
 import '../../../data/services/export_service.dart';
@@ -33,7 +33,7 @@ class SettingsScreen extends ConsumerWidget {
             secondary: const Icon(Icons.lock_outline),
             title: Text(l10n.setPin),
             value: settings.pinEnabled,
-            activeThumbColor: AppColors.accent,
+            activeThumbColor: context.palette.ink,
             onChanged: (v) => _togglePin(context, ref, settings, v),
           ),
           if (settings.pinEnabled)
@@ -49,7 +49,7 @@ class SettingsScreen extends ConsumerWidget {
                 ? null
                 : Text(l10n.setBiometricNeedsPin),
             value: settings.biometricEnabled,
-            activeThumbColor: AppColors.accent,
+            activeThumbColor: context.palette.ink,
             onChanged: settings.pinEnabled
                 ? (v) => notifier.setBiometric(v)
                 : null,
@@ -111,9 +111,9 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => _export(context),
           ),
           ListTile(
-            leading: const Icon(Icons.delete_forever, color: AppColors.expense),
+            leading: Icon(Icons.delete_forever, color: context.palette.expense),
             title: Text(l10n.setDeleteAll,
-                style: const TextStyle(color: AppColors.expense)),
+                style: TextStyle(color: context.palette.expense)),
             onTap: () => _deleteAll(context),
           ),
 
@@ -133,7 +133,7 @@ class SettingsScreen extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(Dimens.screenPaddingH, 16, 0, 4),
       child: Text(title,
           style: theme.textTheme.bodySmall
-              ?.copyWith(color: AppColors.accent, fontWeight: FontWeight.w600)),
+              ?.copyWith(fontWeight: FontWeight.w600)),
     );
   }
 
@@ -228,7 +228,7 @@ class SettingsScreen extends ConsumerWidget {
               ListTile(
                 title: Text(label),
                 trailing: code == current
-                    ? const Icon(Icons.check, color: AppColors.accent)
+                    ? Icon(Icons.check, color: context.palette.ink)
                     : null,
                 onTap: () {
                   ref.read(settingsProvider.notifier).setLanguage(code);
@@ -259,10 +259,10 @@ class SettingsScreen extends ConsumerWidget {
               child: Center(
                 child: CircleAvatar(
                   backgroundColor:
-                      d == current ? AppColors.accent : Colors.transparent,
+                      d == current ? context.palette.ink : Colors.transparent,
                   child: Text('$d',
                       style: TextStyle(
-                          color: d == current ? Colors.white : null)),
+                          color: d == current ? context.palette.onInk : null)),
                 ),
               ),
             ),
@@ -295,7 +295,7 @@ class SettingsScreen extends ConsumerWidget {
               onPressed: () => Navigator.of(context).pop(false),
               child: Text(l10n.cancel)),
           FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: AppColors.expense),
+              style: FilledButton.styleFrom(backgroundColor: context.palette.expense),
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(l10n.continueLabel)),
         ],
@@ -325,7 +325,7 @@ class SettingsScreen extends ConsumerWidget {
               onPressed: () => Navigator.of(context).pop(false),
               child: Text(l10n.cancel)),
           FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: AppColors.expense),
+              style: FilledButton.styleFrom(backgroundColor: context.palette.expense),
               onPressed: () => Navigator.of(context).pop(
                   controller.text.trim().toUpperCase() == l10n.setConfirmWord),
               child: Text(l10n.setDeleteEverything)),

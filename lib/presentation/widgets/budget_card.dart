@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/theme/numo_palette.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../providers/budgets_provider.dart';
 import '../../providers/settings_provider.dart';
@@ -25,9 +25,9 @@ class BudgetCard extends ConsumerWidget {
 
     Color borderColor = theme.dividerColor;
     if (view.isExceeded) {
-      borderColor = AppColors.expense;
+      borderColor = context.palette.expense;
     } else if (view.isNearLimit) {
-      borderColor = AppColors.warning;
+      borderColor = context.palette.warning;
     }
 
     return Card(
@@ -59,9 +59,9 @@ class BudgetCard extends ConsumerWidget {
                         style: theme.textTheme.bodyLarge),
                   ),
                   if (view.isExceeded)
-                    _badge(l10n.budExceeded, AppColors.expense)
+                    _badge(l10n.budExceeded, context.palette.expense)
                   else if (view.isNearLimit)
-                    _badge(l10n.budNearLimit, AppColors.warning),
+                    _badge(l10n.budNearLimit, context.palette.warning),
                 ],
               ),
               const SizedBox(height: 12),

@@ -1801,6 +1801,126 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cuenta destino'**
   String get exportDestAccount;
+
+  /// No description provided for @ovNetFormula.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuentas − deudas'**
+  String get ovNetFormula;
+
+  /// No description provided for @ovIncomeArrow.
+  ///
+  /// In es, this message translates to:
+  /// **'↑ {amount} ingresos'**
+  String ovIncomeArrow(String amount);
+
+  /// No description provided for @ovExpenseArrow.
+  ///
+  /// In es, this message translates to:
+  /// **'↓ {amount} gastos'**
+  String ovExpenseArrow(String amount);
+
+  /// No description provided for @ovMoneySub.
+  ///
+  /// In es, this message translates to:
+  /// **'{accounts} en cuentas y {goals} en metas'**
+  String ovMoneySub(String accounts, String goals);
+
+  /// No description provided for @ovDebtNext.
+  ///
+  /// In es, this message translates to:
+  /// **'{card} se paga el {date}'**
+  String ovDebtNext(String card, String date);
+
+  /// No description provided for @ovGoalsSub.
+  ///
+  /// In es, this message translates to:
+  /// **'{percent} % de {target}'**
+  String ovGoalsSub(String percent, String target);
+
+  /// No description provided for @dashHideAmounts.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocultar montos'**
+  String get dashHideAmounts;
+
+  /// No description provided for @dashShowAmounts.
+  ///
+  /// In es, this message translates to:
+  /// **'Mostrar montos'**
+  String get dashShowAmounts;
+
+  /// No description provided for @actPay.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagar'**
+  String get actPay;
+
+  /// No description provided for @dashCreateBudget.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear un presupuesto'**
+  String get dashCreateBudget;
+
+  /// No description provided for @addTxHowMuchExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto gastaste?'**
+  String get addTxHowMuchExpense;
+
+  /// No description provided for @addTxHowMuchIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto recibiste?'**
+  String get addTxHowMuchIncome;
+
+  /// No description provided for @addTxHowMuchTransfer.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto vas a mover?'**
+  String get addTxHowMuchTransfer;
+
+  /// No description provided for @addTxRepeat.
+  ///
+  /// In es, this message translates to:
+  /// **'Repetir'**
+  String get addTxRepeat;
+
+  /// No description provided for @addTxRepeatNever.
+  ///
+  /// In es, this message translates to:
+  /// **'No'**
+  String get addTxRepeatNever;
+
+  /// No description provided for @addTxFrom.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get addTxFrom;
+
+  /// No description provided for @addTxTo.
+  ///
+  /// In es, this message translates to:
+  /// **'Hacia'**
+  String get addTxTo;
+
+  /// No description provided for @addTxAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar'**
+  String get addTxAdd;
+
+  /// No description provided for @addTxRepeatUntil.
+  ///
+  /// In es, this message translates to:
+  /// **'{frequency}, hasta el {date}'**
+  String addTxRepeatUntil(String frequency, String date);
+
+  /// No description provided for @accBalanceShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldo {amount}'**
+  String accBalanceShort(String amount);
 }
 
 class _AppLocalizationsDelegate

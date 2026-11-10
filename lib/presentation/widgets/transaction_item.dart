@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
-import '../../core/theme/app_colors.dart';
+import '../../core/l10n/l10n.dart';
+import '../../core/theme/app_text_styles.dart';
+import '../../core/theme/numo_palette.dart';
 import '../../data/models/transaction.dart';
 import 'amount_display.dart';
 import 'category_icon.dart';
@@ -16,33 +17,35 @@ class TransactionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final p = context.palette;
     final l10n = context.l10n;
     final isTransfer = transaction.type == TransactionType.transfer;
     final category = transaction.category.value;
     final account = transaction.account.value;
 
-    final iconName = isTransfer ? 'payments' : (category?.iconName ?? 'category');
-    final colorHex =
-        isTransfer ? '#3B82F6' : (category?.colorHex ?? '#9CA3AF');
-
+    final iconName =
+        isTransfer ? 'payments' : (category?.iconName ?? 'more_horiz');
+    // "Comida, con Bancolombia" / "Bancolombia → Visa Oro"
     final subtitle = isTransfer
         ? '${account?.name ?? '—'} → ${transaction.toAccount.value?.name ?? '—'}'
         : [categoryLabel(category, l10n), account?.name]
             .where((e) => e != null && e.isNotEmpty)
-            .join(' · ');
+            .join(', ');
+    final isRecurring =
+        transaction.isRecurring || transaction.parentRecurringId != null;
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(Dimens.chipRadius),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+      child: SizedBox(
+        height: Dimens.rowHeight,
         child: Row(
           children: [
-            CategoryIcon(iconName: iconName, colorHex: colorHex),
-            const SizedBox(width: Dimens.cardPadding),
+            CategoryIcon(iconName: iconName),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -52,35 +55,24 @@ class TransactionItem extends StatelessWidget {
                           transaction.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodyLarge,
+                          style: AppTextStyles.rowTitle.copyWith(color: p.ink),
                         ),
                       ),
-                      if (transaction.isRecurring ||
-                          transaction.parentRecurringId != null) ...[
+                      if (isRecurring) ...[
                         const SizedBox(width: 6),
-                        Icon(Icons.repeat,
-                            size: 14, color: theme.textTheme.bodySmall?.color),
+                        Icon(Icons.repeat, size: 13, color: p.inkHint),
                       ],
                     ],
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    subtitle,
+                    transaction.note?.isNotEmpty == true
+                        ? '$subtitle. ${transaction.note}'
+                        : subtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall,
+                    style: AppTextStyles.caption.copyWith(color: p.inkMuted),
                   ),
-                  if (transaction.note != null &&
-                      transaction.note!.isNotEmpty) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      transaction.note!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(fontStyle: FontStyle.italic),
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -89,10 +81,6 @@ class TransactionItem extends StatelessWidget {
               amount: transaction.amount,
               type: transaction.type,
               showSign: !isTransfer,
-              style: isTransfer
-                  ? theme.textTheme.bodyLarge
-                      ?.copyWith(color: AppColors.transfer, fontWeight: FontWeight.w700)
-                  : null,
             ),
           ],
         ),

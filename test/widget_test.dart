@@ -1,3 +1,4 @@
+import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:numo/core/theme/app_colors.dart';
 
@@ -10,7 +11,7 @@ void main() {
     });
 
     test('fromHex accepts value without #', () {
-      expect(AppColors.fromHex('1A1033'), AppColors.primary);
+      expect(AppColors.fromHex('1A1033'), const Color(0xFF1A1033));
     });
   });
 }

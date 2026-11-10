@@ -921,4 +921,78 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportDestAccount => 'To account';
+
+  @override
+  String get ovNetFormula => 'Accounts − debt';
+
+  @override
+  String ovIncomeArrow(String amount) {
+    return '↑ $amount in';
+  }
+
+  @override
+  String ovExpenseArrow(String amount) {
+    return '↓ $amount out';
+  }
+
+  @override
+  String ovMoneySub(String accounts, String goals) {
+    return '$accounts in accounts, $goals in goals';
+  }
+
+  @override
+  String ovDebtNext(String card, String date) {
+    return '$card is due $date';
+  }
+
+  @override
+  String ovGoalsSub(String percent, String target) {
+    return '$percent% of $target';
+  }
+
+  @override
+  String get dashHideAmounts => 'Hide amounts';
+
+  @override
+  String get dashShowAmounts => 'Show amounts';
+
+  @override
+  String get actPay => 'Pay';
+
+  @override
+  String get dashCreateBudget => 'Create a budget';
+
+  @override
+  String get addTxHowMuchExpense => 'How much did you spend?';
+
+  @override
+  String get addTxHowMuchIncome => 'How much did you receive?';
+
+  @override
+  String get addTxHowMuchTransfer => 'How much are you moving?';
+
+  @override
+  String get addTxRepeat => 'Repeat';
+
+  @override
+  String get addTxRepeatNever => 'Never';
+
+  @override
+  String get addTxFrom => 'From';
+
+  @override
+  String get addTxTo => 'To';
+
+  @override
+  String get addTxAdd => 'Add';
+
+  @override
+  String addTxRepeatUntil(String frequency, String date) {
+    return '$frequency, until $date';
+  }
+
+  @override
+  String accBalanceShort(String amount) {
+    return 'Balance $amount';
+  }
 }

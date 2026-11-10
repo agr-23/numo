@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/account.dart';
@@ -106,7 +106,7 @@ class _BalanceSummary extends StatelessWidget {
                   Text(
                     CurrencyFormatter.format(account.balance, settings),
                     style: theme.textTheme.titleLarge?.copyWith(
-                      color: account.balance < 0 ? AppColors.expense : null,
+                      color: account.balance < 0 ? context.palette.expense : null,
                     ),
                   ),
                 ],
@@ -159,7 +159,7 @@ class _CreditSummary extends StatelessWidget {
                         _fmt(available ?? account.balance),
                         style: theme.textTheme.titleLarge?.copyWith(
                           color: available == null || available < 0
-                              ? AppColors.expense
+                              ? context.palette.expense
                               : null,
                         ),
                       ),
@@ -174,7 +174,7 @@ class _CreditSummary extends StatelessWidget {
                   spent: account.balance, limit: account.creditLimit!),
               const SizedBox(height: 12),
               _row(theme, l10n.debt, _fmt(account.balance),
-                  color: AppColors.expense),
+                  color: context.palette.expense),
               _row(theme, l10n.accCreditLimit, _fmt(account.creditLimit!)),
             ],
             const Divider(height: 24),
@@ -188,7 +188,7 @@ class _CreditSummary extends StatelessWidget {
               l10n.accPaymentDue,
               payment == null ? l10n.accNotSet : _dateLabel(payment, l10n),
               color: payment != null && _daysUntil(payment) <= 3
-                  ? AppColors.warning
+                  ? context.palette.warning
                   : null,
             ),
             if (statement == null || payment == null || account.creditLimit == null)

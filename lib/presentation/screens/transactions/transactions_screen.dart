@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/transaction.dart';
@@ -92,12 +92,12 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                 onPressed: () => FilterSheet.show(context),
               ),
               if (hasFilters)
-                const Positioned(
+                Positioned(
                   right: 10,
                   top: 10,
                   child: CircleAvatar(
                     radius: 4,
-                    backgroundColor: AppColors.accent,
+                    backgroundColor: context.palette.ink,
                   ),
                 ),
             ],
@@ -140,7 +140,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
               Text(
                 CurrencyFormatter.signed(net, settings, isIncome: net >= 0),
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: net >= 0 ? AppColors.income : AppColors.expense,
+                  color: net >= 0 ? context.palette.income : context.palette.expense,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -160,7 +160,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(left: 20),
         decoration: BoxDecoration(
-          color: AppColors.transfer,
+          color: context.palette.transfer,
           borderRadius: BorderRadius.circular(Dimens.chipRadius),
         ),
         child: const Icon(Icons.edit, color: Colors.white),
@@ -169,7 +169,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-          color: AppColors.expense,
+          color: context.palette.expense,
           borderRadius: BorderRadius.circular(Dimens.chipRadius),
         ),
         child: const Icon(Icons.delete, color: Colors.white),
@@ -218,7 +218,6 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
           label: l10n.undo,
-          textColor: AppColors.accent,
           onPressed: () {
             if (accountId != null) {
               repo.add(

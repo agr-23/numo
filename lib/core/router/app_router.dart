@@ -78,7 +78,9 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/add-transaction',
       parentNavigatorKey: _rootKey,
-      builder: (_, __) => const AddTransactionScreen(),
+      builder: (_, state) => AddTransactionScreen(
+        startAsIncome: state.uri.queryParameters['type'] == 'income',
+      ),
     ),
     GoRoute(
       path: '/add-transfer',

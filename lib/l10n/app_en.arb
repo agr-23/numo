@@ -1,9 +1,7 @@
 {
   "@@locale": "en",
-
   "appTagline": "Numo — Simple personal finance",
   "appVersion": "Version {version}",
-
   "cancel": "Cancel",
   "continueLabel": "Continue",
   "save": "Save",
@@ -43,20 +41,16 @@
   "selectCategory": "Choose a category",
   "selectAccount": "Choose an account",
   "writeName": "Enter a name",
-
   "greetingMorning": "Good morning",
   "greetingAfternoon": "Good afternoon",
   "greetingEvening": "Good evening",
-
   "navHome": "Home",
   "navTransactions": "Activity",
   "navAnalytics": "Insights",
   "navAccounts": "Accounts",
-
   "accountTypeCash": "Cash",
   "accountTypeBank": "Bank",
   "accountTypeCredit": "Credit card",
-
   "catFood": "Food",
   "catTransport": "Transport",
   "catGroceries": "Groceries",
@@ -73,7 +67,6 @@
   "catFreelance": "Freelance",
   "catInvestments": "Investments",
   "catOtherIncome": "Other income",
-
   "currencyCOP": "Colombian peso",
   "currencyUSD": "US dollar",
   "currencyEUR": "Euro",
@@ -84,18 +77,15 @@
   "currencyBRL": "Brazilian real",
   "currencyGBP": "British pound",
   "currencyCAD": "Canadian dollar",
-
   "languageSystem": "Automatic (phone language)",
   "languageEs": "Español",
   "languageEn": "English",
-
   "unlockReason": "Unlock Numo",
   "enterPin": "Enter your PIN",
   "wrongPin": "Wrong PIN",
   "createPin": "Create a 4-digit PIN",
   "confirmPin": "Confirm your PIN",
   "confirmCurrentPin": "Confirm your current PIN",
-
   "onbSkip": "Skip",
   "onbStart": "Get started",
   "onbFinish": "Done, let's go",
@@ -120,13 +110,11 @@
   "onbDebtOptional": "Current balance owed (optional)",
   "onbDatesLater": "You can set statement and due dates later in the account",
   "onbBalanceOptional": "Starting balance (optional)",
-
   "dashBudgets": "Budgets",
   "dashSavingsGoals": "Savings goals",
   "dashRecent": "Recent activity",
   "dashNoTransactions": "No transactions yet",
   "dashNetBalanceLine": "Net balance: {amount}",
-
   "ovNetBalance": "Net balance",
   "ovMonthIncome": "income this month",
   "ovMonthExpense": "spent this month",
@@ -141,20 +129,17 @@
   "ovCreateFirstGoal": "Create your first savings goal",
   "ovGoalTarget": "target, {percent}%",
   "ovCompleted": "completed",
-
   "txTitle": "Activity",
   "txSearch": "Search…",
   "txNoMatches": "No transactions match these filters",
   "txAddFirst": "Add your first one",
   "txDeleted": "Transaction deleted",
-
   "filters": "Filters",
   "clear": "Clear",
   "dateRange": "Date range",
   "anyDate": "Any date",
   "removeRange": "Remove range",
   "applyFilters": "Apply filters",
-
   "addTxNew": "New transaction",
   "addTxEdit": "Edit transaction",
   "addTxTitleHint": "E.g. Lunch",
@@ -180,7 +165,6 @@
   "addTxSavedExpense": "Expense saved",
   "addTxSavedIncome": "Income saved",
   "addTxSavedTransfer": "Transfer done",
-
   "anTitle": "Insights",
   "anByCategory": "Spending by category",
   "anSeriesWeeks": "Income and spending (6 weeks)",
@@ -193,7 +177,6 @@
   "anNoExpenses": "No spending in this period",
   "anTotal": "Total\n{amount}",
   "anNoChartData": "No data for the chart yet",
-
   "accTitle": "My accounts",
   "accAdd": "Add account",
   "accNone": "You have no accounts yet",
@@ -227,7 +210,6 @@
   "accSaveChanges": "Save changes",
   "accNameMissing": "Enter a name for the account",
   "accLimitMissing": "Enter the card's credit limit",
-
   "budTitle": "Budgets",
   "budNone": "No budgets for this month",
   "budCreate": "Create budget",
@@ -249,7 +231,6 @@
   "budExistsTitle": "Budget already exists",
   "budExistsBody": "You already have a budget for \"{category}\" in {month}. Replace it?",
   "budReplace": "Replace",
-
   "goalTitle": "My goals",
   "goalNone": "You have no savings goals yet",
   "goalCreate": "Create goal",
@@ -268,7 +249,6 @@
   "goalNameMissing": "Enter a name for the goal",
   "goalTargetMissing": "Enter a target amount greater than 0",
   "goalContributeQuestion": "How much do you want to add to \"{name}\"?",
-
   "setTitle": "Settings",
   "setSecurity": "Security",
   "setPin": "Passcode",
@@ -296,14 +276,32 @@
   "setDeleteEverything": "Delete everything",
   "setAllDeleted": "All data was deleted",
   "setAbout": "About",
-
   "catCustom": "Custom",
   "catPredefined": "Built-in",
   "catCannotDelete": "Built-in categories can't be deleted",
   "catNew": "New category",
   "catCreate": "Create category",
-
   "exportSubject": "Numo export",
   "exportText": "My Numo transactions",
-  "exportDestAccount": "To account"
+  "exportDestAccount": "To account",
+  "ovNetFormula": "Accounts − debt",
+  "ovIncomeArrow": "↑ {amount} in",
+  "ovExpenseArrow": "↓ {amount} out",
+  "ovMoneySub": "{accounts} in accounts, {goals} in goals",
+  "ovDebtNext": "{card} is due {date}",
+  "ovGoalsSub": "{percent}% of {target}",
+  "dashHideAmounts": "Hide amounts",
+  "dashShowAmounts": "Show amounts",
+  "actPay": "Pay",
+  "dashCreateBudget": "Create a budget",
+  "addTxHowMuchExpense": "How much did you spend?",
+  "addTxHowMuchIncome": "How much did you receive?",
+  "addTxHowMuchTransfer": "How much are you moving?",
+  "addTxRepeat": "Repeat",
+  "addTxRepeatNever": "Never",
+  "addTxFrom": "From",
+  "addTxTo": "To",
+  "addTxAdd": "Add",
+  "addTxRepeatUntil": "{frequency}, until {date}",
+  "accBalanceShort": "Balance {amount}"
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../widgets/pin_pad.dart';
 
 /// Flujo de creación de PIN: ingresar y confirmar. Al completar, hace
@@ -21,20 +21,20 @@ class _CreatePinScreenState extends ConsumerState<CreatePinScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: context.palette.ink,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: context.palette.ink,
+        foregroundColor: context.palette.onInk,
       ),
       body: SafeArea(
         child: Theme(
           data: Theme.of(context).copyWith(
             textTheme: Theme.of(context).textTheme.apply(
-                  bodyColor: Colors.white,
-                  displayColor: Colors.white,
+                  bodyColor: context.palette.onInk,
+                  displayColor: context.palette.onInk,
                 ),
             colorScheme:
-                Theme.of(context).colorScheme.copyWith(onSurface: Colors.white),
+                Theme.of(context).colorScheme.copyWith(onSurface: context.palette.onInk),
           ),
           child: Center(
             child: PinPad(

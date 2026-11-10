@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/constants/dimens.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../data/models/transaction.dart';
 import '../../../../providers/accounts_provider.dart';
@@ -135,10 +134,7 @@ class FilterSheet extends ConsumerWidget {
 
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              minimumSize: const Size.fromHeight(50),
-            ),
+                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
             onPressed: () => Navigator.of(context).pop(),
             child: Text(l10n.applyFilters),
           ),

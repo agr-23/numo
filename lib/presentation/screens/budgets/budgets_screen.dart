@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/app_settings.dart';
@@ -70,7 +70,7 @@ class BudgetsScreen extends ConsumerWidget {
                     padding: const EdgeInsets.fromLTRB(
                         Dimens.screenPaddingH, 4, Dimens.screenPaddingH, 96),
                     children: [
-                      _summaryCard(theme, summary, settings, l10n),
+                      _summaryCard(context, summary, settings, l10n),
                       const SizedBox(height: Dimens.sectionGap),
                       for (final v in views)
                         Padding(
@@ -83,7 +83,7 @@ class BudgetsScreen extends ConsumerWidget {
                               alignment: Alignment.centerRight,
                               padding: const EdgeInsets.only(right: 20),
                               decoration: BoxDecoration(
-                                color: AppColors.expense,
+                                color: context.palette.expense,
                                 borderRadius:
                                     BorderRadius.circular(Dimens.cardRadius),
                               ),
@@ -119,44 +119,51 @@ class BudgetsScreen extends ConsumerWidget {
         DateTime(current.year, current.month + delta);
   }
 
-  Widget _summaryCard(ThemeData theme, BudgetSummary summary,
+  Widget _summaryCard(BuildContext context, BudgetSummary summary,
       AppSettings settings, AppLocalizations l10n) {
+    final p = context.palette;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(20),
+        color: p.ink,
+        borderRadius: BorderRadius.circular(Dimens.heroRadius),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _summaryRow(l10n.budTotal,
+          _summaryRow(p, l10n.budTotal,
               CurrencyFormatter.format(summary.total, settings)),
           const SizedBox(height: 6),
-          _summaryRow(
+          _summaryRow(p,
               l10n.budSpent, CurrencyFormatter.format(summary.spent, settings)),
           const SizedBox(height: 6),
-          _summaryRow(l10n.available,
+          _summaryRow(p, l10n.available,
               CurrencyFormatter.format(summary.available, settings),
               highlight: true),
           const SizedBox(height: 14),
-          BudgetProgressBar(spent: summary.spent, limit: summary.total),
+          BudgetProgressBar(
+            spent: summary.spent,
+            limit: summary.total,
+            color: summary.progress > 0.8 ? p.onInkExpense : p.onInk,
+            trackColor: p.onInk.withValues(alpha: 0.18),
+          ),
         ],
       ),
     );
   }
 
-  Widget _summaryRow(String label, String value, {bool highlight = false}) {
+  Widget _summaryRow(NumoPalette p, String label, String value,
+      {bool highlight = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label,
             style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.7), fontSize: 13)),
+                color: p.onInk.withValues(alpha: 0.7), fontSize: 13)),
         Text(value,
             style: TextStyle(
-                color: highlight ? AppColors.accent : Colors.white,
+                color: p.onInk,
                 fontSize: highlight ? 18 : 15,
                 fontWeight: FontWeight.w700)),
       ],
