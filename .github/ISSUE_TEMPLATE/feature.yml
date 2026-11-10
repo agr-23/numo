@@ -1,0 +1,15 @@
+name: Proponer una mejora
+description: Una idea para Numo
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Qué problema resuelve
+      description: Describe la situación, no la solución.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Cómo te lo imaginas
