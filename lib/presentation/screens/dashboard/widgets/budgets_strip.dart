@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../providers/budgets_provider.dart';
@@ -17,6 +18,7 @@ class BudgetsStrip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final views = ref.watch(budgetViewsProvider);
     final settings = ref.watch(settingsProvider);
+    final l10n = context.l10n;
 
     return SizedBox(
       height: 110,
@@ -33,10 +35,10 @@ class BudgetsStrip extends ConsumerWidget {
           String? badge;
           if (v.isExceeded) {
             border = AppColors.expense;
-            badge = 'Excedido';
+            badge = l10n.budExceeded;
           } else if (v.isNearLimit) {
             border = AppColors.warning;
-            badge = 'Cerca del límite';
+            badge = l10n.budNearLimit;
           }
           return InkWell(
             onTap: () => context.push('/budgets'),
@@ -62,7 +64,7 @@ class BudgetsStrip extends ConsumerWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          v.category?.name ?? '—',
+                          v.category == null ? '—' : categoryLabel(v.category, l10n),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall,
@@ -75,7 +77,8 @@ class BudgetsStrip extends ConsumerWidget {
                   const SizedBox(height: 6),
                   Text(
                     badge ??
-                        '${CurrencyFormatter.format(v.spent, settings)} de ${CurrencyFormatter.format(v.limit, settings)}',
+                        l10n.amountOf(CurrencyFormatter.format(v.spent, settings),
+                            CurrencyFormatter.format(v.limit, settings)),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -109,12 +112,12 @@ class _AddBudgetCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: Theme.of(context).dividerColor),
         ),
-        child: const Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add, color: AppColors.accent),
-            SizedBox(height: 4),
-            Text('Presupuesto', style: TextStyle(fontSize: 12)),
+            const Icon(Icons.add, color: AppColors.accent),
+            const SizedBox(height: 4),
+            Text(context.l10n.budShort, style: const TextStyle(fontSize: 12)),
           ],
         ),
       ),

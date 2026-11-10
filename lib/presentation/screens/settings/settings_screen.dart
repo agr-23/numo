@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/currencies.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
@@ -20,16 +21,17 @@ class SettingsScreen extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Ajustes')),
+      appBar: AppBar(title: Text(l10n.setTitle)),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
-          _header(theme, 'Seguridad'),
+          _header(theme, l10n.setSecurity),
           SwitchListTile(
             secondary: const Icon(Icons.lock_outline),
-            title: const Text('PIN de acceso'),
+            title: Text(l10n.setPin),
             value: settings.pinEnabled,
             activeThumbColor: AppColors.accent,
             onChanged: (v) => _togglePin(context, ref, settings, v),
@@ -37,15 +39,15 @@ class SettingsScreen extends ConsumerWidget {
           if (settings.pinEnabled)
             ListTile(
               leading: const Icon(Icons.pin_outlined),
-              title: const Text('Cambiar PIN'),
+              title: Text(l10n.setChangePin),
               onTap: () => _changePin(context, ref),
             ),
           SwitchListTile(
             secondary: const Icon(Icons.fingerprint),
-            title: const Text('Huella dactilar'),
+            title: Text(l10n.setBiometric),
             subtitle: settings.pinEnabled
                 ? null
-                : const Text('Requiere un PIN activo'),
+                : Text(l10n.setBiometricNeedsPin),
             value: settings.biometricEnabled,
             activeThumbColor: AppColors.accent,
             onChanged: settings.pinEnabled
@@ -53,63 +55,73 @@ class SettingsScreen extends ConsumerWidget {
                 : null,
           ),
 
-          _header(theme, 'Apariencia'),
+          _header(theme, l10n.setAppearance),
           Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: Dimens.screenPaddingH, vertical: 8),
             child: SegmentedButton<AppTheme>(
-              segments: const [
-                ButtonSegment(value: AppTheme.light, label: Text('Claro')),
-                ButtonSegment(value: AppTheme.dark, label: Text('Oscuro')),
-                ButtonSegment(value: AppTheme.system, label: Text('Auto')),
+              segments: [
+                ButtonSegment(
+                    value: AppTheme.light, label: Text(l10n.setThemeLight)),
+                ButtonSegment(
+                    value: AppTheme.dark, label: Text(l10n.setThemeDark)),
+                ButtonSegment(
+                    value: AppTheme.system, label: Text(l10n.setThemeAuto)),
               ],
               selected: {settings.theme},
               onSelectionChanged: (s) => notifier.setTheme(s.first),
             ),
           ),
 
-          _header(theme, 'Finanzas'),
+          ListTile(
+            leading: const Icon(Icons.language),
+            title: Text(l10n.setLanguage),
+            subtitle: Text(_languageLabel(settings.languageCode, l10n)),
+            onTap: () => _pickLanguage(context, ref, settings.languageCode),
+          ),
+
+          _header(theme, l10n.setFinance),
           ListTile(
             leading: const Icon(Icons.attach_money),
-            title: const Text('Moneda'),
+            title: Text(l10n.setCurrency),
             subtitle: Text(
                 '${settings.currency} (${settings.currencySymbol})'),
             onTap: () => _pickCurrency(context, ref),
           ),
           ListTile(
             leading: const Icon(Icons.event),
-            title: const Text('Primer día del mes'),
-            subtitle: Text('Día ${settings.budgetStartDay}'),
+            title: Text(l10n.setMonthStart),
+            subtitle: Text(l10n.dayN(settings.budgetStartDay)),
             onTap: () => _pickStartDay(context, ref, settings.budgetStartDay),
           ),
 
-          _header(theme, 'Categorías'),
+          _header(theme, l10n.categories),
           ListTile(
             leading: const Icon(Icons.category_outlined),
-            title: const Text('Administrar categorías'),
+            title: Text(l10n.setManageCategories),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/categories'),
           ),
 
-          _header(theme, 'Datos'),
+          _header(theme, l10n.setData),
           ListTile(
             leading: const Icon(Icons.ios_share),
-            title: const Text('Exportar mis datos'),
-            subtitle: const Text('Genera un CSV con todos tus movimientos'),
+            title: Text(l10n.setExport),
+            subtitle: Text(l10n.setExportSubtitle),
             onTap: () => _export(context),
           ),
           ListTile(
             leading: const Icon(Icons.delete_forever, color: AppColors.expense),
-            title: const Text('Borrar todos los datos',
-                style: TextStyle(color: AppColors.expense)),
+            title: Text(l10n.setDeleteAll,
+                style: const TextStyle(color: AppColors.expense)),
             onTap: () => _deleteAll(context),
           ),
 
-          _header(theme, 'Acerca de'),
-          const ListTile(
-            leading: Icon(Icons.info_outline),
-            title: Text('Numo — Finanzas personales simples'),
-            subtitle: Text('Versión 1.0.0'),
+          _header(theme, l10n.setAbout),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(l10n.appTagline),
+            subtitle: Text(l10n.appVersion('1.0.0')),
           ),
         ],
       ),
@@ -153,7 +165,7 @@ class SettingsScreen extends ConsumerWidget {
       builder: (_) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 32),
         child: PinPad(
-          title: 'Confirma tu PIN actual',
+          title: context.l10n.confirmCurrentPin,
           onCompleted: (pin) async {
             final ok = PinHasher.verify(pin, storedHash);
             if (ok) Navigator.of(context).pop(true);
@@ -176,13 +188,55 @@ class SettingsScreen extends ConsumerWidget {
           for (final c in kCurrencies)
             ListTile(
               leading: Text(c.symbol),
-              title: Text('${c.code} — ${c.name}'),
+              title: Text('${c.code} — ${currencyName(c.code, context.l10n)}'),
               onTap: () {
                 ref.read(settingsProvider.notifier).setCurrency(c);
                 Navigator.of(context).pop();
               },
             ),
         ],
+      ),
+    );
+  }
+
+  String _languageLabel(String? code, AppLocalizations l10n) {
+    switch (code) {
+      case 'es':
+        return l10n.languageEs;
+      case 'en':
+        return l10n.languageEn;
+      default:
+        return l10n.languageSystem;
+    }
+  }
+
+  Future<void> _pickLanguage(
+      BuildContext context, WidgetRef ref, String? current) async {
+    final l10n = context.l10n;
+    final options = <(String?, String)>[
+      (null, l10n.languageSystem),
+      ('es', l10n.languageEs),
+      ('en', l10n.languageEn),
+    ];
+    await showModalBottomSheet(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final (code, label) in options)
+              ListTile(
+                title: Text(label),
+                trailing: code == current
+                    ? const Icon(Icons.check, color: AppColors.accent)
+                    : null,
+                onTap: () {
+                  ref.read(settingsProvider.notifier).setLanguage(code);
+                  Navigator.of(sheetContext).pop();
+                },
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -219,30 +273,31 @@ class SettingsScreen extends ConsumerWidget {
 
   Future<void> _export(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
     try {
-      await ExportService.exportTransactions();
+      await ExportService.exportTransactions(l10n);
     } catch (e) {
-      messenger
-          .showSnackBar(SnackBar(content: Text('No se pudo exportar: $e')));
+      messenger.showSnackBar(
+          SnackBar(content: Text(l10n.setExportFailed(e.toString()))));
     }
   }
 
   Future<void> _deleteAll(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
     final step1 = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Borrar todos los datos'),
-        content: const Text(
-            'Esto eliminará todas tus cuentas, movimientos, presupuestos y metas. Esta acción no se puede deshacer.'),
+        title: Text(l10n.setDeleteAll),
+        content: Text(l10n.setDeleteAllBody),
         actions: [
           TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar')),
+              child: Text(l10n.cancel)),
           FilledButton(
               style: FilledButton.styleFrom(backgroundColor: AppColors.expense),
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Continuar')),
+              child: Text(l10n.continueLabel)),
         ],
       ),
     );
@@ -253,27 +308,27 @@ class SettingsScreen extends ConsumerWidget {
     final step2 = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Confirmación final'),
+        title: Text(l10n.setFinalConfirm),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Escribe BORRAR para confirmar:'),
+            Text(l10n.setTypeToConfirm(l10n.setConfirmWord)),
             const SizedBox(height: 12),
             TextField(
               controller: controller,
-              decoration: const InputDecoration(hintText: 'BORRAR'),
+              decoration: InputDecoration(hintText: l10n.setConfirmWord),
             ),
           ],
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar')),
+              child: Text(l10n.cancel)),
           FilledButton(
               style: FilledButton.styleFrom(backgroundColor: AppColors.expense),
-              onPressed: () =>
-                  Navigator.of(context).pop(controller.text.trim() == 'BORRAR'),
-              child: const Text('Borrar todo')),
+              onPressed: () => Navigator.of(context).pop(
+                  controller.text.trim().toUpperCase() == l10n.setConfirmWord),
+              child: Text(l10n.setDeleteEverything)),
         ],
       ),
     );
@@ -281,7 +336,7 @@ class SettingsScreen extends ConsumerWidget {
     if (step2 == true) {
       await IsarService.instance.clearAll();
       messenger.showSnackBar(
-          const SnackBar(content: Text('Todos los datos fueron borrados')));
+          SnackBar(content: Text(l10n.setAllDeleted)));
     }
   }
 }

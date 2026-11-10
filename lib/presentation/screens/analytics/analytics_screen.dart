@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
@@ -27,9 +28,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     final summary = ref.watch(analyticsSummaryProvider);
     final series = ref.watch(analyticsSeriesProvider);
     final settings = ref.watch(settingsProvider);
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Analíticas')),
+      appBar: AppBar(title: Text(l10n.anTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
             Dimens.screenPaddingH, 8, Dimens.screenPaddingH, 96),
@@ -38,21 +40,21 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           const SizedBox(height: Dimens.sectionGap),
           _metricCards(theme, summary, settings),
           const SizedBox(height: Dimens.sectionGap),
-          Text('Gastos por categoría', style: theme.textTheme.titleMedium),
+          Text(l10n.anByCategory, style: theme.textTheme.titleMedium),
           const SizedBox(height: 12),
           _donut(theme, summary, settings),
           const SizedBox(height: Dimens.sectionGap),
           Text(
             period == AnalyticsPeriod.week
-                ? 'Ingresos y gastos (6 semanas)'
-                : 'Ingresos y gastos (6 meses)',
+                ? l10n.anSeriesWeeks
+                : l10n.anSeriesMonths,
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 12),
           _barChart(theme, series, settings),
           const SizedBox(height: Dimens.sectionGap),
           if (summary.slices.isNotEmpty) ...[
-            Text('Ranking de categorías', style: theme.textTheme.titleMedium),
+            Text(l10n.anRanking, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
             for (final s in summary.slices)
               _rankingRow(theme, s, settings),
@@ -92,10 +94,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          chip('Esta semana', AnalyticsPeriod.week),
-          chip('Este mes', AnalyticsPeriod.month),
-          chip('Este año', AnalyticsPeriod.year),
-          chip('Personalizado', AnalyticsPeriod.custom),
+          chip(context.l10n.anThisWeek, AnalyticsPeriod.week),
+          chip(context.l10n.anThisMonth, AnalyticsPeriod.month),
+          chip(context.l10n.anThisYear, AnalyticsPeriod.year),
+          chip(context.l10n.anCustom, AnalyticsPeriod.custom),
         ],
       ),
     );
@@ -134,11 +136,11 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
     return Row(
       children: [
-        card('Ingresos', summary.income, AppColors.income),
+        card(context.l10n.incomes, summary.income, AppColors.income),
         const SizedBox(width: 8),
-        card('Gastos', summary.expense, AppColors.expense),
+        card(context.l10n.expenses, summary.expense, AppColors.expense),
         const SizedBox(width: 8),
-        card('Balance', summary.net,
+        card(context.l10n.balance, summary.net,
             summary.net >= 0 ? AppColors.income : AppColors.expense),
       ],
     );
@@ -147,11 +149,11 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   Widget _donut(
       ThemeData theme, AnalyticsSummary summary, AppSettings settings) {
     if (summary.slices.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 200,
         child: EmptyState(
             icon: Icons.pie_chart_outline,
-            message: 'Sin gastos en este período'),
+            message: context.l10n.anNoExpenses),
       );
     }
 
@@ -193,7 +195,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(centerText.name,
+                    Text(categoryLabel(centerText.category, context.l10n),
                         style: theme.textTheme.bodySmall,
                         textAlign: TextAlign.center),
                     Text(
@@ -205,7 +207,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   ],
                 )
               else
-                Text('Total\n${CurrencyFormatter.format(summary.expense, settings)}',
+                Text(context.l10n.anTotal(CurrencyFormatter.format(summary.expense, settings)),
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyLarge),
             ],
@@ -229,7 +231,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  Text('${s.name} ${(s.percent * 100).toStringAsFixed(0)}%',
+                  Text('${categoryLabel(s.category, context.l10n)} ${(s.percent * 100).toStringAsFixed(0)}%',
                       style: theme.textTheme.bodySmall),
                 ],
               ),
@@ -249,7 +251,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       return SizedBox(
         height: 180,
         child: Center(
-          child: Text('Sin datos para el gráfico',
+          child: Text(context.l10n.anNoChartData,
               style: theme.textTheme.bodySmall),
         ),
       );
@@ -334,7 +336,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             ),
           ),
           const SizedBox(width: 10),
-          Expanded(child: Text(s.name, style: theme.textTheme.bodyLarge)),
+          Expanded(
+              child: Text(categoryLabel(s.category, context.l10n),
+                  style: theme.textTheme.bodyLarge)),
           Text('${(s.percent * 100).toStringAsFixed(0)}%',
               style: theme.textTheme.bodySmall),
           const SizedBox(width: 10),

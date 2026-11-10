@@ -23,6 +23,9 @@ class AppSettings {
   late bool isOnboardingDone;
   late int budgetStartDay; // Primer día del mes para presupuestos (default: 1)
 
+  /// Idioma elegido ('es', 'en'). Null = seguir el idioma del teléfono.
+  String? languageCode;
+
   AppSettings();
 
   /// Crea los ajustes por defecto (COP, tema sistema, sin PIN).
@@ -38,6 +41,7 @@ class AppSettings {
       ..pinHash = null
       ..biometricEnabled = false
       ..isOnboardingDone = false
-      ..budgetStartDay = 1;
+      ..budgetStartDay = 1
+      ..languageCode = null;
   }
 }

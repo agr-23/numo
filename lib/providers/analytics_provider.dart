@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/utils/date_formatter.dart';
+import '../data/models/category.dart';
 import '../data/models/transaction.dart';
 import 'transactions_provider.dart';
 
@@ -33,11 +34,11 @@ final analyticsRangeProvider = Provider<DateTimeRange>((ref) {
 });
 
 class CategorySlice {
-  final String name;
-  final String colorHex;
+  final Category category; // el nombre visible se traduce en la UI
   final double amount;
   final double percent; // 0..1
-  const CategorySlice(this.name, this.colorHex, this.amount, this.percent);
+  const CategorySlice(this.category, this.amount, this.percent);
+  String get colorHex => category.colorHex;
 }
 
 class AnalyticsSummary {
@@ -66,7 +67,7 @@ final analyticsSummaryProvider = Provider<AnalyticsSummary>((ref) {
   var income = 0.0;
   var expense = 0.0;
   final byCategory = <int, double>{};
-  final catInfo = <int, ({String name, String color})>{};
+  final catInfo = <int, Category>{};
 
   for (final t in txs) {
     if (!_inRange(t.date, range)) continue;
@@ -77,7 +78,7 @@ final analyticsSummaryProvider = Provider<AnalyticsSummary>((ref) {
       final c = t.category.value;
       if (c != null) {
         byCategory[c.id] = (byCategory[c.id] ?? 0) + t.amount;
-        catInfo[c.id] = (name: c.name, color: c.colorHex);
+        catInfo[c.id] = c;
       }
     }
   }
@@ -85,8 +86,7 @@ final analyticsSummaryProvider = Provider<AnalyticsSummary>((ref) {
   final slices = <CategorySlice>[
     for (final entry in byCategory.entries)
       CategorySlice(
-        catInfo[entry.key]?.name ?? '—',
-        catInfo[entry.key]?.color ?? '#9CA3AF',
+        catInfo[entry.key]!,
         entry.value,
         expense <= 0 ? 0 : entry.value / expense,
       ),

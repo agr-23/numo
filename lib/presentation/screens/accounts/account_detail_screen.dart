@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
@@ -27,12 +28,12 @@ class AccountDetailScreen extends ConsumerWidget {
     final account = ref.watch(accountByIdProvider(accountId)).valueOrNull;
     final txs = ref.watch(transactionsByAccountProvider(accountId));
     final settings = ref.watch(settingsProvider);
+    final l10n = context.l10n;
 
     if (account == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Cuenta')),
-        body: const EmptyState(
-            icon: Icons.error_outline, message: 'Cuenta no encontrada'),
+        appBar: AppBar(title: Text(l10n.account)),
+        body: EmptyState(icon: Icons.error_outline, message: l10n.accNotFound),
       );
     }
 
@@ -42,7 +43,7 @@ class AccountDetailScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
-            tooltip: 'Editar cuenta',
+            tooltip: l10n.accEdit,
             onPressed: () => AddAccountSheet.show(context, account: account),
           ),
         ],
@@ -56,14 +57,13 @@ class AccountDetailScreen extends ConsumerWidget {
           else
             _BalanceSummary(account: account, settings: settings),
           const SizedBox(height: Dimens.sectionGap),
-          Text('Movimientos', style: theme.textTheme.titleMedium),
+          Text(l10n.txTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
           if (txs.isEmpty)
-            const Padding(
-              padding: EdgeInsets.only(top: 24),
+            Padding(
+              padding: const EdgeInsets.only(top: 24),
               child: EmptyState(
-                  icon: Icons.receipt_long,
-                  message: 'Esta cuenta no tiene movimientos'),
+                  icon: Icons.receipt_long, message: l10n.accNoTransactions),
             )
           else
             ...txs.map(
@@ -101,7 +101,8 @@ class _BalanceSummary extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Saldo disponible', style: theme.textTheme.bodySmall),
+                  Text(context.l10n.accBalanceAvailable,
+                      style: theme.textTheme.bodySmall),
                   Text(
                     CurrencyFormatter.format(account.balance, settings),
                     style: theme.textTheme.titleLarge?.copyWith(
@@ -129,6 +130,7 @@ class _CreditSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final available = account.available;
     final statement = account.nextStatementDate;
     final payment = account.nextPaymentDate;
@@ -151,7 +153,7 @@ class _CreditSummary extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(available != null ? 'Cupo disponible' : 'Deuda actual',
+                      Text(available != null ? l10n.accCreditAvailable : l10n.accCurrentDebt,
                           style: theme.textTheme.bodySmall),
                       Text(
                         _fmt(available ?? account.balance),
@@ -171,20 +173,20 @@ class _CreditSummary extends StatelessWidget {
               BudgetProgressBar(
                   spent: account.balance, limit: account.creditLimit!),
               const SizedBox(height: 12),
-              _row(theme, 'Deuda', _fmt(account.balance),
+              _row(theme, l10n.debt, _fmt(account.balance),
                   color: AppColors.expense),
-              _row(theme, 'Cupo total', _fmt(account.creditLimit!)),
+              _row(theme, l10n.accCreditLimit, _fmt(account.creditLimit!)),
             ],
             const Divider(height: 24),
             _row(
               theme,
-              'Fecha de corte',
-              statement == null ? 'Sin configurar' : _dateLabel(statement),
+              l10n.accStatementDate,
+              statement == null ? l10n.accNotSet : _dateLabel(statement, l10n),
             ),
             _row(
               theme,
-              'Límite de pago',
-              payment == null ? 'Sin configurar' : _dateLabel(payment),
+              l10n.accPaymentDue,
+              payment == null ? l10n.accNotSet : _dateLabel(payment, l10n),
               color: payment != null && _daysUntil(payment) <= 3
                   ? AppColors.warning
                   : null,
@@ -193,7 +195,7 @@ class _CreditSummary extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
-                  'Toca el lápiz de arriba para completar cupo y fechas.',
+                  l10n.accCompleteHint,
                   style: theme.textTheme.bodySmall,
                 ),
               ),
@@ -202,7 +204,7 @@ class _CreditSummary extends StatelessWidget {
               width: double.infinity,
               child: FilledButton.tonalIcon(
                 icon: const Icon(Icons.payments_outlined),
-                label: const Text('Pagar tarjeta'),
+                label: Text(l10n.accPayCard),
                 onPressed: () =>
                     context.push('/add-transfer?to=${account.id}'),
               ),
@@ -235,12 +237,12 @@ class _CreditSummary extends StatelessWidget {
     return d.difference(DateTime(now.year, now.month, now.day)).inDays;
   }
 
-  static String _dateLabel(DateTime d) {
+  static String _dateLabel(DateTime d, AppLocalizations l10n) {
     final days = _daysUntil(d);
     final when = switch (days) {
-      0 => 'hoy',
-      1 => 'mañana',
-      _ => 'en $days días',
+      0 => l10n.todayLower,
+      1 => l10n.tomorrow,
+      _ => l10n.inDays(days),
     };
     return '${DateFormatter.shortDay(d)} · $when';
   }

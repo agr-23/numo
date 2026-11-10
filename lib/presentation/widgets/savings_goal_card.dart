@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/currency_formatter.dart';
@@ -22,6 +23,7 @@ class SavingsGoalCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
+    final l10n = context.l10n;
     final ratio = goal.targetAmount <= 0
         ? 0.0
         : (goal.currentAmount / goal.targetAmount).clamp(0.0, 1.0);
@@ -48,8 +50,8 @@ class SavingsGoalCard extends ConsumerWidget {
                       color: AppColors.income.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(Dimens.chipRadius),
                     ),
-                    child: const Text('Completada ✓',
-                        style: TextStyle(
+                    child: Text(l10n.goalCompleted,
+                        style: const TextStyle(
                             color: AppColors.income,
                             fontSize: 11,
                             fontWeight: FontWeight.w600)),
@@ -76,7 +78,9 @@ class SavingsGoalCard extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Ahorrado ${CurrencyFormatter.format(goal.currentAmount, settings)} de ${CurrencyFormatter.format(goal.targetAmount, settings)}',
+                  l10n.goalSavedOf(
+                      CurrencyFormatter.format(goal.currentAmount, settings),
+                      CurrencyFormatter.format(goal.targetAmount, settings)),
                   style: theme.textTheme.bodySmall,
                 ),
                 Text('${(ratio * 100).toStringAsFixed(0)}%',
@@ -86,7 +90,7 @@ class SavingsGoalCard extends ConsumerWidget {
             ),
             if (goal.targetDate != null && !goal.isCompleted) ...[
               const SizedBox(height: 4),
-              Text(_daysRemaining(goal.targetDate!),
+              Text(_daysRemaining(goal.targetDate!, l10n),
                   style: theme.textTheme.bodySmall),
             ],
             if (!goal.isCompleted) ...[
@@ -95,7 +99,7 @@ class SavingsGoalCard extends ConsumerWidget {
                 alignment: Alignment.centerRight,
                 child: FilledButton.tonal(
                   onPressed: onContribute,
-                  child: const Text('Aportar'),
+                  child: Text(l10n.goalContribute),
                 ),
               ),
             ],
@@ -105,13 +109,13 @@ class SavingsGoalCard extends ConsumerWidget {
     );
   }
 
-  String _daysRemaining(DateTime target) {
+  String _daysRemaining(DateTime target, AppLocalizations l10n) {
     final now = DateTime.now();
     final days = DateTime(target.year, target.month, target.day)
         .difference(DateTime(now.year, now.month, now.day))
         .inDays;
-    if (days < 0) return 'Fecha límite vencida';
-    if (days == 0) return 'Vence hoy';
-    return 'Quedan $days días';
+    if (days < 0) return l10n.goalOverdue;
+    if (days == 0) return l10n.goalDueToday;
+    return l10n.goalDaysLeft(days);
   }
 }

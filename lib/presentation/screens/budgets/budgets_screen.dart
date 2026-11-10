@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
@@ -27,9 +28,10 @@ class BudgetsScreen extends ConsumerWidget {
     final views = ref.watch(budgetViewsProvider);
     final summary = ref.watch(budgetSummaryProvider);
     final settings = ref.watch(settingsProvider);
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Presupuestos')),
+      appBar: AppBar(title: Text(l10n.budTitle)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/add-budget'),
         child: const Icon(Icons.add),
@@ -60,15 +62,15 @@ class BudgetsScreen extends ConsumerWidget {
             child: views.isEmpty
                 ? EmptyState(
                     icon: Icons.pie_chart_outline,
-                    message: 'Sin presupuestos para este mes',
-                    actionLabel: 'Crear presupuesto',
+                    message: l10n.budNone,
+                    actionLabel: l10n.budCreate,
                     onAction: () => context.push('/add-budget'),
                   )
                 : ListView(
                     padding: const EdgeInsets.fromLTRB(
                         Dimens.screenPaddingH, 4, Dimens.screenPaddingH, 96),
                     children: [
-                      _summaryCard(theme, summary, settings),
+                      _summaryCard(theme, summary, settings, l10n),
                       const SizedBox(height: Dimens.sectionGap),
                       for (final v in views)
                         Padding(
@@ -89,7 +91,7 @@ class BudgetsScreen extends ConsumerWidget {
                                   const Icon(Icons.delete, color: Colors.white),
                             ),
                             confirmDismiss: (_) =>
-                                _confirmDelete(context, v.category?.name ?? ''),
+                                _confirmDelete(context, categoryLabel(v.category, l10n)),
                             onDismissed: (_) async {
                               await ref
                                   .read(budgetRepositoryProvider)
@@ -117,8 +119,8 @@ class BudgetsScreen extends ConsumerWidget {
         DateTime(current.year, current.month + delta);
   }
 
-  Widget _summaryCard(
-      ThemeData theme, BudgetSummary summary, AppSettings settings) {
+  Widget _summaryCard(ThemeData theme, BudgetSummary summary,
+      AppSettings settings, AppLocalizations l10n) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -129,13 +131,13 @@ class BudgetsScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _summaryRow('Total presupuestado',
+          _summaryRow(l10n.budTotal,
               CurrencyFormatter.format(summary.total, settings)),
           const SizedBox(height: 6),
           _summaryRow(
-              'Gastado', CurrencyFormatter.format(summary.spent, settings)),
+              l10n.budSpent, CurrencyFormatter.format(summary.spent, settings)),
           const SizedBox(height: 6),
-          _summaryRow('Disponible',
+          _summaryRow(l10n.available,
               CurrencyFormatter.format(summary.available, settings),
               highlight: true),
           const SizedBox(height: 14),
@@ -165,15 +167,15 @@ class BudgetsScreen extends ConsumerWidget {
     final result = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Eliminar presupuesto'),
-        content: Text('¿Eliminar el presupuesto de "$name"?'),
+        title: Text(context.l10n.budDeleteTitle),
+        content: Text(context.l10n.budDeleteBody(name)),
         actions: [
           TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar')),
+              child: Text(context.l10n.cancel)),
           FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Eliminar')),
+              child: Text(context.l10n.delete)),
         ],
       ),
     );
@@ -202,15 +204,20 @@ class BudgetsScreen extends ConsumerWidget {
           controller: controller,
           padding: const EdgeInsets.all(Dimens.screenPaddingH),
           children: [
-            Text('${view.category?.name ?? 'Categoría'} · ${DateFormatter.monthYear(month)}',
+            Text(
+                context.l10n.budSheetTitle(
+                    view.category == null
+                        ? context.l10n.category
+                        : categoryLabel(view.category, context.l10n),
+                    DateFormatter.monthYear(month)),
                 style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             if (items.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 24),
+              Padding(
+                padding: const EdgeInsets.only(top: 24),
                 child: EmptyState(
                     icon: Icons.receipt_long,
-                    message: 'Sin gastos en esta categoría'),
+                    message: context.l10n.budNoCategoryExpenses),
               )
             else
               ...items.map((t) => TransactionItem(transaction: t)),

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/amount_input.dart';
@@ -167,7 +168,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
           ),
           Expanded(
             child: Text(
-              widget.editId != null ? 'Editar movimiento' : 'Nuevo movimiento',
+              widget.editId != null ? context.l10n.addTxEdit : context.l10n.addTxNew,
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
@@ -224,9 +225,10 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       padding: const EdgeInsets.symmetric(horizontal: Dimens.screenPaddingH),
       child: Row(
         children: [
-          tab('Gasto', TransactionType.expense),
-          tab('Ingreso', TransactionType.income),
-          if (widget.editId == null) tab('Transferencia', TransactionType.transfer),
+          tab(context.l10n.expense, TransactionType.expense),
+          tab(context.l10n.income, TransactionType.income),
+          if (widget.editId == null)
+            tab(context.l10n.transfer, TransactionType.transfer),
         ],
       ),
     );
@@ -309,11 +311,12 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         ? CategoryType.income
         : CategoryType.expense;
     final categories = ref.watch(categoriesByTypeProvider(type));
+    final l10n = context.l10n;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Categoría', style: Theme.of(context).textTheme.bodySmall),
+        Text(l10n.category, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 8),
         SizedBox(
           height: 78,
@@ -329,7 +332,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                   HapticFeedback.selectionClick();
                   setState(() {
                     _category = c;
-                    if (!_titleEditedByUser) _titleCtrl.text = c.name;
+                    if (!_titleEditedByUser) {
+                      _titleCtrl.text = categoryLabel(c, l10n);
+                    }
                   });
                 },
                 child: Column(
@@ -349,7 +354,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                     SizedBox(
                       width: 64,
                       child: Text(
-                        c.name,
+                        categoryLabel(c, l10n),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
@@ -366,18 +371,19 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         TextField(
           controller: _titleCtrl,
           onChanged: (_) => _titleEditedByUser = true,
-          decoration: const InputDecoration(labelText: 'Título', hintText: 'Ej: Almuerzo'),
+          decoration: InputDecoration(
+              labelText: l10n.title, hintText: l10n.addTxTitleHint),
         ),
         const SizedBox(height: 12),
         _accountDropdown(accounts, _account, (a) => setState(() => _account = a),
-            label: 'Cuenta'),
+            label: l10n.account),
         const SizedBox(height: 12),
         _dateField(),
         const SizedBox(height: 12),
         TextField(
           controller: _noteCtrl,
           maxLines: 2,
-          decoration: const InputDecoration(labelText: 'Nota (opcional)'),
+          decoration: InputDecoration(labelText: l10n.noteOptional),
         ),
         const SizedBox(height: 16),
         _recurringSection(),
@@ -395,13 +401,13 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _accountDropdown(accounts, _account, (a) => setState(() => _account = a),
-            label: 'Cuenta origen'),
+            label: context.l10n.addTxFromAccount),
         const SizedBox(height: 12),
         _accountDropdown(
           accounts.where((a) => a.id != _account?.id).toList(),
           _toAccount,
           (a) => setState(() => _toAccount = a),
-          label: 'Cuenta destino',
+          label: context.l10n.addTxToAccount,
         ),
         const SizedBox(height: 12),
         _dateField(),
@@ -409,7 +415,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         TextField(
           controller: _noteCtrl,
           maxLines: 2,
-          decoration: const InputDecoration(labelText: 'Nota (opcional)'),
+          decoration: InputDecoration(labelText: context.l10n.noteOptional),
         ),
       ],
     );
@@ -430,13 +436,14 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         labelText: label,
         helperText: available == null
             ? null
-            : 'Cupo disponible: ${CurrencyFormatter.format(available, ref.read(settingsProvider))}',
+            : context.l10n.addTxAvailableCredit(
+                CurrencyFormatter.format(available, ref.read(settingsProvider))),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<Account>(
           isExpanded: true,
           value: safeValue,
-          hint: const Text('Selecciona una cuenta'),
+          hint: Text(context.l10n.addTxPickAccount),
           items: [
             for (final a in items)
               DropdownMenuItem(value: a, child: Text(a.name)),
@@ -459,7 +466,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         if (picked != null) setState(() => _date = picked);
       },
       child: InputDecorator(
-        decoration: const InputDecoration(labelText: 'Fecha'),
+        decoration: InputDecoration(labelText: context.l10n.date),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -472,11 +479,12 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   }
 
   Widget _recurringSection() {
-    const freqs = {
-      'daily': 'Diario',
-      'weekly': 'Semanal',
-      'monthly': 'Mensual',
-      'yearly': 'Anual',
+    final l10n = context.l10n;
+    final freqs = {
+      'daily': l10n.freqDaily,
+      'weekly': l10n.freqWeekly,
+      'monthly': l10n.freqMonthly,
+      'yearly': l10n.freqYearly,
     };
     return Container(
       decoration: BoxDecoration(
@@ -488,7 +496,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
           SwitchListTile(
             value: _isRecurring,
             activeThumbColor: _accentColor,
-            title: const Text('Recurrente'),
+            title: Text(l10n.addTxRecurring),
             secondary: const Icon(Icons.repeat),
             onChanged: (v) => setState(() => _isRecurring = v),
           ),
@@ -508,9 +516,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               ),
             ),
             ListTile(
-              title: const Text('Termina el'),
+              title: Text(l10n.addTxEndsOn),
               subtitle: Text(_recurrenceEnd == null
-                  ? 'Sin fecha de fin'
+                  ? l10n.addTxNoEnd
                   : DateFormatter.longDay(_recurrenceEnd!)),
               trailing: _recurrenceEnd == null
                   ? const Icon(Icons.add)
@@ -537,9 +545,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   Widget _saveBar() {
     final label = switch (_type) {
-      TransactionType.expense => 'Guardar gasto',
-      TransactionType.income => 'Guardar ingreso',
-      TransactionType.transfer => 'Transferir',
+      TransactionType.expense => context.l10n.addTxSaveExpense,
+      TransactionType.income => context.l10n.addTxSaveIncome,
+      TransactionType.transfer => context.l10n.addTxDoTransfer,
     };
     return SafeArea(
       top: false,
@@ -568,28 +576,29 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
     final repo = ref.read(transactionRepositoryProvider);
+    final l10n = context.l10n;
 
     if (_amount <= 0) {
-      _showError(messenger, 'Ingresa un monto mayor a 0');
+      _showError(messenger, l10n.amountMustBePositive);
       return;
     }
     if (_account == null) {
-      _showError(messenger, 'Selecciona una cuenta');
+      _showError(messenger, l10n.selectAccount);
       return;
     }
 
     if (_type == TransactionType.transfer) {
       if (_toAccount == null || _toAccount!.id == _account!.id) {
-        _showError(messenger, 'Selecciona una cuenta destino distinta');
+        _showError(messenger, l10n.addTxDifferentDestination);
         return;
       }
     } else {
       if (_category == null) {
-        _showError(messenger, 'Selecciona una categoría');
+        _showError(messenger, l10n.selectCategory);
         return;
       }
       if (_titleCtrl.text.trim().isEmpty) {
-        _showError(messenger, 'Escribe un título');
+        _showError(messenger, l10n.addTxWriteTitle);
         return;
       }
       if (!await _confirmOverLimit()) return;
@@ -599,7 +608,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     final isTransfer = _type == TransactionType.transfer;
     final tx = Transaction()
       ..title = isTransfer
-          ? (_noteCtrl.text.trim().isEmpty ? 'Transferencia' : _noteCtrl.text.trim())
+          ? (_noteCtrl.text.trim().isEmpty ? l10n.transfer : _noteCtrl.text.trim())
           : _titleCtrl.text.trim()
       ..amount = _amount
       ..type = _type
@@ -633,9 +642,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     if (!mounted) return;
 
     final word = switch (_type) {
-      TransactionType.expense => 'Gasto guardado ✓',
-      TransactionType.income => 'Ingreso guardado ✓',
-      TransactionType.transfer => 'Transferencia realizada ✓',
+      TransactionType.expense => l10n.addTxSavedExpense,
+      TransactionType.income => l10n.addTxSavedIncome,
+      TransactionType.transfer => l10n.addTxSavedTransfer,
     };
     context.pop();
 
@@ -646,7 +655,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         duration: const Duration(seconds: 5),
         action: widget.editId == null
             ? SnackBarAction(
-                label: 'Deshacer',
+                label: l10n.undo,
                 textColor: AppColors.accent,
                 onPressed: () => repo.delete(createdId),
               )
@@ -669,17 +678,16 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Supera el cupo'),
-        content: Text(
-            'Este gasto supera el cupo disponible de "${_account!.name}" '
-            '(${CurrencyFormatter.format(available, settings)}). ¿Guardarlo igual?'),
+        title: Text(ctx.l10n.addTxOverLimitTitle),
+        content: Text(ctx.l10n.addTxOverLimitBody(
+            _account!.name, CurrencyFormatter.format(available, settings))),
         actions: [
           TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('Cancelar')),
+              child: Text(ctx.l10n.cancel)),
           FilledButton(
               onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('Guardar igual')),
+              child: Text(ctx.l10n.addTxSaveAnyway)),
         ],
       ),
     );

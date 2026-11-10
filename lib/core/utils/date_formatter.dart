@@ -1,56 +1,51 @@
 import 'package:intl/intl.dart';
 
-/// Helpers de fecha en español para Numo.
+import '../../l10n/app_localizations.dart';
+
+/// Helpers de fecha. Usan el idioma activo de la app (`Intl.defaultLocale`,
+/// que fija `NumoApp` al resolver el idioma), así que salen en español o
+/// inglés según corresponda.
 class DateFormatter {
   DateFormatter._();
 
-  static const String _locale = 'es';
+  static String _cap(String s) => toBeginningOfSentenceCase(s);
 
-  /// "Miércoles 10 de junio"
+  /// "Lunes, 9 de noviembre" / "Monday, November 9"
   static String longDay(DateTime date) {
-    return toBeginningOfSentenceCase(
-          DateFormat("EEEE d 'de' MMMM", _locale).format(date),
-        ) ??
-        '';
+    return _cap(DateFormat.MMMMEEEEd().format(date));
   }
 
-  /// Encabezado de grupo en la lista: "Hoy" / "Ayer" / "Lun 9 de junio".
-  static String groupHeader(DateTime date) {
+  /// Encabezado de grupo en la lista: "Hoy" / "Ayer" / "Lun, 9 nov".
+  static String groupHeader(DateTime date, AppLocalizations l10n) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final target = DateTime(date.year, date.month, date.day);
     final diff = today.difference(target).inDays;
-    if (diff == 0) return 'Hoy';
-    if (diff == 1) return 'Ayer';
-    return toBeginningOfSentenceCase(
-          DateFormat("EEE d 'de' MMMM", _locale).format(date),
-        ) ??
-        '';
+    if (diff == 0) return l10n.today;
+    if (diff == 1) return l10n.yesterday;
+    return _cap(DateFormat.MMMEd().format(date));
   }
 
-  /// "Junio 2026"
+  /// "Noviembre de 2026" / "November 2026"
   static String monthYear(DateTime date) {
-    return toBeginningOfSentenceCase(
-          DateFormat('MMMM y', _locale).format(date),
-        ) ??
-        '';
+    return _cap(DateFormat.yMMMM().format(date));
   }
 
-  /// "10 jun" — etiquetas cortas (ej. ejes de gráficos).
+  /// "10 nov" / "Nov 10": etiquetas cortas (ej. ejes de gráficos).
   static String shortDay(DateTime date) {
-    return DateFormat('d MMM', _locale).format(date);
+    return DateFormat.MMMd().format(date);
   }
 
-  /// "jun" — etiqueta de mes corta.
+  /// "nov" / "Nov": etiqueta de mes corta.
   static String shortMonth(DateTime date) {
-    return DateFormat('MMM', _locale).format(date);
+    return DateFormat.MMM().format(date);
   }
 
-  /// Saludo dinámico según la hora.
-  static String greeting(DateTime now) {
+  /// Saludo según la hora.
+  static String greeting(DateTime now, AppLocalizations l10n) {
     final h = now.hour;
-    if (h < 12) return 'Buenos días, ☀️';
-    if (h < 19) return 'Buenas tardes';
-    return 'Buenas noches';
+    if (h < 12) return l10n.greetingMorning;
+    if (h < 19) return l10n.greetingAfternoon;
+    return l10n.greetingEvening;
   }
 }

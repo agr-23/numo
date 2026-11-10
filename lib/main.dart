@@ -8,7 +8,7 @@ import 'data/services/recurrence_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('es');
+  await initializeDateFormatting();
   final service = await IsarService.init();
   await RecurrenceService.processRecurring(service.isar);
   runApp(const ProviderScope(child: NumoApp()));

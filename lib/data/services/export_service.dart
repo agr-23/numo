@@ -6,12 +6,13 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/l10n/l10n.dart';
 import '../models/transaction.dart';
 import '../services/isar_service.dart';
 
 /// Exporta todas las transacciones a CSV y abre el menú de compartir.
 class ExportService {
-  static Future<void> exportTransactions() async {
+  static Future<void> exportTransactions(AppLocalizations l10n) async {
     final Isar isar = IsarService.instance.isar;
     final txs = await isar.transactions.where().sortByDate().findAll();
     for (final t in txs) {
@@ -22,13 +23,22 @@ class ExportService {
 
     final dateFmt = DateFormat('yyyy-MM-dd');
     final rows = <List<dynamic>>[
-      ['Fecha', 'Título', 'Tipo', 'Categoría', 'Cuenta', 'Cuenta destino', 'Monto', 'Nota'],
+      [
+        l10n.date,
+        l10n.title,
+        l10n.type,
+        l10n.category,
+        l10n.account,
+        l10n.exportDestAccount,
+        l10n.amount,
+        l10n.note,
+      ],
       for (final t in txs)
         [
           dateFmt.format(t.date),
           t.title,
-          _typeLabel(t.type),
-          t.category.value?.name ?? '',
+          _typeLabel(t.type, l10n),
+          categoryLabel(t.category.value, l10n),
           t.account.value?.name ?? '',
           t.toAccount.value?.name ?? '',
           t.amount,
@@ -44,19 +54,19 @@ class ExportService {
 
     await Share.shareXFiles(
       [XFile(file.path, mimeType: 'text/csv')],
-      subject: 'Exportación de Numo',
-      text: 'Mis movimientos de Numo',
+      subject: l10n.exportSubject,
+      text: l10n.exportText,
     );
   }
 
-  static String _typeLabel(TransactionType type) {
+  static String _typeLabel(TransactionType type, AppLocalizations l10n) {
     switch (type) {
       case TransactionType.expense:
-        return 'Gasto';
+        return l10n.expense;
       case TransactionType.income:
-        return 'Ingreso';
+        return l10n.income;
       case TransactionType.transfer:
-        return 'Transferencia';
+        return l10n.transfer;
     }
   }
 }

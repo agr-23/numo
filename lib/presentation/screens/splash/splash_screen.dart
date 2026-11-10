@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/pin_hasher.dart';
 import '../../../providers/settings_provider.dart';
@@ -42,11 +43,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _tryBiometric() async {
     try {
+      final reason = context.l10n.unlockReason;
       final auth = LocalAuthentication();
       final canCheck = await auth.isDeviceSupported();
       if (!canCheck) return;
       final ok = await auth.authenticate(
-        localizedReason: 'Desbloquea Numo',
+        localizedReason: reason,
         options: const AuthenticationOptions(biometricOnly: true),
       );
       if (ok && mounted) context.go('/home/dashboard');
@@ -87,7 +89,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           ),
           child: Center(
             child: PinPad(
-              title: 'Ingresa tu PIN',
+              title: context.l10n.enterPin,
               showBiometric: settings.biometricEnabled,
               onBiometric: _tryBiometric,
               onCompleted: (pin) async {

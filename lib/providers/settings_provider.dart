@@ -60,6 +60,11 @@ class SettingsNotifier extends Notifier<AppSettings> {
     await _persist(_copy()..biometricEnabled = enabled);
   }
 
+  /// [code] = 'es' / 'en', o null para seguir el idioma del teléfono.
+  Future<void> setLanguage(String? code) async {
+    await _persist(_copy()..languageCode = code);
+  }
+
   Future<void> completeOnboarding() async {
     await _persist(_copy()..isOnboardingDone = true);
   }
@@ -77,9 +82,16 @@ class SettingsNotifier extends Notifier<AppSettings> {
       ..pinHash = state.pinHash
       ..biometricEnabled = state.biometricEnabled
       ..isOnboardingDone = state.isOnboardingDone
-      ..budgetStartDay = state.budgetStartDay;
+      ..budgetStartDay = state.budgetStartDay
+      ..languageCode = state.languageCode;
   }
 }
+
+/// Idioma elegido en ajustes; null = el del teléfono.
+final localeProvider = Provider<Locale?>((ref) {
+  final code = ref.watch(settingsProvider).languageCode;
+  return code == null ? null : Locale(code);
+});
 
 /// Mapea el [AppTheme] guardado al [ThemeMode] de Flutter.
 final themeModeProvider = Provider<ThemeMode>((ref) {

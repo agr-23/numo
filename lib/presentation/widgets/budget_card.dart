@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/currency_formatter.dart';
@@ -19,6 +20,7 @@ class BudgetCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
+    final l10n = context.l10n;
     final cat = view.category;
 
     Color borderColor = theme.dividerColor;
@@ -53,20 +55,21 @@ class BudgetCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(cat?.name ?? 'Categoría',
+                    child: Text(cat == null ? l10n.category : categoryLabel(cat, l10n),
                         style: theme.textTheme.bodyLarge),
                   ),
                   if (view.isExceeded)
-                    _badge('Excedido', AppColors.expense)
+                    _badge(l10n.budExceeded, AppColors.expense)
                   else if (view.isNearLimit)
-                    _badge('Cerca del límite', AppColors.warning),
+                    _badge(l10n.budNearLimit, AppColors.warning),
                 ],
               ),
               const SizedBox(height: 12),
               BudgetProgressBar(spent: view.spent, limit: view.limit),
               const SizedBox(height: 8),
               Text(
-                'Gastado ${CurrencyFormatter.format(view.spent, settings)} de ${CurrencyFormatter.format(view.limit, settings)}',
+                l10n.budSpentOf(CurrencyFormatter.format(view.spent, settings),
+                    CurrencyFormatter.format(view.limit, settings)),
                 style: theme.textTheme.bodySmall,
               ),
             ],

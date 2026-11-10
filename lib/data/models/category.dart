@@ -16,4 +16,8 @@ class Category {
 
   late bool isCustom;
   late int sortOrder;
+
+  /// Clave estable de las categorías predefinidas ('food', 'salary'…) para
+  /// mostrarlas traducidas. Null en las personalizadas: se usa [name].
+  String? key;
 }

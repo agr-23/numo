@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/currency_formatter.dart';
@@ -16,20 +17,10 @@ class AccountCard extends ConsumerWidget {
 
   const AccountCard({super.key, required this.account, this.onTap});
 
-  String get _typeLabel {
-    switch (account.type) {
-      case AccountType.cash:
-        return 'Efectivo';
-      case AccountType.bank:
-        return 'Banco';
-      case AccountType.credit:
-        return 'Tarjeta de crédito';
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final settings = ref.watch(settingsProvider);
     final available = account.available;
 
@@ -51,7 +42,8 @@ class AccountCard extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(account.name, style: theme.textTheme.bodyLarge),
-                        Text(_typeLabel, style: theme.textTheme.bodySmall),
+                        Text(accountTypeLabel(account.type, l10n),
+                            style: theme.textTheme.bodySmall),
                       ],
                     ),
                   ),
@@ -66,7 +58,7 @@ class AccountCard extends ConsumerWidget {
                             color: available < 0 ? AppColors.expense : null,
                           ),
                         ),
-                        Text('Disponible', style: theme.textTheme.bodySmall),
+                        Text(l10n.available, style: theme.textTheme.bodySmall),
                       ],
                     )
                   else
@@ -83,7 +75,7 @@ class AccountCard extends ConsumerWidget {
                           ),
                         ),
                         if (account.isCredit)
-                          Text('Deuda',
+                          Text(l10n.debt,
                               style: theme.textTheme.bodySmall
                                   ?.copyWith(color: AppColors.expense)),
                       ],
@@ -99,12 +91,14 @@ class AccountCard extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Deuda ${CurrencyFormatter.format(account.balance, settings)}',
+                      l10n.accDebtAmount(
+                          CurrencyFormatter.format(account.balance, settings)),
                       style: theme.textTheme.bodySmall
                           ?.copyWith(color: AppColors.expense),
                     ),
                     Text(
-                      'Cupo ${CurrencyFormatter.format(account.creditLimit!, settings)}',
+                      l10n.accLimitAmount(CurrencyFormatter.format(
+                          account.creditLimit!, settings)),
                       style: theme.textTheme.bodySmall,
                     ),
                   ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/constants/dimens.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/amount_input.dart';
@@ -50,10 +51,11 @@ class _AportarSheetState extends ConsumerState<AportarSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('¿Cuánto quieres aportar a "${widget.goal.name}"?',
+          Text(context.l10n.goalContributeQuestion(widget.goal.name),
               style: theme.textTheme.titleMedium),
           const SizedBox(height: 16),
-          AmountField(controller: _ctrl, label: 'Monto', autofocus: true),
+          AmountField(
+              controller: _ctrl, label: context.l10n.amount, autofocus: true),
           const SizedBox(height: 20),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -62,7 +64,7 @@ class _AportarSheetState extends ConsumerState<AportarSheet> {
               minimumSize: const Size.fromHeight(50),
             ),
             onPressed: _submit,
-            child: const Text('Aportar'),
+            child: Text(context.l10n.goalContribute),
           ),
           const SizedBox(height: 8),
         ],
@@ -77,7 +79,7 @@ class _AportarSheetState extends ConsumerState<AportarSheet> {
         AmountInput.of(ref.read(settingsProvider).currency).parse(_ctrl.text);
     if (amount <= 0) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Ingresa un monto mayor a 0')));
+          SnackBar(content: Text(context.l10n.amountMustBePositive)));
       return;
     }
     final completed = await ref
