@@ -205,7 +205,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
       ..recurrenceFrequency = t.recurrenceFrequency
       ..recurrenceEndDate = t.recurrenceEndDate
       ..nextRecurrenceDate = t.nextRecurrenceDate
-      ..parentRecurringId = t.parentRecurringId;
+      ..parentRecurringId = t.parentRecurringId
+      ..pocketId = t.pocketId;
     final accountId = t.account.value?.id;
     final categoryId = t.category.value?.id;
     final toAccountId = t.toAccount.value?.id;

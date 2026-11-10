@@ -80,8 +80,8 @@ class DashboardScreen extends ConsumerWidget {
               padding: pad,
               child: _LinkRow(
                 icon: Icons.track_changes_rounded,
-                label: l10n.dashSavingsGoals,
-                onTap: () => context.push('/savings-goals'),
+                label: l10n.ovSavings,
+                onTap: () => context.push('/savings'),
               ),
             ),
             const SizedBox(height: Dimens.sectionGap),

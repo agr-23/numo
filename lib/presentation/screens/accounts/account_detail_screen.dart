@@ -10,6 +10,7 @@ import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/account.dart';
 import '../../../data/models/app_settings.dart';
 import '../../../providers/accounts_provider.dart';
+import '../../../providers/savings_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../providers/transactions_provider.dart';
 import '../../widgets/budget_progress_bar.dart';
@@ -55,7 +56,11 @@ class AccountDetailScreen extends ConsumerWidget {
           if (account.isCredit)
             _CreditSummary(account: account, settings: settings)
           else
-            _BalanceSummary(account: account, settings: settings),
+            _BalanceSummary(
+              account: account,
+              settings: settings,
+              setAside: ref.watch(setAsideByAccountProvider)[account.id] ?? 0,
+            ),
           const SizedBox(height: Dimens.sectionGap),
           Text(l10n.txTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
@@ -81,7 +86,11 @@ class AccountDetailScreen extends ConsumerWidget {
 class _BalanceSummary extends StatelessWidget {
   final Account account;
   final AppSettings settings;
-  const _BalanceSummary({required this.account, required this.settings});
+
+  /// Dinero de esta cuenta apartado en bolsillos.
+  final double setAside;
+  const _BalanceSummary(
+      {required this.account, required this.settings, required this.setAside});
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +118,18 @@ class _BalanceSummary extends StatelessWidget {
                       color: account.balance < 0 ? context.palette.expense : null,
                     ),
                   ),
+                  if (setAside > 0) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      '${context.l10n.accSetAside}: ${CurrencyFormatter.format(setAside, settings)}',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    Text(
+                      '${context.l10n.accSpendable}: ${CurrencyFormatter.format(account.balance - setAside, settings)}',
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ],
                 ],
               ),
             ),

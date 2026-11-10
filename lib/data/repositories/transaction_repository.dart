@@ -2,6 +2,7 @@ import 'package:isar/isar.dart';
 
 import '../models/account.dart';
 import '../models/category.dart';
+import '../models/pocket.dart';
 import '../models/transaction.dart';
 import '../services/isar_service.dart';
 
@@ -112,6 +113,16 @@ class TransactionRepository {
   /// Debe ejecutarse dentro de un writeTxn.
   Future<void> _applyBalances(Transaction tx, {required bool reverse}) async {
     final sign = reverse ? -1.0 : 1.0;
+
+    // Un gasto pagado desde un bolsillo usa lo apartado: el bolsillo baja.
+    if (tx.type == TransactionType.expense && tx.pocketId != null) {
+      final pocket = await _isar.pockets.get(tx.pocketId!);
+      if (pocket != null) {
+        pocket.savedAmount -= sign * tx.amount;
+        await _isar.pockets.put(pocket);
+      }
+    }
+
     final source = tx.account.value;
     if (source == null) return;
 

@@ -17,6 +17,7 @@ import '../../../data/models/category.dart';
 import '../../../data/models/transaction.dart';
 import '../../../providers/accounts_provider.dart';
 import '../../../providers/categories_provider.dart';
+import '../../../providers/savings_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../providers/transactions_provider.dart';
 import '../../widgets/category_icon.dart';
@@ -59,6 +60,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   String _note = '';
   bool _titleEditedByUser = false;
 
+  /// Bolsillo desde el que se paga el gasto (opcional).
+  int? _pocketId;
+
   bool _isRecurring = false;
   String _frequency = 'monthly';
   DateTime? _recurrenceEnd;
@@ -92,6 +96,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       _isRecurring = tx.isRecurring;
       _frequency = tx.recurrenceFrequency ?? 'monthly';
       _recurrenceEnd = tx.recurrenceEndDate;
+      _pocketId = tx.pocketId;
     });
   }
 
@@ -413,6 +418,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         value: _isToday(_date) ? l10n.today : DateFormatter.longDay(_date),
         onTap: _pickDate,
       ),
+      if (_type == TransactionType.expense) _pocketRow(settings),
       if (!_isTransfer) ...[
         _FieldRow(
           icon: Icons.repeat_rounded,
@@ -455,6 +461,66 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         ],
       ),
     );
+  }
+
+  _FieldRow _pocketRow(AppSettings settings) {
+    final l10n = context.l10n;
+    final pockets = ref.watch(pocketsProvider).valueOrNull ?? const [];
+    final pocket = pockets.where((x) => x.id == _pocketId).firstOrNull;
+    return _FieldRow(
+      icon: Icons.savings_outlined,
+      label: l10n.svPayFromPocket,
+      value: pocket?.name ?? l10n.svNoneOption,
+      muted: pocket == null,
+      hint: pocket == null
+          ? null
+          : l10n.svPocketBalance(
+              CurrencyFormatter.format(pocket.savedAmount, settings)),
+      onTap: _pickPocket,
+    );
+  }
+
+  Future<void> _pickPocket() async {
+    final l10n = context.l10n;
+    final settings = ref.read(settingsProvider);
+    final groups = ref.read(groupViewsProvider);
+    final picked = await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheet) => SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(sheet).size.height * 0.7),
+          child: ListView(
+            shrinkWrap: true,
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
+            children: [
+              ListTile(
+                title: Text(l10n.svNoneOption),
+                trailing: _pocketId == null
+                    ? Icon(Icons.check_rounded, color: sheet.palette.ink)
+                    : null,
+                onTap: () => Navigator.of(sheet).pop(-1),
+              ),
+              for (final g in groups)
+                for (final pk in g.pockets)
+                  ListTile(
+                    leading: Icon(AppIcons.resolve(pk.iconName)),
+                    title: Text(pk.name),
+                    subtitle: Text(
+                        '${g.group.name}, ${l10n.svPocketBalance(CurrencyFormatter.format(pk.savedAmount, settings))}'),
+                    trailing: pk.id == _pocketId
+                        ? Icon(Icons.check_rounded, color: sheet.palette.ink)
+                        : null,
+                    onTap: () => Navigator.of(sheet).pop(pk.id),
+                  ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (picked == null) return;
+    setState(() => _pocketId = picked == -1 ? null : picked);
   }
 
   bool _isToday(DateTime d) {
@@ -710,7 +776,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       ..isRecurring = recurring
       ..recurrenceFrequency = recurring ? _frequency : null
       ..recurrenceEndDate = recurring ? _recurrenceEnd : null
-      ..nextRecurrenceDate = recurring ? _nextDate(_date, _frequency) : null;
+      ..nextRecurrenceDate = recurring ? _nextDate(_date, _frequency) : null
+      ..pocketId = _type == TransactionType.expense ? _pocketId : null;
 
     final categoryId = _isTransfer ? null : _category?.id;
     final toAccountId = _isTransfer ? _toAccount?.id : null;

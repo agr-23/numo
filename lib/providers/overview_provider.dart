@@ -2,28 +2,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/models/account.dart';
 import 'accounts_provider.dart';
-import 'savings_goals_provider.dart';
+import 'savings_provider.dart';
 
-/// Dinero total: saldo en efectivo/banco + lo ahorrado en metas.
+/// Dinero total: lo que hay en efectivo y bancos. Lo apartado en
+/// bolsillos sigue en esas cuentas, así que no se suma otra vez; solo se
+/// suman los bolsillos sin cuenta (metas antiguas registradas aparte).
 class MoneyOverview {
   final double inAccounts;
-  final double inGoals;
-  const MoneyOverview(this.inAccounts, this.inGoals);
-  double get total => inAccounts + inGoals;
+  final double setAside;
+  final double outsideAccounts;
+  const MoneyOverview(this.inAccounts, this.setAside, this.outsideAccounts);
+  double get total => inAccounts + outsideAccounts;
 }
 
 final moneyOverviewProvider = Provider<MoneyOverview>((ref) {
   final accounts = ref.watch(accountsProvider).valueOrNull ?? const [];
-  final goals = ref.watch(savingsGoalsProvider).valueOrNull ?? const [];
-  var inAccounts = 0.0;
+  final setAside = ref.watch(setAsideByAccountProvider);
+  final savings = ref.watch(savingsOverviewProvider);
+  var inAccounts = 0.0, apartado = 0.0;
   for (final a in accounts) {
-    if (!a.isCredit) inAccounts += a.balance;
+    if (a.isCredit) continue;
+    inAccounts += a.balance;
+    apartado += setAside[a.id] ?? 0;
   }
-  var inGoals = 0.0;
-  for (final g in goals) {
-    inGoals += g.currentAmount;
-  }
-  return MoneyOverview(inAccounts, inGoals);
+  return MoneyOverview(inAccounts, apartado, savings.savedOutsideAccounts);
 });
 
 /// Resumen de tarjetas de crédito activas.
@@ -74,27 +76,4 @@ final debtOverviewProvider = Provider<DebtOverview>((ref) {
     nextPayment: nextPayment,
     nextPaymentCard: nextPaymentCard,
   );
-});
-
-/// Progreso agregado de las metas de ahorro.
-class GoalsOverview {
-  final int count;
-  final int completed;
-  final double saved;
-  final double target;
-  const GoalsOverview(this.count, this.completed, this.saved, this.target);
-  double get progress => target <= 0 ? 0 : (saved / target).clamp(0.0, 1.0);
-}
-
-final goalsOverviewProvider = Provider<GoalsOverview>((ref) {
-  final goals = ref.watch(savingsGoalsProvider).valueOrNull ?? const [];
-  var saved = 0.0;
-  var target = 0.0;
-  var completed = 0;
-  for (final g in goals) {
-    saved += g.currentAmount;
-    target += g.targetAmount;
-    if (g.isCompleted) completed++;
-  }
-  return GoalsOverview(goals.length, completed, saved, target);
 });

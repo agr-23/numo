@@ -10,6 +10,7 @@ import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../providers/accounts_provider.dart';
 import '../../../../providers/overview_provider.dart';
+import '../../../../providers/savings_provider.dart';
 import '../../../../providers/settings_provider.dart';
 import '../../../../providers/transactions_provider.dart';
 
@@ -51,7 +52,7 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
     final month = ref.watch(currentMonthSummaryProvider);
     final money = ref.watch(moneyOverviewProvider);
     final debt = ref.watch(debtOverviewProvider);
-    final goals = ref.watch(goalsOverviewProvider);
+    final savings = ref.watch(savingsOverviewProvider);
 
     final debtSub = debt.cardCount == 0
         ? l10n.ovNoCards
@@ -73,7 +74,9 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
       _OutlineCard(
         label: l10n.ovTotalMoney,
         amount: fmt(money.total),
-        sub: l10n.ovMoneySub(fmt(money.inAccounts), fmt(money.inGoals)),
+        sub: money.setAside > 0
+            ? l10n.ovMoneySetAside(fmt(money.setAside))
+            : l10n.ovNetFormula,
       ),
       _OutlineCard(
         label: l10n.ovDebts,
@@ -83,13 +86,13 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
         onTap: () => context.go('/home/accounts'),
       ),
       _OutlineCard(
-        label: l10n.ovSavedInGoals,
-        amount: fmt(goals.saved),
-        sub: goals.count == 0
-            ? l10n.ovCreateFirstGoal
-            : l10n.ovGoalsSub(
-                (goals.progress * 100).toStringAsFixed(0), fmt(goals.target)),
-        onTap: () => context.push('/savings-goals'),
+        label: l10n.ovSavings,
+        amount: fmt(savings.saved),
+        sub: savings.groupCount == 0
+            ? l10n.svCreateFirst
+            : l10n.ovGoalsSub((savings.progress * 100).toStringAsFixed(0),
+                fmt(savings.target)),
+        onTap: () => context.push('/savings'),
       ),
     ];
 

@@ -995,4 +995,313 @@ class AppLocalizationsEn extends AppLocalizations {
   String accBalanceShort(String amount) {
     return 'Balance $amount';
   }
+
+  @override
+  String get svTitle => 'Savings';
+
+  @override
+  String get svTotalSetAside => 'Total set aside';
+
+  @override
+  String svOfTotal(String target, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'your $count groups',
+      one: 'your group',
+    );
+    return 'of $target across $_temp0';
+  }
+
+  @override
+  String get svGroups => 'Groups';
+
+  @override
+  String get svTapGroup => 'Tap one to see its pockets';
+
+  @override
+  String get svCreateGroup => 'Create group';
+
+  @override
+  String get svEmpty =>
+      'Split your money by purpose: the car, a trip, emergencies.';
+
+  @override
+  String svPocketCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pockets',
+      one: '1 pocket',
+      zero: 'No pockets',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String svDueHint(String pocket, String date, String amount) {
+    return '$pocket is due $date: $amount to go';
+  }
+
+  @override
+  String get svAllDone => 'All done';
+
+  @override
+  String get svSetAside => 'Set aside';
+
+  @override
+  String svOfPockets(String target, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'its $count pockets',
+      one: 'its pocket',
+    );
+    return 'of $target across $_temp0';
+  }
+
+  @override
+  String get svDistribute => 'Split a deposit';
+
+  @override
+  String get svSectionMonthly => 'Every month';
+
+  @override
+  String get svSectionYearly => 'Once a year';
+
+  @override
+  String get svSectionGoals => 'Goals';
+
+  @override
+  String get svMonthlyNote =>
+      'They refill on the 1st. Whatever you don\'t spend rolls over.';
+
+  @override
+  String get svAddPocket => 'Add pocket';
+
+  @override
+  String svDueOn(String date) {
+    return 'Due $date';
+  }
+
+  @override
+  String svDueSuggest(String date, String amount) {
+    return 'Due $date. Set aside $amount a month';
+  }
+
+  @override
+  String get svSuggestions => 'Suggested pockets';
+
+  @override
+  String get svNewGroup => 'New group';
+
+  @override
+  String get svEditGroup => 'Edit group';
+
+  @override
+  String get svDeleteGroup => 'Delete group';
+
+  @override
+  String get svDeleteGroupBody =>
+      'Its pockets will be deleted. Whatever was set aside becomes available again in your accounts.';
+
+  @override
+  String get svTemplates => 'Start from a template';
+
+  @override
+  String get tplCar => 'Car';
+
+  @override
+  String get tplHome => 'Home';
+
+  @override
+  String get tplTrip => 'Trip';
+
+  @override
+  String get tplEmergency => 'Emergency fund';
+
+  @override
+  String get tplCustom => 'Custom';
+
+  @override
+  String get tplFuel => 'Fuel';
+
+  @override
+  String get tplParking => 'Parking';
+
+  @override
+  String get tplTolls => 'Tolls';
+
+  @override
+  String get tplInsurance => 'Car insurance';
+
+  @override
+  String get tplInspection => 'Vehicle inspection';
+
+  @override
+  String get tplVehicleTax => 'Vehicle tax';
+
+  @override
+  String get tplRent => 'Rent';
+
+  @override
+  String get tplUtilities => 'Utilities';
+
+  @override
+  String get tplMaintenance => 'Maintenance';
+
+  @override
+  String get tplPropertyTax => 'Property tax';
+
+  @override
+  String get tplFlights => 'Flights';
+
+  @override
+  String get tplLodging => 'Lodging';
+
+  @override
+  String get tplTripSpending => 'Trip spending';
+
+  @override
+  String get tplEmergencyPocket => 'Fund';
+
+  @override
+  String get svNewPocket => 'New pocket';
+
+  @override
+  String get svEditPocket => 'Edit pocket';
+
+  @override
+  String get svDeletePocket => 'Delete pocket';
+
+  @override
+  String svDeletePocketBody(String amount) {
+    return 'What was set aside ($amount) becomes available again in your account.';
+  }
+
+  @override
+  String get svKindGoal => 'Goal';
+
+  @override
+  String get svKindMonthly => 'Monthly';
+
+  @override
+  String get svKindYearly => 'Yearly';
+
+  @override
+  String get svAmountMonthly => 'Amount per month';
+
+  @override
+  String get svAmountYearly => 'Yearly amount';
+
+  @override
+  String get svNextDue => 'Next due date';
+
+  @override
+  String get svPickDate => 'Pick a date';
+
+  @override
+  String get svDueRequired => 'Choose the due date';
+
+  @override
+  String get svFromAccount => 'Set aside from';
+
+  @override
+  String get svNoAccount => 'No account';
+
+  @override
+  String svContributeTo(String pocket) {
+    return 'Add to $pocket';
+  }
+
+  @override
+  String svProgress(String saved, String target) {
+    return '$saved of $target so far';
+  }
+
+  @override
+  String svSuggested(String amount) {
+    return 'Suggested $amount';
+  }
+
+  @override
+  String svFill(String amount) {
+    return 'Fill $amount';
+  }
+
+  @override
+  String svSetAsideNote(String account) {
+    return 'The money stays in $account, but no longer counts as available to spend.';
+  }
+
+  @override
+  String svContributeButton(String amount) {
+    return 'Add $amount';
+  }
+
+  @override
+  String get svWithdraw => 'Withdraw';
+
+  @override
+  String svWithdrawTitle(String pocket) {
+    return 'Withdraw from $pocket';
+  }
+
+  @override
+  String svWithdrawButton(String amount) {
+    return 'Withdraw $amount';
+  }
+
+  @override
+  String get svWithdrawNote => 'It becomes available again in your account.';
+
+  @override
+  String svDistributeTitle(String group) {
+    return 'Split across $group';
+  }
+
+  @override
+  String get svDistributeNote =>
+      'It\'s split by how much each pocket still needs.';
+
+  @override
+  String get svPayFromPocket => 'Pay from pocket';
+
+  @override
+  String get svNoneOption => 'None';
+
+  @override
+  String svPocketBalance(String amount) {
+    return 'Set aside $amount';
+  }
+
+  @override
+  String svFromPocket(String pocket) {
+    return 'from $pocket';
+  }
+
+  @override
+  String get svCreateFirst => 'Create your first savings group';
+
+  @override
+  String get svRefills => 'Refills on the 1st';
+
+  @override
+  String get accSetAside => 'Set aside in pockets';
+
+  @override
+  String get accSpendable => 'Available to spend';
+
+  @override
+  String ovMoneySetAside(String amount) {
+    return '$amount of it is set aside in pockets';
+  }
+
+  @override
+  String get ovSavings => 'Savings';
+
+  @override
+  String svOfAmount(String amount) {
+    return 'of $amount';
+  }
 }

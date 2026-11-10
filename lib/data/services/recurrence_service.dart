@@ -39,7 +39,8 @@ class RecurrenceService {
           ..date = next
           ..note = template.note
           ..isRecurring = false
-          ..parentRecurringId = template.id;
+          ..parentRecurringId = template.id
+          ..pocketId = template.pocketId;
 
         await repo.add(
           copy,

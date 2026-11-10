@@ -32,6 +32,9 @@ class Transaction {
 
   int? parentRecurringId; // ID de la transacción recurrente original
 
+  /// Gasto pagado desde un bolsillo: descuenta lo apartado en él.
+  int? pocketId;
+
   // Relaciones
   final category = IsarLink<Category>();
   final account = IsarLink<Account>();

@@ -45,6 +45,17 @@ class AppIcons {
     'sailing': Icons.sailing,
     'pedal_bike': Icons.pedal_bike,
     'star': Icons.star,
+    // Bolsillos
+    'local_gas_station': Icons.local_gas_station,
+    'local_parking': Icons.local_parking,
+    'toll': Icons.toll,
+    'shield': Icons.shield_outlined,
+    'build': Icons.build_outlined,
+    'bolt': Icons.bolt,
+    'handyman': Icons.handyman_outlined,
+    'hotel': Icons.hotel_outlined,
+    'luggage': Icons.luggage_outlined,
+    'health': Icons.health_and_safety_outlined,
   };
 
   static IconData resolve(String name) => _map[name] ?? Icons.category;
@@ -105,5 +116,15 @@ class AppIcons {
     'sailing',
     'pedal_bike',
     'star',
+    'local_gas_station',
+    'local_parking',
+    'toll',
+    'shield',
+    'build',
+    'bolt',
+    'handyman',
+    'hotel',
+    'luggage',
+    'health',
   ];
 }
