@@ -995,4 +995,313 @@ class AppLocalizationsEs extends AppLocalizations {
   String accBalanceShort(String amount) {
     return 'Saldo $amount';
   }
+
+  @override
+  String get svTitle => 'Ahorros';
+
+  @override
+  String get svTotalSetAside => 'Total apartado';
+
+  @override
+  String svOfTotal(String target, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'tus $count grupos',
+      one: 'tu grupo',
+    );
+    return 'de $target entre $_temp0';
+  }
+
+  @override
+  String get svGroups => 'Grupos';
+
+  @override
+  String get svTapGroup => 'Toca uno para ver sus bolsillos';
+
+  @override
+  String get svCreateGroup => 'Crear grupo';
+
+  @override
+  String get svEmpty =>
+      'Separa tu dinero por propósitos: el carro, un viaje, emergencias.';
+
+  @override
+  String svPocketCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bolsillos',
+      one: '1 bolsillo',
+      zero: 'Sin bolsillos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String svDueHint(String pocket, String date, String amount) {
+    return '$pocket vence el $date: te faltan $amount';
+  }
+
+  @override
+  String get svAllDone => 'Todo completo';
+
+  @override
+  String get svSetAside => 'Apartado';
+
+  @override
+  String svOfPockets(String target, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'sus $count bolsillos',
+      one: 'su bolsillo',
+    );
+    return 'de $target sumando $_temp0';
+  }
+
+  @override
+  String get svDistribute => 'Repartir aporte';
+
+  @override
+  String get svSectionMonthly => 'Cada mes';
+
+  @override
+  String get svSectionYearly => 'Una vez al año';
+
+  @override
+  String get svSectionGoals => 'Metas';
+
+  @override
+  String get svMonthlyNote =>
+      'Se recargan el día 1. Lo que no gastes pasa al mes siguiente.';
+
+  @override
+  String get svAddPocket => 'Agregar bolsillo';
+
+  @override
+  String svDueOn(String date) {
+    return 'Vence el $date';
+  }
+
+  @override
+  String svDueSuggest(String date, String amount) {
+    return 'Vence el $date. Aparta $amount al mes';
+  }
+
+  @override
+  String get svSuggestions => 'Bolsillos sugeridos';
+
+  @override
+  String get svNewGroup => 'Nuevo grupo';
+
+  @override
+  String get svEditGroup => 'Editar grupo';
+
+  @override
+  String get svDeleteGroup => 'Eliminar grupo';
+
+  @override
+  String get svDeleteGroupBody =>
+      'Se eliminarán sus bolsillos. Lo apartado vuelve a estar disponible en tus cuentas.';
+
+  @override
+  String get svTemplates => 'Empieza con una plantilla';
+
+  @override
+  String get tplCar => 'Carro';
+
+  @override
+  String get tplHome => 'Hogar';
+
+  @override
+  String get tplTrip => 'Viaje';
+
+  @override
+  String get tplEmergency => 'Fondo de emergencia';
+
+  @override
+  String get tplCustom => 'Personalizado';
+
+  @override
+  String get tplFuel => 'Gasolina';
+
+  @override
+  String get tplParking => 'Parqueaderos';
+
+  @override
+  String get tplTolls => 'Peajes';
+
+  @override
+  String get tplInsurance => 'SOAT';
+
+  @override
+  String get tplInspection => 'Técnico-mecánica';
+
+  @override
+  String get tplVehicleTax => 'Impuesto vehicular';
+
+  @override
+  String get tplRent => 'Arriendo';
+
+  @override
+  String get tplUtilities => 'Servicios';
+
+  @override
+  String get tplMaintenance => 'Mantenimiento';
+
+  @override
+  String get tplPropertyTax => 'Impuesto predial';
+
+  @override
+  String get tplFlights => 'Tiquetes';
+
+  @override
+  String get tplLodging => 'Hospedaje';
+
+  @override
+  String get tplTripSpending => 'Gastos del viaje';
+
+  @override
+  String get tplEmergencyPocket => 'Fondo';
+
+  @override
+  String get svNewPocket => 'Nuevo bolsillo';
+
+  @override
+  String get svEditPocket => 'Editar bolsillo';
+
+  @override
+  String get svDeletePocket => 'Eliminar bolsillo';
+
+  @override
+  String svDeletePocketBody(String amount) {
+    return 'Lo apartado ($amount) vuelve a estar disponible en tu cuenta.';
+  }
+
+  @override
+  String get svKindGoal => 'Meta';
+
+  @override
+  String get svKindMonthly => 'Cada mes';
+
+  @override
+  String get svKindYearly => 'Cada año';
+
+  @override
+  String get svAmountMonthly => 'Monto por mes';
+
+  @override
+  String get svAmountYearly => 'Monto anual';
+
+  @override
+  String get svNextDue => 'Próximo vencimiento';
+
+  @override
+  String get svPickDate => 'Elegir fecha';
+
+  @override
+  String get svDueRequired => 'Elige la fecha de vencimiento';
+
+  @override
+  String get svFromAccount => 'Apartar desde';
+
+  @override
+  String get svNoAccount => 'Sin cuenta';
+
+  @override
+  String svContributeTo(String pocket) {
+    return 'Aportar a $pocket';
+  }
+
+  @override
+  String svProgress(String saved, String target) {
+    return 'Llevas $saved de $target';
+  }
+
+  @override
+  String svSuggested(String amount) {
+    return 'Sugerido $amount';
+  }
+
+  @override
+  String svFill(String amount) {
+    return 'Completar $amount';
+  }
+
+  @override
+  String svSetAsideNote(String account) {
+    return 'El dinero sigue en $account, pero deja de contar como disponible para gastar.';
+  }
+
+  @override
+  String svContributeButton(String amount) {
+    return 'Aportar $amount';
+  }
+
+  @override
+  String get svWithdraw => 'Retirar';
+
+  @override
+  String svWithdrawTitle(String pocket) {
+    return 'Retirar de $pocket';
+  }
+
+  @override
+  String svWithdrawButton(String amount) {
+    return 'Retirar $amount';
+  }
+
+  @override
+  String get svWithdrawNote => 'Vuelve a estar disponible en tu cuenta.';
+
+  @override
+  String svDistributeTitle(String group) {
+    return 'Repartir en $group';
+  }
+
+  @override
+  String get svDistributeNote =>
+      'Se reparte según lo que le falta a cada bolsillo.';
+
+  @override
+  String get svPayFromPocket => 'Pagar con bolsillo';
+
+  @override
+  String get svNoneOption => 'Ninguno';
+
+  @override
+  String svPocketBalance(String amount) {
+    return 'Apartado $amount';
+  }
+
+  @override
+  String svFromPocket(String pocket) {
+    return 'desde $pocket';
+  }
+
+  @override
+  String get svCreateFirst => 'Crea tu primer grupo de ahorro';
+
+  @override
+  String get svRefills => 'Se recarga el 1 de cada mes';
+
+  @override
+  String get accSetAside => 'Apartado en bolsillos';
+
+  @override
+  String get accSpendable => 'Disponible para gastar';
+
+  @override
+  String ovMoneySetAside(String amount) {
+    return 'De eso, $amount está apartado en bolsillos';
+  }
+
+  @override
+  String get ovSavings => 'Ahorros';
+
+  @override
+  String svOfAmount(String amount) {
+    return 'de $amount';
+  }
 }

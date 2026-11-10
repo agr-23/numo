@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'app.dart';
 import 'data/services/isar_service.dart';
+import 'data/repositories/pocket_repository.dart';
 import 'data/services/recurrence_service.dart';
 
 Future<void> main() async {
@@ -11,5 +12,6 @@ Future<void> main() async {
   await initializeDateFormatting();
   final service = await IsarService.init();
   await RecurrenceService.processRecurring(service.isar);
+  await PocketRepository.rollAll(service.isar, DateTime.now());
   runApp(const ProviderScope(child: NumoApp()));
 }

@@ -536,5 +536,245 @@
         "type": "String"
       }
     }
+  },
+  "svTitle": "Ahorros",
+  "svTotalSetAside": "Total apartado",
+  "svOfTotal": "de {target} entre {count, plural, =1{tu grupo} other{tus {count} grupos}}",
+  "@svOfTotal": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "svGroups": "Grupos",
+  "svTapGroup": "Toca uno para ver sus bolsillos",
+  "svCreateGroup": "Crear grupo",
+  "svEmpty": "Separa tu dinero por propósitos: el carro, un viaje, emergencias.",
+  "svPocketCount": "{count, plural, =0{Sin bolsillos} =1{1 bolsillo} other{{count} bolsillos}}",
+  "@svPocketCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "svDueHint": "{pocket} vence el {date}: te faltan {amount}",
+  "@svDueHint": {
+    "placeholders": {
+      "pocket": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "svAllDone": "Todo completo",
+  "svSetAside": "Apartado",
+  "svOfPockets": "de {target} sumando {count, plural, =1{su bolsillo} other{sus {count} bolsillos}}",
+  "@svOfPockets": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "svDistribute": "Repartir aporte",
+  "svSectionMonthly": "Cada mes",
+  "svSectionYearly": "Una vez al año",
+  "svSectionGoals": "Metas",
+  "svMonthlyNote": "Se recargan el día 1. Lo que no gastes pasa al mes siguiente.",
+  "svAddPocket": "Agregar bolsillo",
+  "svDueOn": "Vence el {date}",
+  "@svDueOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "svDueSuggest": "Vence el {date}. Aparta {amount} al mes",
+  "@svDueSuggest": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "svSuggestions": "Bolsillos sugeridos",
+  "svNewGroup": "Nuevo grupo",
+  "svEditGroup": "Editar grupo",
+  "svDeleteGroup": "Eliminar grupo",
+  "svDeleteGroupBody": "Se eliminarán sus bolsillos. Lo apartado vuelve a estar disponible en tus cuentas.",
+  "svTemplates": "Empieza con una plantilla",
+  "tplCar": "Carro",
+  "tplHome": "Hogar",
+  "tplTrip": "Viaje",
+  "tplEmergency": "Fondo de emergencia",
+  "tplCustom": "Personalizado",
+  "tplFuel": "Gasolina",
+  "tplParking": "Parqueaderos",
+  "tplTolls": "Peajes",
+  "tplInsurance": "SOAT",
+  "tplInspection": "Técnico-mecánica",
+  "tplVehicleTax": "Impuesto vehicular",
+  "tplRent": "Arriendo",
+  "tplUtilities": "Servicios",
+  "tplMaintenance": "Mantenimiento",
+  "tplPropertyTax": "Impuesto predial",
+  "tplFlights": "Tiquetes",
+  "tplLodging": "Hospedaje",
+  "tplTripSpending": "Gastos del viaje",
+  "tplEmergencyPocket": "Fondo",
+  "svNewPocket": "Nuevo bolsillo",
+  "svEditPocket": "Editar bolsillo",
+  "svDeletePocket": "Eliminar bolsillo",
+  "svDeletePocketBody": "Lo apartado ({amount}) vuelve a estar disponible en tu cuenta.",
+  "@svDeletePocketBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "svKindGoal": "Meta",
+  "svKindMonthly": "Cada mes",
+  "svKindYearly": "Cada año",
+  "svAmountMonthly": "Monto por mes",
+  "svAmountYearly": "Monto anual",
+  "svNextDue": "Próximo vencimiento",
+  "svPickDate": "Elegir fecha",
+  "svDueRequired": "Elige la fecha de vencimiento",
+  "svFromAccount": "Apartar desde",
+  "svNoAccount": "Sin cuenta",
+  "svContributeTo": "Aportar a {pocket}",
+  "@svContributeTo": {
+    "placeholders": {
+      "pocket": {
+        "type": "String"
+      }
+    }
+  },
+  "svProgress": "Llevas {saved} de {target}",
+  "@svProgress": {
+    "placeholders": {
+      "saved": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "svSuggested": "Sugerido {amount}",
+  "@svSuggested": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "svFill": "Completar {amount}",
+  "@svFill": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "svSetAsideNote": "El dinero sigue en {account}, pero deja de contar como disponible para gastar.",
+  "@svSetAsideNote": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "svContributeButton": "Aportar {amount}",
+  "@svContributeButton": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "svWithdraw": "Retirar",
+  "svWithdrawTitle": "Retirar de {pocket}",
+  "@svWithdrawTitle": {
+    "placeholders": {
+      "pocket": {
+        "type": "String"
+      }
+    }
+  },
+  "svWithdrawButton": "Retirar {amount}",
+  "@svWithdrawButton": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "svWithdrawNote": "Vuelve a estar disponible en tu cuenta.",
+  "svDistributeTitle": "Repartir en {group}",
+  "@svDistributeTitle": {
+    "placeholders": {
+      "group": {
+        "type": "String"
+      }
+    }
+  },
+  "svDistributeNote": "Se reparte según lo que le falta a cada bolsillo.",
+  "svPayFromPocket": "Pagar con bolsillo",
+  "svNoneOption": "Ninguno",
+  "svPocketBalance": "Apartado {amount}",
+  "@svPocketBalance": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "svFromPocket": "desde {pocket}",
+  "@svFromPocket": {
+    "placeholders": {
+      "pocket": {
+        "type": "String"
+      }
+    }
+  },
+  "svCreateFirst": "Crea tu primer grupo de ahorro",
+  "svRefills": "Se recarga el 1 de cada mes",
+  "accSetAside": "Apartado en bolsillos",
+  "accSpendable": "Disponible para gastar",
+  "ovMoneySetAside": "De eso, {amount} está apartado en bolsillos",
+  "@ovMoneySetAside": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "ovSavings": "Ahorros",
+  "svOfAmount": "de {amount}",
+  "@svOfAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   }
 }

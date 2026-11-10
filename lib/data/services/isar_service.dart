@@ -6,7 +6,9 @@ import '../models/account.dart';
 import '../models/app_settings.dart';
 import '../models/budget.dart';
 import '../models/category.dart';
+import '../models/pocket.dart';
 import '../models/savings_goal.dart';
+import '../models/savings_group.dart';
 import '../models/transaction.dart';
 
 /// Punto de acceso único a la base de datos Isar.
@@ -37,6 +39,8 @@ class IsarService {
         BudgetSchema,
         SavingsGoalSchema,
         AppSettingsSchema,
+        SavingsGroupSchema,
+        PocketSchema,
       ],
       directory: dir.path,
       name: 'numo',
@@ -44,6 +48,7 @@ class IsarService {
 
     final service = IsarService._(isar);
     await service._seed();
+    await service._migrateGoalsToPockets();
     _instance = service;
     return service;
   }
@@ -81,6 +86,38 @@ class IsarService {
     await isar.writeTxn(() => isar.categorys.putAll(missing));
   }
 
+  /// Las metas de ahorro antiguas pasan a ser grupos con un bolsillo de
+  /// tipo meta, conservando lo ahorrado. Sin cuenta asociada: ese dinero
+  /// se registró aparte de las cuentas, así que se sigue contando aparte.
+  Future<void> _migrateGoalsToPockets() async {
+    final goals = await isar.savingsGoals.where().findAll();
+    if (goals.isEmpty) return;
+    await isar.writeTxn(() async {
+      var order = await isar.savingsGroups.count();
+      for (final g in goals) {
+        final group = SavingsGroup()
+          ..name = g.name
+          ..iconName = g.iconName
+          ..colorHex = g.colorHex
+          ..sortOrder = order++
+          ..createdAt = g.createdAt;
+        final groupId = await isar.savingsGroups.put(group);
+        await isar.pockets.put(Pocket()
+          ..groupId = groupId
+          ..name = g.name
+          ..iconName = g.iconName
+          ..kind = PocketKind.goal
+          ..targetAmount = g.targetAmount
+          ..savedAmount = g.currentAmount
+          ..dueDate = g.targetDate
+          ..isCompleted = g.isCompleted
+          ..sortOrder = 0
+          ..createdAt = g.createdAt);
+      }
+      await isar.savingsGoals.clear();
+    });
+  }
+
   /// Borra todas las colecciones (usado por "Borrar todos los datos").
   Future<void> clearAll() async {
     await isar.writeTxn(() async {
@@ -88,6 +125,8 @@ class IsarService {
       await isar.accounts.clear();
       await isar.budgets.clear();
       await isar.savingsGoals.clear();
+      await isar.savingsGroups.clear();
+      await isar.pockets.clear();
       await isar.categorys.clear();
       // Mantenemos AppSettings; se reconstruyen categorías al reiniciar seed.
     });

@@ -10,8 +10,8 @@ import '../../presentation/screens/budgets/add_budget_screen.dart';
 import '../../presentation/screens/budgets/budgets_screen.dart';
 import '../../presentation/screens/home/home_shell.dart';
 import '../../presentation/screens/onboarding/onboarding_screen.dart';
-import '../../presentation/screens/savings_goals/add_savings_goal_screen.dart';
-import '../../presentation/screens/savings_goals/savings_goals_screen.dart';
+import '../../presentation/screens/savings/group_screen.dart';
+import '../../presentation/screens/savings/savings_screen.dart';
 import '../../presentation/screens/settings/categories_screen.dart';
 import '../../presentation/screens/settings/create_pin_screen.dart';
 import '../../presentation/screens/settings/settings_screen.dart';
@@ -109,14 +109,16 @@ final appRouter = GoRouter(
       builder: (_, __) => const AddBudgetScreen(),
     ),
     GoRoute(
-      path: '/savings-goals',
+      path: '/savings',
       parentNavigatorKey: _rootKey,
-      builder: (_, __) => const SavingsGoalsScreen(),
+      builder: (_, __) => const SavingsScreen(),
     ),
     GoRoute(
-      path: '/add-savings-goal',
+      path: '/savings-group/:id',
       parentNavigatorKey: _rootKey,
-      builder: (_, __) => const AddSavingsGoalScreen(),
+      builder: (_, state) => GroupScreen(
+        groupId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+      ),
     ),
     GoRoute(
       path: '/settings',

@@ -47,23 +47,28 @@ const TransactionSchema = CollectionSchema(
       name: r'parentRecurringId',
       type: IsarType.long,
     ),
-    r'recurrenceEndDate': PropertySchema(
+    r'pocketId': PropertySchema(
       id: 6,
+      name: r'pocketId',
+      type: IsarType.long,
+    ),
+    r'recurrenceEndDate': PropertySchema(
+      id: 7,
       name: r'recurrenceEndDate',
       type: IsarType.dateTime,
     ),
     r'recurrenceFrequency': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'recurrenceFrequency',
       type: IsarType.string,
     ),
     r'title': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'title',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'type',
       type: IsarType.string,
       enumMap: _TransactiontypeEnumValueMap,
@@ -177,10 +182,11 @@ void _transactionSerialize(
   writer.writeDateTime(offsets[3], object.nextRecurrenceDate);
   writer.writeString(offsets[4], object.note);
   writer.writeLong(offsets[5], object.parentRecurringId);
-  writer.writeDateTime(offsets[6], object.recurrenceEndDate);
-  writer.writeString(offsets[7], object.recurrenceFrequency);
-  writer.writeString(offsets[8], object.title);
-  writer.writeString(offsets[9], object.type.name);
+  writer.writeLong(offsets[6], object.pocketId);
+  writer.writeDateTime(offsets[7], object.recurrenceEndDate);
+  writer.writeString(offsets[8], object.recurrenceFrequency);
+  writer.writeString(offsets[9], object.title);
+  writer.writeString(offsets[10], object.type.name);
 }
 
 Transaction _transactionDeserialize(
@@ -197,11 +203,12 @@ Transaction _transactionDeserialize(
   object.nextRecurrenceDate = reader.readDateTimeOrNull(offsets[3]);
   object.note = reader.readStringOrNull(offsets[4]);
   object.parentRecurringId = reader.readLongOrNull(offsets[5]);
-  object.recurrenceEndDate = reader.readDateTimeOrNull(offsets[6]);
-  object.recurrenceFrequency = reader.readStringOrNull(offsets[7]);
-  object.title = reader.readString(offsets[8]);
+  object.pocketId = reader.readLongOrNull(offsets[6]);
+  object.recurrenceEndDate = reader.readDateTimeOrNull(offsets[7]);
+  object.recurrenceFrequency = reader.readStringOrNull(offsets[8]);
+  object.title = reader.readString(offsets[9]);
   object.type =
-      _TransactiontypeValueEnumMap[reader.readStringOrNull(offsets[9])] ??
+      _TransactiontypeValueEnumMap[reader.readStringOrNull(offsets[10])] ??
           TransactionType.expense;
   return object;
 }
@@ -226,12 +233,14 @@ P _transactionDeserializeProp<P>(
     case 5:
       return (reader.readLongOrNull(offset)) as P;
     case 6:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 9:
+      return (reader.readString(offset)) as P;
+    case 10:
       return (_TransactiontypeValueEnumMap[reader.readStringOrNull(offset)] ??
           TransactionType.expense) as P;
     default:
@@ -1097,6 +1106,79 @@ extension TransactionQueryFilter
   }
 
   QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      pocketIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'pocketId',
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      pocketIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'pocketId',
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> pocketIdEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'pocketId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      pocketIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'pocketId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
+      pocketIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'pocketId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition> pocketIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'pocketId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterFilterCondition>
       recurrenceEndDateIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1714,6 +1796,18 @@ extension TransactionQuerySortBy
     });
   }
 
+  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortByPocketId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pocketId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterSortBy> sortByPocketIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pocketId', Sort.desc);
+    });
+  }
+
   QueryBuilder<Transaction, Transaction, QAfterSortBy>
       sortByRecurrenceEndDate() {
     return QueryBuilder.apply(this, (query) {
@@ -1857,6 +1951,18 @@ extension TransactionQuerySortThenBy
     });
   }
 
+  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByPocketId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pocketId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Transaction, Transaction, QAfterSortBy> thenByPocketIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pocketId', Sort.desc);
+    });
+  }
+
   QueryBuilder<Transaction, Transaction, QAfterSortBy>
       thenByRecurrenceEndDate() {
     return QueryBuilder.apply(this, (query) {
@@ -1951,6 +2057,12 @@ extension TransactionQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Transaction, Transaction, QDistinct> distinctByPocketId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'pocketId');
+    });
+  }
+
   QueryBuilder<Transaction, Transaction, QDistinct>
       distinctByRecurrenceEndDate() {
     return QueryBuilder.apply(this, (query) {
@@ -2024,6 +2136,12 @@ extension TransactionQueryProperty
       parentRecurringIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'parentRecurringId');
+    });
+  }
+
+  QueryBuilder<Transaction, int?, QQueryOperations> pocketIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'pocketId');
     });
   }
 

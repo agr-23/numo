@@ -6,6 +6,7 @@ import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../data/models/account.dart';
+import '../../providers/savings_provider.dart';
 import '../../providers/settings_provider.dart';
 import 'amount_display.dart';
 import 'budget_progress_bar.dart';
@@ -23,6 +24,7 @@ class AccountCard extends ConsumerWidget {
     final l10n = context.l10n;
     final settings = ref.watch(settingsProvider);
     final available = account.available;
+    final setAside = ref.watch(setAsideByAccountProvider)[account.id] ?? 0;
 
     return Card(
       child: InkWell(
@@ -77,7 +79,11 @@ class AccountCard extends ConsumerWidget {
                         if (account.isCredit)
                           Text(l10n.debt,
                               style: theme.textTheme.bodySmall
-                                  ?.copyWith(color: context.palette.expense)),
+                                  ?.copyWith(color: context.palette.expense))
+                        else if (setAside > 0)
+                          Text(
+                              '${l10n.available} ${CurrencyFormatter.format(account.balance - setAside, settings)}',
+                              style: theme.textTheme.bodySmall),
                       ],
                     ),
                 ],

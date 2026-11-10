@@ -1921,6 +1921,498 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Saldo {amount}'**
   String accBalanceShort(String amount);
+
+  /// No description provided for @svTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahorros'**
+  String get svTitle;
+
+  /// No description provided for @svTotalSetAside.
+  ///
+  /// In es, this message translates to:
+  /// **'Total apartado'**
+  String get svTotalSetAside;
+
+  /// No description provided for @svOfTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'de {target} entre {count, plural, =1{tu grupo} other{tus {count} grupos}}'**
+  String svOfTotal(String target, int count);
+
+  /// No description provided for @svGroups.
+  ///
+  /// In es, this message translates to:
+  /// **'Grupos'**
+  String get svGroups;
+
+  /// No description provided for @svTapGroup.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca uno para ver sus bolsillos'**
+  String get svTapGroup;
+
+  /// No description provided for @svCreateGroup.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear grupo'**
+  String get svCreateGroup;
+
+  /// No description provided for @svEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Separa tu dinero por propósitos: el carro, un viaje, emergencias.'**
+  String get svEmpty;
+
+  /// No description provided for @svPocketCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =0{Sin bolsillos} =1{1 bolsillo} other{{count} bolsillos}}'**
+  String svPocketCount(int count);
+
+  /// No description provided for @svDueHint.
+  ///
+  /// In es, this message translates to:
+  /// **'{pocket} vence el {date}: te faltan {amount}'**
+  String svDueHint(String pocket, String date, String amount);
+
+  /// No description provided for @svAllDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo completo'**
+  String get svAllDone;
+
+  /// No description provided for @svSetAside.
+  ///
+  /// In es, this message translates to:
+  /// **'Apartado'**
+  String get svSetAside;
+
+  /// No description provided for @svOfPockets.
+  ///
+  /// In es, this message translates to:
+  /// **'de {target} sumando {count, plural, =1{su bolsillo} other{sus {count} bolsillos}}'**
+  String svOfPockets(String target, int count);
+
+  /// No description provided for @svDistribute.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir aporte'**
+  String get svDistribute;
+
+  /// No description provided for @svSectionMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada mes'**
+  String get svSectionMonthly;
+
+  /// No description provided for @svSectionYearly.
+  ///
+  /// In es, this message translates to:
+  /// **'Una vez al año'**
+  String get svSectionYearly;
+
+  /// No description provided for @svSectionGoals.
+  ///
+  /// In es, this message translates to:
+  /// **'Metas'**
+  String get svSectionGoals;
+
+  /// No description provided for @svMonthlyNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Se recargan el día 1. Lo que no gastes pasa al mes siguiente.'**
+  String get svMonthlyNote;
+
+  /// No description provided for @svAddPocket.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar bolsillo'**
+  String get svAddPocket;
+
+  /// No description provided for @svDueOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {date}'**
+  String svDueOn(String date);
+
+  /// No description provided for @svDueSuggest.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {date}. Aparta {amount} al mes'**
+  String svDueSuggest(String date, String amount);
+
+  /// No description provided for @svSuggestions.
+  ///
+  /// In es, this message translates to:
+  /// **'Bolsillos sugeridos'**
+  String get svSuggestions;
+
+  /// No description provided for @svNewGroup.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo grupo'**
+  String get svNewGroup;
+
+  /// No description provided for @svEditGroup.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar grupo'**
+  String get svEditGroup;
+
+  /// No description provided for @svDeleteGroup.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar grupo'**
+  String get svDeleteGroup;
+
+  /// No description provided for @svDeleteGroupBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Se eliminarán sus bolsillos. Lo apartado vuelve a estar disponible en tus cuentas.'**
+  String get svDeleteGroupBody;
+
+  /// No description provided for @svTemplates.
+  ///
+  /// In es, this message translates to:
+  /// **'Empieza con una plantilla'**
+  String get svTemplates;
+
+  /// No description provided for @tplCar.
+  ///
+  /// In es, this message translates to:
+  /// **'Carro'**
+  String get tplCar;
+
+  /// No description provided for @tplHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Hogar'**
+  String get tplHome;
+
+  /// No description provided for @tplTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'Viaje'**
+  String get tplTrip;
+
+  /// No description provided for @tplEmergency.
+  ///
+  /// In es, this message translates to:
+  /// **'Fondo de emergencia'**
+  String get tplEmergency;
+
+  /// No description provided for @tplCustom.
+  ///
+  /// In es, this message translates to:
+  /// **'Personalizado'**
+  String get tplCustom;
+
+  /// No description provided for @tplFuel.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasolina'**
+  String get tplFuel;
+
+  /// No description provided for @tplParking.
+  ///
+  /// In es, this message translates to:
+  /// **'Parqueaderos'**
+  String get tplParking;
+
+  /// No description provided for @tplTolls.
+  ///
+  /// In es, this message translates to:
+  /// **'Peajes'**
+  String get tplTolls;
+
+  /// No description provided for @tplInsurance.
+  ///
+  /// In es, this message translates to:
+  /// **'SOAT'**
+  String get tplInsurance;
+
+  /// No description provided for @tplInspection.
+  ///
+  /// In es, this message translates to:
+  /// **'Técnico-mecánica'**
+  String get tplInspection;
+
+  /// No description provided for @tplVehicleTax.
+  ///
+  /// In es, this message translates to:
+  /// **'Impuesto vehicular'**
+  String get tplVehicleTax;
+
+  /// No description provided for @tplRent.
+  ///
+  /// In es, this message translates to:
+  /// **'Arriendo'**
+  String get tplRent;
+
+  /// No description provided for @tplUtilities.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicios'**
+  String get tplUtilities;
+
+  /// No description provided for @tplMaintenance.
+  ///
+  /// In es, this message translates to:
+  /// **'Mantenimiento'**
+  String get tplMaintenance;
+
+  /// No description provided for @tplPropertyTax.
+  ///
+  /// In es, this message translates to:
+  /// **'Impuesto predial'**
+  String get tplPropertyTax;
+
+  /// No description provided for @tplFlights.
+  ///
+  /// In es, this message translates to:
+  /// **'Tiquetes'**
+  String get tplFlights;
+
+  /// No description provided for @tplLodging.
+  ///
+  /// In es, this message translates to:
+  /// **'Hospedaje'**
+  String get tplLodging;
+
+  /// No description provided for @tplTripSpending.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos del viaje'**
+  String get tplTripSpending;
+
+  /// No description provided for @tplEmergencyPocket.
+  ///
+  /// In es, this message translates to:
+  /// **'Fondo'**
+  String get tplEmergencyPocket;
+
+  /// No description provided for @svNewPocket.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo bolsillo'**
+  String get svNewPocket;
+
+  /// No description provided for @svEditPocket.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar bolsillo'**
+  String get svEditPocket;
+
+  /// No description provided for @svDeletePocket.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar bolsillo'**
+  String get svDeletePocket;
+
+  /// No description provided for @svDeletePocketBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo apartado ({amount}) vuelve a estar disponible en tu cuenta.'**
+  String svDeletePocketBody(String amount);
+
+  /// No description provided for @svKindGoal.
+  ///
+  /// In es, this message translates to:
+  /// **'Meta'**
+  String get svKindGoal;
+
+  /// No description provided for @svKindMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada mes'**
+  String get svKindMonthly;
+
+  /// No description provided for @svKindYearly.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada año'**
+  String get svKindYearly;
+
+  /// No description provided for @svAmountMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto por mes'**
+  String get svAmountMonthly;
+
+  /// No description provided for @svAmountYearly.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto anual'**
+  String get svAmountYearly;
+
+  /// No description provided for @svNextDue.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximo vencimiento'**
+  String get svNextDue;
+
+  /// No description provided for @svPickDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir fecha'**
+  String get svPickDate;
+
+  /// No description provided for @svDueRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige la fecha de vencimiento'**
+  String get svDueRequired;
+
+  /// No description provided for @svFromAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Apartar desde'**
+  String get svFromAccount;
+
+  /// No description provided for @svNoAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cuenta'**
+  String get svNoAccount;
+
+  /// No description provided for @svContributeTo.
+  ///
+  /// In es, this message translates to:
+  /// **'Aportar a {pocket}'**
+  String svContributeTo(String pocket);
+
+  /// No description provided for @svProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'Llevas {saved} de {target}'**
+  String svProgress(String saved, String target);
+
+  /// No description provided for @svSuggested.
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerido {amount}'**
+  String svSuggested(String amount);
+
+  /// No description provided for @svFill.
+  ///
+  /// In es, this message translates to:
+  /// **'Completar {amount}'**
+  String svFill(String amount);
+
+  /// No description provided for @svSetAsideNote.
+  ///
+  /// In es, this message translates to:
+  /// **'El dinero sigue en {account}, pero deja de contar como disponible para gastar.'**
+  String svSetAsideNote(String account);
+
+  /// No description provided for @svContributeButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Aportar {amount}'**
+  String svContributeButton(String amount);
+
+  /// No description provided for @svWithdraw.
+  ///
+  /// In es, this message translates to:
+  /// **'Retirar'**
+  String get svWithdraw;
+
+  /// No description provided for @svWithdrawTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Retirar de {pocket}'**
+  String svWithdrawTitle(String pocket);
+
+  /// No description provided for @svWithdrawButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Retirar {amount}'**
+  String svWithdrawButton(String amount);
+
+  /// No description provided for @svWithdrawNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a estar disponible en tu cuenta.'**
+  String get svWithdrawNote;
+
+  /// No description provided for @svDistributeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir en {group}'**
+  String svDistributeTitle(String group);
+
+  /// No description provided for @svDistributeNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Se reparte según lo que le falta a cada bolsillo.'**
+  String get svDistributeNote;
+
+  /// No description provided for @svPayFromPocket.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagar con bolsillo'**
+  String get svPayFromPocket;
+
+  /// No description provided for @svNoneOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguno'**
+  String get svNoneOption;
+
+  /// No description provided for @svPocketBalance.
+  ///
+  /// In es, this message translates to:
+  /// **'Apartado {amount}'**
+  String svPocketBalance(String amount);
+
+  /// No description provided for @svFromPocket.
+  ///
+  /// In es, this message translates to:
+  /// **'desde {pocket}'**
+  String svFromPocket(String pocket);
+
+  /// No description provided for @svCreateFirst.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea tu primer grupo de ahorro'**
+  String get svCreateFirst;
+
+  /// No description provided for @svRefills.
+  ///
+  /// In es, this message translates to:
+  /// **'Se recarga el 1 de cada mes'**
+  String get svRefills;
+
+  /// No description provided for @accSetAside.
+  ///
+  /// In es, this message translates to:
+  /// **'Apartado en bolsillos'**
+  String get accSetAside;
+
+  /// No description provided for @accSpendable.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponible para gastar'**
+  String get accSpendable;
+
+  /// No description provided for @ovMoneySetAside.
+  ///
+  /// In es, this message translates to:
+  /// **'De eso, {amount} está apartado en bolsillos'**
+  String ovMoneySetAside(String amount);
+
+  /// No description provided for @ovSavings.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahorros'**
+  String get ovSavings;
+
+  /// No description provided for @svOfAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'de {amount}'**
+  String svOfAmount(String amount);
 }
 
 class _AppLocalizationsDelegate
