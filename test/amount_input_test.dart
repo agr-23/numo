@@ -111,28 +111,38 @@ void main() {
 
   group('nextDayOfMonth', () {
     test('día aún por venir este mes', () {
-      expect(nextDayOfMonth(20, from: DateTime(2026, 11, 9)),
-          DateTime(2026, 11, 20));
+      expect(
+        nextDayOfMonth(20, from: DateTime(2026, 11, 9)),
+        DateTime(2026, 11, 20),
+      );
     });
 
     test('hoy cuenta como próxima fecha', () {
-      expect(nextDayOfMonth(9, from: DateTime(2026, 11, 9, 18)),
-          DateTime(2026, 11, 9));
+      expect(
+        nextDayOfMonth(9, from: DateTime(2026, 11, 9, 18)),
+        DateTime(2026, 11, 9),
+      );
     });
 
     test('día ya pasado → mes siguiente', () {
-      expect(nextDayOfMonth(5, from: DateTime(2026, 11, 9)),
-          DateTime(2026, 12, 5));
+      expect(
+        nextDayOfMonth(5, from: DateTime(2026, 11, 9)),
+        DateTime(2026, 12, 5),
+      );
     });
 
     test('día 31 en mes corto usa el último día', () {
-      expect(nextDayOfMonth(31, from: DateTime(2027, 2, 10)),
-          DateTime(2027, 2, 28));
+      expect(
+        nextDayOfMonth(31, from: DateTime(2027, 2, 10)),
+        DateTime(2027, 2, 28),
+      );
     });
 
     test('cruza de año', () {
-      expect(nextDayOfMonth(3, from: DateTime(2026, 12, 15)),
-          DateTime(2027, 1, 3));
+      expect(
+        nextDayOfMonth(3, from: DateTime(2026, 12, 15)),
+        DateTime(2027, 1, 3),
+      );
     });
   });
 

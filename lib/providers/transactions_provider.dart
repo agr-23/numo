@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/transaction.dart';
 import '../data/repositories/transaction_repository.dart';
 
-final transactionRepositoryProvider =
-    Provider<TransactionRepository>((ref) => TransactionRepository());
+final transactionRepositoryProvider = Provider<TransactionRepository>(
+  (ref) => TransactionRepository(),
+);
 
 /// Todas las transacciones ordenadas por fecha (desc), con links cargados.
 final transactionsProvider = StreamProvider<List<Transaction>>((ref) {
@@ -35,19 +36,25 @@ final currentMonthSummaryProvider = Provider<MonthSummary>((ref) {
 });
 
 /// Los últimos N movimientos (dashboard).
-final recentTransactionsProvider =
-    Provider.family<List<Transaction>, int>((ref, count) {
+final recentTransactionsProvider = Provider.family<List<Transaction>, int>((
+  ref,
+  count,
+) {
   final txs = ref.watch(transactionsProvider).valueOrNull ?? const [];
   return txs.take(count).toList();
 });
 
 /// Movimientos asociados a una cuenta (como origen o destino).
-final transactionsByAccountProvider =
-    Provider.family<List<Transaction>, int>((ref, accountId) {
+final transactionsByAccountProvider = Provider.family<List<Transaction>, int>((
+  ref,
+  accountId,
+) {
   final txs = ref.watch(transactionsProvider).valueOrNull ?? const [];
   return txs
-      .where((t) =>
-          t.account.value?.id == accountId ||
-          t.toAccount.value?.id == accountId)
+      .where(
+        (t) =>
+            t.account.value?.id == accountId ||
+            t.toAccount.value?.id == accountId,
+      )
       .toList();
 });

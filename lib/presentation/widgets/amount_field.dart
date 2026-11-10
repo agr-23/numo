@@ -35,7 +35,9 @@ class AmountField extends ConsumerWidget {
     return TextField(
       controller: controller,
       autofocus: autofocus,
-      keyboardType: TextInputType.numberWithOptions(decimal: rules.decimals > 0),
+      keyboardType: TextInputType.numberWithOptions(
+        decimal: rules.decimals > 0,
+      ),
       inputFormatters: [rules.formatter],
       decoration: InputDecoration(
         labelText: label,

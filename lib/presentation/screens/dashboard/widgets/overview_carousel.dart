@@ -57,11 +57,13 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
     final debtSub = debt.cardCount == 0
         ? l10n.ovNoCards
         : debt.nextPayment != null
-            ? l10n.ovDebtNext(debt.nextPaymentCard ?? '',
-                DateFormatter.shortDay(debt.nextPayment!))
-            : debt.available != null
-                ? '${l10n.accCreditAvailable} ${fmt(debt.available!)}'
-                : '';
+        ? l10n.ovDebtNext(
+            debt.nextPaymentCard ?? '',
+            DateFormatter.shortDay(debt.nextPayment!),
+          )
+        : debt.available != null
+        ? '${l10n.accCreditAvailable} ${fmt(debt.available!)}'
+        : '';
 
     final pages = <Widget>[
       _HeroCard(
@@ -90,14 +92,18 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
         amount: fmt(savings.saved),
         sub: savings.groupCount == 0
             ? l10n.svCreateFirst
-            : l10n.ovGoalsSub((savings.progress * 100).toStringAsFixed(0),
-                fmt(savings.target)),
+            : l10n.ovGoalsSub(
+                (savings.progress * 100).toStringAsFixed(0),
+                fmt(savings.target),
+              ),
         onTap: () => context.push('/savings'),
       ),
     ];
 
-    final scale =
-        (MediaQuery.textScalerOf(context).scale(14) / 14).clamp(1.0, 1.6);
+    final scale = (MediaQuery.textScalerOf(context).scale(14) / 14).clamp(
+      1.0,
+      1.6,
+    );
 
     return Column(
       children: [
@@ -112,7 +118,10 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
               onPageChanged: (i) => setState(() => _page = i),
               children: [
                 for (final page in pages)
-                  Padding(padding: const EdgeInsets.only(right: 10), child: page),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: page,
+                  ),
               ],
             ),
           ),
@@ -171,15 +180,21 @@ class _HeroCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(label,
-                    style: AppTextStyles.captionStrong
-                        .copyWith(fontSize: 13, color: muted)),
+                child: Text(
+                  label,
+                  style: AppTextStyles.captionStrong.copyWith(
+                    fontSize: 13,
+                    color: muted,
+                  ),
+                ),
               ),
               Flexible(
-                child: Text(caption,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.caption.copyWith(color: muted)),
+                child: Text(
+                  caption,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.caption.copyWith(color: muted),
+                ),
               ),
             ],
           ),
@@ -187,20 +202,30 @@ class _HeroCard extends StatelessWidget {
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
-            child: Text(amount,
-                style: AppTextStyles.amountHero.copyWith(color: p.onInk)),
+            child: Text(
+              amount,
+              style: AppTextStyles.amountHero.copyWith(color: p.onInk),
+            ),
           ),
           const Spacer(),
           Wrap(
             spacing: 14,
             runSpacing: 2,
             children: [
-              Text(income,
-                  style: AppTextStyles.captionStrong
-                      .copyWith(fontSize: 13, color: p.onInkIncome)),
-              Text(expense,
-                  style: AppTextStyles.captionStrong
-                      .copyWith(fontSize: 13, color: p.onInkExpense)),
+              Text(
+                income,
+                style: AppTextStyles.captionStrong.copyWith(
+                  fontSize: 13,
+                  color: p.onInkIncome,
+                ),
+              ),
+              Text(
+                expense,
+                style: AppTextStyles.captionStrong.copyWith(
+                  fontSize: 13,
+                  color: p.onInkExpense,
+                ),
+              ),
             ],
           ),
         ],
@@ -242,23 +267,34 @@ class _OutlineCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label,
-                  style: AppTextStyles.captionStrong
-                      .copyWith(fontSize: 13, color: p.inkMuted)),
+              Text(
+                label,
+                style: AppTextStyles.captionStrong.copyWith(
+                  fontSize: 13,
+                  color: p.inkMuted,
+                ),
+              ),
               const SizedBox(height: 8),
               FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.centerLeft,
-                child: Text(amount,
-                    style: AppTextStyles.amountHero
-                        .copyWith(color: amountColor ?? p.ink)),
+                child: Text(
+                  amount,
+                  style: AppTextStyles.amountHero.copyWith(
+                    color: amountColor ?? p.ink,
+                  ),
+                ),
               ),
               const Spacer(),
-              Text(sub,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.caption
-                      .copyWith(fontSize: 13, color: p.inkMuted)),
+              Text(
+                sub,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.caption.copyWith(
+                  fontSize: 13,
+                  color: p.inkMuted,
+                ),
+              ),
             ],
           ),
         ),

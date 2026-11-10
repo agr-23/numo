@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/numo_palette.dart';
-import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
+import '../../../core/l10n/l10n.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/amount_input.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/budget.dart';
@@ -43,8 +45,9 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final categories =
-        ref.watch(categoriesByTypeProvider(CategoryType.expense));
+    final categories = ref.watch(
+      categoriesByTypeProvider(CategoryType.expense),
+    );
     final l10n = context.l10n;
 
     return Scaffold(
@@ -75,15 +78,19 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
                         ),
                         padding: const EdgeInsets.all(2),
                         child: CategoryIcon(
-                            iconName: c.iconName, colorHex: c.colorHex),
+                          iconName: c.iconName,
+                          colorHex: c.colorHex,
+                        ),
                       ),
                       SizedBox(
                         width: 64,
-                        child: Text(categoryLabel(c, l10n),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodySmall),
+                        child: Text(
+                          categoryLabel(c, l10n),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodySmall,
+                        ),
                       ),
                     ],
                   ),
@@ -103,7 +110,8 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
           const SizedBox(height: Dimens.sectionGap),
           FilledButton(
             style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
+              minimumSize: const Size.fromHeight(Dimens.buttonHeight),
+            ),
             onPressed: _save,
             child: Text(l10n.budSave),
           ),
@@ -129,36 +137,47 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final repo = ref.read(budgetRepositoryProvider);
     if (_category == null) {
-      messenger
-          .showSnackBar(SnackBar(content: Text(context.l10n.selectCategory)));
+      messenger.showSnackBar(
+        SnackBar(content: Text(context.l10n.selectCategory)),
+      );
       return;
     }
-    final limit = AmountInput.of(ref.read(settingsProvider).currency)
-        .parse(_limitCtrl.text);
+    final limit = AmountInput.of(
+      ref.read(settingsProvider).currency,
+    ).parse(_limitCtrl.text);
     if (limit <= 0) {
       messenger.showSnackBar(
-          SnackBar(content: Text(context.l10n.amountMustBePositive)));
+        SnackBar(content: Text(context.l10n.amountMustBePositive)),
+      );
       return;
     }
 
     final existing = await repo.findForCategoryMonth(
-        _category!.id, _month.month, _month.year);
+      _category!.id,
+      _month.month,
+      _month.year,
+    );
     if (existing != null) {
       if (!mounted) return;
       final replace = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
           title: Text(context.l10n.budExistsTitle),
-          content: Text(context.l10n.budExistsBody(
+          content: Text(
+            context.l10n.budExistsBody(
               categoryLabel(_category, context.l10n),
-              DateFormatter.monthYear(_month))),
+              DateFormatter.monthYear(_month),
+            ),
+          ),
           actions: [
             TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text(context.l10n.cancel)),
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(context.l10n.cancel),
+            ),
             FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text(context.l10n.budReplace)),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(context.l10n.budReplace),
+            ),
           ],
         ),
       );
@@ -171,7 +190,7 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
       ..year = _month.year;
 
     await repo.upsert(budget, _category!.id);
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     if (!mounted) return;
     // Asegura que la pantalla de presupuestos muestre el mes guardado.
     ref.read(budgetMonthProvider.notifier).state = _month;

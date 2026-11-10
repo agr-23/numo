@@ -7,8 +7,9 @@ import '../data/models/transaction.dart';
 import '../data/repositories/budget_repository.dart';
 import 'transactions_provider.dart';
 
-final budgetRepositoryProvider =
-    Provider<BudgetRepository>((ref) => BudgetRepository());
+final budgetRepositoryProvider = Provider<BudgetRepository>(
+  (ref) => BudgetRepository(),
+);
 
 /// Mes seleccionado en la pantalla de presupuestos.
 final budgetMonthProvider = StateProvider<DateTime>((ref) {

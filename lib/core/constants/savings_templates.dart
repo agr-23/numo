@@ -9,21 +9,21 @@ class PocketSeed {
   const PocketSeed(this.key, this.kind, this.iconName);
 
   String label(AppLocalizations l10n) => switch (key) {
-        'fuel' => l10n.tplFuel,
-        'parking' => l10n.tplParking,
-        'tolls' => l10n.tplTolls,
-        'insurance' => l10n.tplInsurance,
-        'inspection' => l10n.tplInspection,
-        'vehicleTax' => l10n.tplVehicleTax,
-        'rent' => l10n.tplRent,
-        'utilities' => l10n.tplUtilities,
-        'maintenance' => l10n.tplMaintenance,
-        'propertyTax' => l10n.tplPropertyTax,
-        'flights' => l10n.tplFlights,
-        'lodging' => l10n.tplLodging,
-        'tripSpending' => l10n.tplTripSpending,
-        _ => l10n.tplEmergencyPocket,
-      };
+    'fuel' => l10n.tplFuel,
+    'parking' => l10n.tplParking,
+    'tolls' => l10n.tplTolls,
+    'insurance' => l10n.tplInsurance,
+    'inspection' => l10n.tplInspection,
+    'vehicleTax' => l10n.tplVehicleTax,
+    'rent' => l10n.tplRent,
+    'utilities' => l10n.tplUtilities,
+    'maintenance' => l10n.tplMaintenance,
+    'propertyTax' => l10n.tplPropertyTax,
+    'flights' => l10n.tplFlights,
+    'lodging' => l10n.tplLodging,
+    'tripSpending' => l10n.tplTripSpending,
+    _ => l10n.tplEmergencyPocket,
+  };
 }
 
 /// Plantilla de grupo: nombre, ícono y bolsillos sugeridos.
@@ -34,12 +34,12 @@ class SavingsTemplate {
   const SavingsTemplate(this.key, this.iconName, this.pockets);
 
   String label(AppLocalizations l10n) => switch (key) {
-        'car' => l10n.tplCar,
-        'home' => l10n.tplHome,
-        'trip' => l10n.tplTrip,
-        'emergency' => l10n.tplEmergency,
-        _ => l10n.tplCustom,
-      };
+    'car' => l10n.tplCar,
+    'home' => l10n.tplHome,
+    'trip' => l10n.tplTrip,
+    'emergency' => l10n.tplEmergency,
+    _ => l10n.tplCustom,
+  };
 }
 
 const kSavingsTemplates = [

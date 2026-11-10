@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/l10n/l10n.dart';
 import '../../../../core/constants/dimens.dart';
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../data/models/transaction.dart';
 import '../../../../providers/accounts_provider.dart';
@@ -67,9 +67,27 @@ class FilterSheet extends ConsumerWidget {
             spacing: 8,
             children: [
               _typeChip(context, ref, l10n.all, null, filter.type),
-              _typeChip(context, ref, l10n.expenses, TransactionType.expense, filter.type),
-              _typeChip(context, ref, l10n.incomes, TransactionType.income, filter.type),
-              _typeChip(context, ref, l10n.transfers, TransactionType.transfer, filter.type),
+              _typeChip(
+                context,
+                ref,
+                l10n.expenses,
+                TransactionType.expense,
+                filter.type,
+              ),
+              _typeChip(
+                context,
+                ref,
+                l10n.incomes,
+                TransactionType.income,
+                filter.type,
+              ),
+              _typeChip(
+                context,
+                ref,
+                l10n.transfers,
+                TransactionType.transfer,
+                filter.type,
+              ),
             ],
           ),
           const SizedBox(height: Dimens.sectionGap),
@@ -134,7 +152,8 @@ class FilterSheet extends ConsumerWidget {
 
           FilledButton(
             style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
+              minimumSize: const Size.fromHeight(Dimens.buttonHeight),
+            ),
             onPressed: () => Navigator.of(context).pop(),
             child: Text(l10n.applyFilters),
           ),
@@ -154,7 +173,8 @@ class FilterSheet extends ConsumerWidget {
     return ChoiceChip(
       label: Text(label),
       selected: current == type,
-      onSelected: (_) => ref.read(transactionFilterProvider.notifier).setType(type),
+      onSelected: (_) =>
+          ref.read(transactionFilterProvider.notifier).setType(type),
     );
   }
 }

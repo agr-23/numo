@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/numo_palette.dart';
-import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/dimens.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../data/models/category.dart';
 import '../../../providers/categories_provider.dart';
 import '../../widgets/category_icon.dart';
@@ -19,8 +19,12 @@ class CategoriesScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final l10n = context.l10n;
     final categories = ref.watch(categoriesProvider).valueOrNull ?? const [];
-    final expense = categories.where((c) => c.type == CategoryType.expense).toList();
-    final income = categories.where((c) => c.type == CategoryType.income).toList();
+    final expense = categories
+        .where((c) => c.type == CategoryType.expense)
+        .toList();
+    final income = categories
+        .where((c) => c.type == CategoryType.income)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.categories)),
@@ -30,7 +34,11 @@ class CategoriesScreen extends ConsumerWidget {
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
-            Dimens.screenPaddingH, 8, Dimens.screenPaddingH, 96),
+          Dimens.screenPaddingH,
+          8,
+          Dimens.screenPaddingH,
+          96,
+        ),
         children: [
           _sectionTitle(theme, l10n.expenses),
           ...expense.map((c) => _tile(context, ref, c)),
@@ -52,10 +60,15 @@ class CategoriesScreen extends ConsumerWidget {
   Widget _tile(BuildContext context, WidgetRef ref, Category c) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: CategoryIcon(iconName: c.iconName, colorHex: c.colorHex, size: 40),
+      leading: CategoryIcon(
+        iconName: c.iconName,
+        colorHex: c.colorHex,
+        size: 40,
+      ),
       title: Text(categoryLabel(c, context.l10n)),
-      subtitle:
-          Text(c.isCustom ? context.l10n.catCustom : context.l10n.catPredefined),
+      subtitle: Text(
+        c.isCustom ? context.l10n.catCustom : context.l10n.catPredefined,
+      ),
       trailing: c.isCustom
           ? IconButton(
               icon: Icon(Icons.delete_outline, color: context.palette.expense),
@@ -65,7 +78,8 @@ class CategoriesScreen extends ConsumerWidget {
                     .delete(c.id);
                 if (!ok && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(context.l10n.catCannotDelete)));
+                    SnackBar(content: Text(context.l10n.catCannotDelete)),
+                  );
                 }
               },
             )
@@ -126,8 +140,7 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
               ChoiceChip(
                 label: Text(l10n.expense),
                 selected: _type == CategoryType.expense,
-                onSelected: (_) =>
-                    setState(() => _type = CategoryType.expense),
+                onSelected: (_) => setState(() => _type = CategoryType.expense),
               ),
               ChoiceChip(
                 label: Text(l10n.income),
@@ -154,7 +167,8 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
           const SizedBox(height: 24),
           FilledButton(
             style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
+              minimumSize: const Size.fromHeight(Dimens.buttonHeight),
+            ),
             onPressed: _save,
             child: Text(l10n.catCreate),
           ),
@@ -168,8 +182,7 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
     final messenger = ScaffoldMessenger.of(context);
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
-      messenger
-          .showSnackBar(SnackBar(content: Text(context.l10n.writeName)));
+      messenger.showSnackBar(SnackBar(content: Text(context.l10n.writeName)));
       return;
     }
     final category = Category()

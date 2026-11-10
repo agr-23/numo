@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,8 +82,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   }
 
   Future<void> _loadForEdit() async {
-    final tx =
-        await ref.read(transactionRepositoryProvider).getById(widget.editId!);
+    final tx = await ref
+        .read(transactionRepositoryProvider)
+        .getById(widget.editId!);
     if (tx == null || !mounted) return;
     setState(() {
       _type = tx.type;
@@ -107,10 +110,10 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   /// Color del monto y de la pestaña activa según el tipo.
   Color _typeColor(NumoPalette p) => switch (_type) {
-        TransactionType.expense => p.expense,
-        TransactionType.income => p.income,
-        TransactionType.transfer => p.ink,
-      };
+    TransactionType.expense => p.expense,
+    TransactionType.income => p.income,
+    TransactionType.transfer => p.ink,
+  };
 
   /// Cuentas por defecto. Origen = primera activa; si se abrió con un
   /// destino (pagar tarjeta), el origen es la primera cuenta que no sea
@@ -126,8 +129,10 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     if (_account == null) {
       final candidates = accounts.where((a) => a.id != _toAccount?.id).toList();
       _account = targetId != null && candidates.isNotEmpty
-          ? candidates.firstWhere((a) => !a.isCredit,
-              orElse: () => candidates.first)
+          ? candidates.firstWhere(
+              (a) => !a.isCredit,
+              orElse: () => candidates.first,
+            )
           : accounts.first;
     }
     if (_isTransfer && _toAccount == null && accounts.length > 1) {
@@ -150,7 +155,11 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
-              Dimens.screenPaddingH, 4, Dimens.screenPaddingH, 16),
+            Dimens.screenPaddingH,
+            4,
+            Dimens.screenPaddingH,
+            16,
+          ),
           child: Column(
             children: [
               _header(),
@@ -256,16 +265,18 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                     boxShadow: _type == type
                         ? [
                             BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.10),
-                                blurRadius: 3,
-                                offset: const Offset(0, 1))
+                              color: Colors.black.withValues(alpha: 0.10),
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
+                            ),
                           ]
                         : null,
                   ),
                   child: Text(
                     label,
                     style: AppTextStyles.labelFrom(13).copyWith(
-                        color: _type == type ? _typeColor(p) : p.inkMuted),
+                      color: _type == type ? _typeColor(p) : p.inkMuted,
+                    ),
                   ),
                 ),
               ),
@@ -297,14 +308,19 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       ),
       child: Column(
         children: [
-          Text(question,
-              style: AppTextStyles.captionStrong.copyWith(color: p.inkMuted)),
+          Text(
+            question,
+            style: AppTextStyles.captionStrong.copyWith(color: p.inkMuted),
+          ),
           const SizedBox(height: 4),
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text(text,
-                style: AppTextStyles.amountInput
-                    .copyWith(color: _amountStr.isEmpty ? p.inkHint : _typeColor(p))),
+            child: Text(
+              text,
+              style: AppTextStyles.amountInput.copyWith(
+                color: _amountStr.isEmpty ? p.inkHint : _typeColor(p),
+              ),
+            ),
           ),
         ],
       ),
@@ -335,7 +351,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
             child: Material(
               color: selected ? p.ink : p.surface,
               shape: StadiumBorder(
-                  side: BorderSide(color: selected ? p.ink : p.borderStrong)),
+                side: BorderSide(color: selected ? p.ink : p.borderStrong),
+              ),
               clipBehavior: Clip.antiAlias,
               child: InkWell(
                 onTap: () {
@@ -365,10 +382,13 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(name,
-                          style: AppTextStyles.labelFrom(13).copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: selected ? p.onInk : p.ink)),
+                      Text(
+                        name,
+                        style: AppTextStyles.labelFrom(13).copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: selected ? p.onInk : p.ink,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -398,8 +418,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
           label: l10n.addTxTo,
           value: _toAccount?.name ?? l10n.addTxPickAccount,
           onTap: () => _pickAccount(
-              accounts.where((a) => a.id != _account?.id).toList(),
-              from: false),
+            accounts.where((a) => a.id != _account?.id).toList(),
+            from: false,
+          ),
         ),
       ] else
         _FieldRow(
@@ -409,7 +430,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
           hint: _account?.available == null
               ? null
               : l10n.addTxAvailableCredit(
-                  CurrencyFormatter.format(_account!.available!, settings)),
+                  CurrencyFormatter.format(_account!.available!, settings),
+                ),
           onTap: () => _pickAccount(accounts, from: true),
         ),
       _FieldRow(
@@ -431,11 +453,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
           label: l10n.title,
           value: _title.isEmpty ? l10n.addTxAdd : _title,
           muted: _title.isEmpty,
-          onTap: () => _editText(l10n.title, _title, l10n.addTxTitleHint,
-              (v) => setState(() {
-                    _title = v;
-                    _titleEditedByUser = v.isNotEmpty;
-                  })),
+          onTap: () => _editText(
+            l10n.title,
+            _title,
+            l10n.addTxTitleHint,
+            (v) => setState(() {
+              _title = v;
+              _titleEditedByUser = v.isNotEmpty;
+            }),
+          ),
         ),
       ],
       _FieldRow(
@@ -475,7 +501,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       hint: pocket == null
           ? null
           : l10n.svPocketBalance(
-              CurrencyFormatter.format(pocket.savedAmount, settings)),
+              CurrencyFormatter.format(pocket.savedAmount, settings),
+            ),
       onTap: _pickPocket,
     );
   }
@@ -490,7 +517,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       builder: (sheet) => SafeArea(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(sheet).size.height * 0.7),
+            maxHeight: MediaQuery.of(sheet).size.height * 0.7,
+          ),
           child: ListView(
             shrinkWrap: true,
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
@@ -508,7 +536,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                     leading: Icon(AppIcons.resolve(pk.iconName)),
                     title: Text(pk.name),
                     subtitle: Text(
-                        '${g.group.name}, ${l10n.svPocketBalance(CurrencyFormatter.format(pk.savedAmount, settings))}'),
+                      '${g.group.name}, ${l10n.svPocketBalance(CurrencyFormatter.format(pk.savedAmount, settings))}',
+                    ),
                     trailing: pk.id == _pocketId
                         ? Icon(Icons.check_rounded, color: sheet.palette.ink)
                         : null,
@@ -529,11 +558,11 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   }
 
   String _frequencyLabel(String f, AppLocalizations l10n) => switch (f) {
-        'daily' => l10n.freqDaily,
-        'weekly' => l10n.freqWeekly,
-        'yearly' => l10n.freqYearly,
-        _ => l10n.freqMonthly,
-      };
+    'daily' => l10n.freqDaily,
+    'weekly' => l10n.freqWeekly,
+    'yearly' => l10n.freqYearly,
+    _ => l10n.freqMonthly,
+  };
 
   String _repeatLabel(AppLocalizations l10n) {
     if (!_isRecurring) return l10n.addTxRepeatNever;
@@ -561,7 +590,10 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   // ---------------- Selectores ----------------
 
-  Future<void> _pickAccount(List<Account> accounts, {required bool from}) async {
+  Future<void> _pickAccount(
+    List<Account> accounts, {
+    required bool from,
+  }) async {
     final settings = ref.read(settingsProvider);
     final l10n = context.l10n;
     final current = from ? _account : _toAccount;
@@ -576,11 +608,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               ListTile(
                 leading: CategoryIcon(iconName: a.iconName),
                 title: Text(a.name),
-                subtitle: Text(a.available != null
-                    ? l10n.addTxAvailableCredit(
-                        CurrencyFormatter.format(a.available!, settings))
-                    : l10n.accBalanceShort(
-                        CurrencyFormatter.format(a.balance, settings))),
+                subtitle: Text(
+                  a.available != null
+                      ? l10n.addTxAvailableCredit(
+                          CurrencyFormatter.format(a.available!, settings),
+                        )
+                      : l10n.accBalanceShort(
+                          CurrencyFormatter.format(a.balance, settings),
+                        ),
+                ),
                 trailing: a.id == current?.id
                     ? Icon(Icons.check_rounded, color: sheet.palette.ink)
                     : null,
@@ -650,15 +686,18 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                   ListTile(
                     leading: const Icon(Icons.event_busy_outlined),
                     title: Text(l10n.addTxEndsOn),
-                    subtitle: Text(_recurrenceEnd == null
-                        ? l10n.addTxNoEnd
-                        : DateFormatter.longDay(_recurrenceEnd!)),
+                    subtitle: Text(
+                      _recurrenceEnd == null
+                          ? l10n.addTxNoEnd
+                          : DateFormatter.longDay(_recurrenceEnd!),
+                    ),
                     trailing: _recurrenceEnd == null
                         ? null
                         : IconButton(
                             tooltip: l10n.clear,
                             icon: const Icon(Icons.clear_rounded),
-                            onPressed: () => update(() => _recurrenceEnd = null),
+                            onPressed: () =>
+                                update(() => _recurrenceEnd = null),
                           ),
                     onTap: () async {
                       final picked = await showDatePicker(
@@ -678,15 +717,23 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     );
   }
 
-  Future<void> _editText(String label, String initial, String hint,
-      ValueChanged<String> onSaved) async {
+  Future<void> _editText(
+    String label,
+    String initial,
+    String hint,
+    ValueChanged<String> onSaved,
+  ) async {
     final ctrl = TextEditingController(text: initial);
     final result = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
       builder: (sheet) => Padding(
-        padding: EdgeInsets.fromLTRB(Dimens.screenPaddingH, 0,
-            Dimens.screenPaddingH, MediaQuery.of(sheet).viewInsets.bottom + 16),
+        padding: EdgeInsets.fromLTRB(
+          Dimens.screenPaddingH,
+          0,
+          Dimens.screenPaddingH,
+          MediaQuery.of(sheet).viewInsets.bottom + 16,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -695,7 +742,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               autofocus: true,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
-                  labelText: label, hintText: hint.isEmpty ? null : hint),
+                labelText: label,
+                hintText: hint.isEmpty ? null : hint,
+              ),
               onSubmitted: (v) => Navigator.of(sheet).pop(v.trim()),
             ),
             const SizedBox(height: 12),
@@ -764,8 +813,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     final title = _isTransfer
         ? (note.isEmpty ? l10n.transfer : note)
         : (_title.trim().isEmpty
-            ? categoryLabel(_category, l10n)
-            : _title.trim());
+              ? categoryLabel(_category, l10n)
+              : _title.trim());
 
     final tx = Transaction()
       ..title = title
@@ -783,18 +832,22 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     final toAccountId = _isTransfer ? _toAccount?.id : null;
     if (widget.editId != null) {
       tx.id = widget.editId!;
-      await repo.update(tx,
-          accountId: _account!.id,
-          categoryId: categoryId,
-          toAccountId: toAccountId);
+      await repo.update(
+        tx,
+        accountId: _account!.id,
+        categoryId: categoryId,
+        toAccountId: toAccountId,
+      );
     } else {
-      await repo.add(tx,
-          accountId: _account!.id,
-          categoryId: categoryId,
-          toAccountId: toAccountId);
+      await repo.add(
+        tx,
+        accountId: _account!.id,
+        categoryId: categoryId,
+        toAccountId: toAccountId,
+      );
     }
 
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     if (!mounted) return;
 
     final done = switch (_type) {
@@ -804,14 +857,18 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     };
     context.pop();
     final createdId = tx.id;
-    messenger.showSnackBar(SnackBar(
-      content: Text(done),
-      duration: const Duration(seconds: 5),
-      action: widget.editId == null
-          ? SnackBarAction(
-              label: l10n.undo, onPressed: () => repo.delete(createdId))
-          : null,
-    ));
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(done),
+        duration: const Duration(seconds: 5),
+        action: widget.editId == null
+            ? SnackBarAction(
+                label: l10n.undo,
+                onPressed: () => repo.delete(createdId),
+              )
+            : null,
+      ),
+    );
   }
 
   /// Si el gasto nuevo supera el cupo disponible de la tarjeta, pide
@@ -829,15 +886,21 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(ctx.l10n.addTxOverLimitTitle),
-        content: Text(ctx.l10n.addTxOverLimitBody(
-            _account!.name, CurrencyFormatter.format(available, settings))),
+        content: Text(
+          ctx.l10n.addTxOverLimitBody(
+            _account!.name,
+            CurrencyFormatter.format(available, settings),
+          ),
+        ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(ctx.l10n.cancel)),
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(ctx.l10n.cancel),
+          ),
           FilledButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: Text(ctx.l10n.addTxSaveAnyway)),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(ctx.l10n.addTxSaveAnyway),
+          ),
         ],
       ),
     );
@@ -902,22 +965,29 @@ class _FieldRowView extends StatelessWidget {
           children: [
             Icon(row.icon, size: 18, color: p.inkMuted),
             const SizedBox(width: 12),
-            Text(row.label,
-                style: AppTextStyles.bodyMedium.copyWith(color: p.inkMuted)),
+            Text(
+              row.label,
+              style: AppTextStyles.bodyMedium.copyWith(color: p.inkMuted),
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(row.value,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.end,
-                      style: AppTextStyles.rowTitle
-                          .copyWith(color: row.muted ? p.inkHint : p.ink)),
+                  Text(
+                    row.value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
+                    style: AppTextStyles.rowTitle.copyWith(
+                      color: row.muted ? p.inkHint : p.ink,
+                    ),
+                  ),
                   if (row.hint != null)
-                    Text(row.hint!,
-                        style: AppTextStyles.caption.copyWith(color: p.inkMuted)),
+                    Text(
+                      row.hint!,
+                      style: AppTextStyles.caption.copyWith(color: p.inkMuted),
+                    ),
                 ],
               ),
             ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/theme/numo_palette.dart';
-import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
+import '../../core/l10n/l10n.dart';
+import '../../core/theme/numo_palette.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../providers/budgets_provider.dart';
 import '../../providers/settings_provider.dart';
@@ -23,7 +23,7 @@ class BudgetCard extends ConsumerWidget {
     final l10n = context.l10n;
     final cat = view.category;
 
-    Color borderColor = theme.dividerColor;
+    var borderColor = theme.dividerColor;
     if (view.isExceeded) {
       borderColor = context.palette.expense;
     } else if (view.isNearLimit) {
@@ -55,8 +55,10 @@ class BudgetCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text(cat == null ? l10n.category : categoryLabel(cat, l10n),
-                        style: theme.textTheme.bodyLarge),
+                    child: Text(
+                      cat == null ? l10n.category : categoryLabel(cat, l10n),
+                      style: theme.textTheme.bodyLarge,
+                    ),
                   ),
                   if (view.isExceeded)
                     _badge(l10n.budExceeded, context.palette.expense)
@@ -68,8 +70,10 @@ class BudgetCard extends ConsumerWidget {
               BudgetProgressBar(spent: view.spent, limit: view.limit),
               const SizedBox(height: 8),
               Text(
-                l10n.budSpentOf(CurrencyFormatter.format(view.spent, settings),
-                    CurrencyFormatter.format(view.limit, settings)),
+                l10n.budSpentOf(
+                  CurrencyFormatter.format(view.spent, settings),
+                  CurrencyFormatter.format(view.limit, settings),
+                ),
                 style: theme.textTheme.bodySmall,
               ),
             ],
@@ -88,7 +92,11 @@ class BudgetCard extends ConsumerWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

@@ -15,14 +15,14 @@ class BudgetRepository {
   }
 
   Stream<List<Budget>> watchAll() {
-    return _isar.budgets
-        .where()
-        .watch(fireImmediately: true)
-        .map(_withLinks);
+    return _isar.budgets.where().watch(fireImmediately: true).map(_withLinks);
   }
 
   Future<Budget?> findForCategoryMonth(
-      int categoryId, int month, int year) async {
+    int categoryId,
+    int month,
+    int year,
+  ) async {
     final candidates = await _isar.budgets
         .filter()
         .monthEqualTo(month)

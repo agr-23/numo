@@ -49,7 +49,11 @@ class SavingsScreen extends ConsumerWidget {
             )
           : ListView(
               padding: const EdgeInsets.fromLTRB(
-                  Dimens.screenPaddingH, 8, Dimens.screenPaddingH, 24),
+                Dimens.screenPaddingH,
+                8,
+                Dimens.screenPaddingH,
+                24,
+              ),
               children: [
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
@@ -60,22 +64,31 @@ class SavingsScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l10n.svTotalSetAside,
-                          style: AppTextStyles.captionStrong.copyWith(
-                              fontSize: 13,
-                              color: p.onInk.withValues(alpha: 0.7))),
+                      Text(
+                        l10n.svTotalSetAside,
+                        style: AppTextStyles.captionStrong.copyWith(
+                          fontSize: 13,
+                          color: p.onInk.withValues(alpha: 0.7),
+                        ),
+                      ),
                       const SizedBox(height: 6),
                       FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: Text(fmt(overview.saved),
-                            style: AppTextStyles.amountHero
-                                .copyWith(color: p.onInk)),
+                        child: Text(
+                          fmt(overview.saved),
+                          style: AppTextStyles.amountHero.copyWith(
+                            color: p.onInk,
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 4),
-                      Text(l10n.svOfTotal(fmt(overview.target), views.length),
-                          style: AppTextStyles.caption.copyWith(
-                              fontSize: 13,
-                              color: p.onInk.withValues(alpha: 0.7))),
+                      Text(
+                        l10n.svOfTotal(fmt(overview.target), views.length),
+                        style: AppTextStyles.caption.copyWith(
+                          fontSize: 13,
+                          color: p.onInk.withValues(alpha: 0.7),
+                        ),
+                      ),
                       const SizedBox(height: 14),
                       BudgetProgressBar(
                         spent: overview.saved,
@@ -89,12 +102,18 @@ class SavingsScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
                 Row(
                   children: [
-                    Text(l10n.svGroups,
-                        style: AppTextStyles.section.copyWith(color: p.ink)),
+                    Text(
+                      l10n.svGroups,
+                      style: AppTextStyles.section.copyWith(color: p.ink),
+                    ),
                     const Spacer(),
-                    Text(l10n.svTapGroup,
-                        style: AppTextStyles.caption
-                            .copyWith(fontSize: 13, color: p.inkMuted)),
+                    Text(
+                      l10n.svTapGroup,
+                      style: AppTextStyles.caption.copyWith(
+                        fontSize: 13,
+                        color: p.inkMuted,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -110,7 +129,8 @@ class SavingsScreen extends ConsumerWidget {
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size.fromHeight(Dimens.buttonHeight),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(Dimens.cardRadius)),
+                      borderRadius: BorderRadius.circular(Dimens.cardRadius),
+                    ),
                   ),
                 ),
               ],
@@ -131,13 +151,18 @@ class _GroupCard extends StatelessWidget {
     final urgent = view.mostUrgent;
     final (hint, hintColor) = urgent != null
         ? (
-            l10n.svDueHint(urgent.name, DateFormatter.shortDay(urgent.dueDate!),
-                fmt(PocketMath.remaining(urgent))),
-            PocketMath.isDueSoon(urgent, DateTime.now()) ? p.expense : p.inkMuted
+            l10n.svDueHint(
+              urgent.name,
+              DateFormatter.shortDay(urgent.dueDate!),
+              fmt(PocketMath.remaining(urgent)),
+            ),
+            PocketMath.isDueSoon(urgent, DateTime.now())
+                ? p.expense
+                : p.inkMuted,
           )
         : view.allDone
-            ? (l10n.svAllDone, p.income)
-            : (null, p.inkMuted);
+        ? (l10n.svAllDone, p.income)
+        : (null, p.inkMuted);
 
     return Material(
       color: p.surface,
@@ -158,45 +183,67 @@ class _GroupCard extends StatelessWidget {
                   Container(
                     width: 40,
                     height: 40,
-                    decoration:
-                        BoxDecoration(color: p.linkSoft, shape: BoxShape.circle),
-                    child: Icon(AppIcons.resolve(view.group.iconName),
-                        size: 20, color: p.link),
+                    decoration: BoxDecoration(
+                      color: p.linkSoft,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      AppIcons.resolve(view.group.iconName),
+                      size: 20,
+                      color: p.link,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(view.group.name,
-                            style: AppTextStyles.labelFrom(15)
-                                .copyWith(color: p.ink)),
-                        Text(l10n.svPocketCount(view.pockets.length),
-                            style: AppTextStyles.caption
-                                .copyWith(color: p.inkMuted)),
+                        Text(
+                          view.group.name,
+                          style: AppTextStyles.labelFrom(
+                            15,
+                          ).copyWith(color: p.ink),
+                        ),
+                        Text(
+                          l10n.svPocketCount(view.pockets.length),
+                          style: AppTextStyles.caption.copyWith(
+                            color: p.inkMuted,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(fmt(view.saved),
-                          style:
-                              AppTextStyles.labelFrom(15).copyWith(color: p.ink)),
-                      Text(l10n.svOfAmount(fmt(view.target)),
-                          style: AppTextStyles.caption
-                              .copyWith(color: p.inkMuted)),
+                      Text(
+                        fmt(view.saved),
+                        style: AppTextStyles.labelFrom(
+                          15,
+                        ).copyWith(color: p.ink),
+                      ),
+                      Text(
+                        l10n.svOfAmount(fmt(view.target)),
+                        style: AppTextStyles.caption.copyWith(
+                          color: p.inkMuted,
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
               const SizedBox(height: 10),
               BudgetProgressBar(
-                  spent: view.saved, limit: view.target, color: p.ink),
+                spent: view.saved,
+                limit: view.target,
+                color: p.ink,
+              ),
               if (hint != null) ...[
                 const SizedBox(height: 10),
-                Text(hint,
-                    style: AppTextStyles.captionStrong.copyWith(color: hintColor)),
+                Text(
+                  hint,
+                  style: AppTextStyles.captionStrong.copyWith(color: hintColor),
+                ),
               ],
             ],
           ),

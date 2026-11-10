@@ -9,16 +9,19 @@ class AppTextStyles {
   static const String family = 'Inter';
   static const List<FontFeature> _tabular = [FontFeature.tabularFigures()];
 
-  static TextStyle _s(double size, FontWeight weight,
-          {double letterSpacing = 0, double? height}) =>
-      TextStyle(
-        fontFamily: family,
-        fontSize: size,
-        fontWeight: weight,
-        letterSpacing: letterSpacing,
-        height: height,
-        fontFeatures: _tabular,
-      );
+  static TextStyle _s(
+    double size,
+    FontWeight weight, {
+    double letterSpacing = 0,
+    double? height,
+  }) => TextStyle(
+    fontFamily: family,
+    fontSize: size,
+    fontWeight: weight,
+    letterSpacing: letterSpacing,
+    height: height,
+    fontFeatures: _tabular,
+  );
 
   /// Montos protagonistas ($4.820.500).
   static TextStyle get amountHero =>
@@ -28,8 +31,7 @@ class AppTextStyles {
   static TextStyle get amountInput =>
       _s(44, FontWeight.w600, letterSpacing: -1.5, height: 1.1);
 
-  static TextStyle get headline =>
-      _s(22, FontWeight.w600, letterSpacing: -0.4);
+  static TextStyle get headline => _s(22, FontWeight.w600, letterSpacing: -0.4);
 
   /// Título de pantalla y de hoja inferior.
   static TextStyle get title => _s(16, FontWeight.w600);

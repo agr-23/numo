@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/numo_palette.dart';
-import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
+import '../../../core/l10n/l10n.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../providers/accounts_provider.dart';
 import '../../../providers/settings_provider.dart';
@@ -43,7 +45,11 @@ class AccountsScreen extends ConsumerWidget {
             )
           : ListView(
               padding: const EdgeInsets.fromLTRB(
-                  Dimens.screenPaddingH, 12, Dimens.screenPaddingH, 96),
+                Dimens.screenPaddingH,
+                12,
+                Dimens.screenPaddingH,
+                96,
+              ),
               children: [
                 Container(
                   width: double.infinity,
@@ -55,10 +61,13 @@ class AccountsScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l10n.accNetTotal,
-                          style: TextStyle(
-                              color: context.palette.onInk.withValues(alpha: 0.7),
-                              fontSize: 13)),
+                      Text(
+                        l10n.accNetTotal,
+                        style: TextStyle(
+                          color: context.palette.onInk.withValues(alpha: 0.7),
+                          fontSize: 13,
+                        ),
+                      ),
                       const SizedBox(height: 6),
                       Text(
                         CurrencyFormatter.format(net, settings),
@@ -83,17 +92,16 @@ class AccountsScreen extends ConsumerWidget {
                         padding: const EdgeInsets.only(right: 20),
                         decoration: BoxDecoration(
                           color: context.palette.warning,
-                          borderRadius:
-                              BorderRadius.circular(Dimens.cardRadius),
+                          borderRadius: BorderRadius.circular(
+                            Dimens.cardRadius,
+                          ),
                         ),
                         child: const Icon(Icons.archive, color: Colors.white),
                       ),
                       confirmDismiss: (_) => _confirmArchive(context, a.name),
                       onDismissed: (_) async {
-                        await ref
-                            .read(accountRepositoryProvider)
-                            .archive(a.id);
-                        HapticFeedback.mediumImpact();
+                        await ref.read(accountRepositoryProvider).archive(a.id);
+                        unawaited(HapticFeedback.mediumImpact());
                       },
                       child: AccountCard(
                         account: a,

@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/account.dart';
 import '../data/repositories/account_repository.dart';
 
-final accountRepositoryProvider =
-    Provider<AccountRepository>((ref) => AccountRepository());
+final accountRepositoryProvider = Provider<AccountRepository>(
+  (ref) => AccountRepository(),
+);
 
 /// Cuentas activas (las archivadas se excluyen).
 final accountsProvider = StreamProvider<List<Account>>((ref) {

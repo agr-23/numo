@@ -87,10 +87,12 @@ class TransactionRepository {
       }
       await _isar.transactions.put(tx);
       tx.account.value = await _isar.accounts.get(accountId);
-      tx.category.value =
-          categoryId != null ? await _isar.categorys.get(categoryId) : null;
-      tx.toAccount.value =
-          toAccountId != null ? await _isar.accounts.get(toAccountId) : null;
+      tx.category.value = categoryId != null
+          ? await _isar.categorys.get(categoryId)
+          : null;
+      tx.toAccount.value = toAccountId != null
+          ? await _isar.accounts.get(toAccountId)
+          : null;
       await tx.account.save();
       await tx.category.save();
       await tx.toAccount.save();
@@ -128,14 +130,17 @@ class TransactionRepository {
 
     if (tx.type == TransactionType.transfer) {
       final dest = tx.toAccount.value;
-      source.balance += sign * _delta(source.type, tx.type, tx.amount, isSource: true);
+      source.balance +=
+          sign * _delta(source.type, tx.type, tx.amount, isSource: true);
       await _isar.accounts.put(source);
       if (dest != null) {
-        dest.balance += sign * _delta(dest.type, tx.type, tx.amount, isSource: false);
+        dest.balance +=
+            sign * _delta(dest.type, tx.type, tx.amount, isSource: false);
         await _isar.accounts.put(dest);
       }
     } else {
-      source.balance += sign * _delta(source.type, tx.type, tx.amount, isSource: true);
+      source.balance +=
+          sign * _delta(source.type, tx.type, tx.amount, isSource: true);
       await _isar.accounts.put(source);
     }
   }

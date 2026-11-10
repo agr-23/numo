@@ -21,7 +21,9 @@ class IsarService {
   static IsarService get instance {
     final i = _instance;
     if (i == null) {
-      throw StateError('IsarService no inicializado. Llama a IsarService.init().');
+      throw StateError(
+        'IsarService no inicializado. Llama a IsarService.init().',
+      );
     }
     return i;
   }
@@ -75,8 +77,10 @@ class IsarService {
   /// Instalaciones anteriores a los idiomas: asigna la clave a las
   /// categorías predefinidas reconociéndolas por su nombre en español.
   Future<void> _backfillCategoryKeys() async {
-    final predefined =
-        await isar.categorys.filter().isCustomEqualTo(false).findAll();
+    final predefined = await isar.categorys
+        .filter()
+        .isCustomEqualTo(false)
+        .findAll();
     final missing = predefined.where((c) => c.key == null).toList();
     if (missing.isEmpty) return;
     final byName = {for (final s in kDefaultCategories) s.name: s.key};
@@ -102,17 +106,19 @@ class IsarService {
           ..sortOrder = order++
           ..createdAt = g.createdAt;
         final groupId = await isar.savingsGroups.put(group);
-        await isar.pockets.put(Pocket()
-          ..groupId = groupId
-          ..name = g.name
-          ..iconName = g.iconName
-          ..kind = PocketKind.goal
-          ..targetAmount = g.targetAmount
-          ..savedAmount = g.currentAmount
-          ..dueDate = g.targetDate
-          ..isCompleted = g.isCompleted
-          ..sortOrder = 0
-          ..createdAt = g.createdAt);
+        await isar.pockets.put(
+          Pocket()
+            ..groupId = groupId
+            ..name = g.name
+            ..iconName = g.iconName
+            ..kind = PocketKind.goal
+            ..targetAmount = g.targetAmount
+            ..savedAmount = g.currentAmount
+            ..dueDate = g.targetDate
+            ..isCompleted = g.isCompleted
+            ..sortOrder = 0
+            ..createdAt = g.createdAt,
+        );
       }
       await isar.savingsGoals.clear();
     });

@@ -7,8 +7,10 @@ class CategoryRepository {
   Isar get _isar => IsarService.instance.isar;
 
   Future<int> _nextSortOrder() async {
-    final last =
-        await _isar.categorys.where().sortBySortOrderDesc().findFirst();
+    final last = await _isar.categorys
+        .where()
+        .sortBySortOrderDesc()
+        .findFirst();
     return (last?.sortOrder ?? -1) + 1;
   }
 

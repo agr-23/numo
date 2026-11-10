@@ -15,10 +15,9 @@ class AccountRepository {
   }
 
   Stream<List<Account>> watchAll() {
-    return _isar.accounts
-        .where()
-        .sortByCreatedAt()
-        .watch(fireImmediately: true);
+    return _isar.accounts.where().sortByCreatedAt().watch(
+      fireImmediately: true,
+    );
   }
 
   Future<List<Account>> getActive() {

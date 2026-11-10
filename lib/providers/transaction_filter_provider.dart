@@ -70,13 +70,13 @@ class TransactionFilterNotifier extends Notifier<TransactionFilter> {
 
   void setQuery(String q) => state = state.copyWith(query: q);
 
-  void clearFilters() =>
-      state = TransactionFilter(query: state.query);
+  void clearFilters() => state = TransactionFilter(query: state.query);
 }
 
 final transactionFilterProvider =
     NotifierProvider<TransactionFilterNotifier, TransactionFilter>(
-        TransactionFilterNotifier.new);
+      TransactionFilterNotifier.new,
+    );
 
 /// Lista de movimientos tras aplicar filtros y búsqueda.
 final filteredTransactionsProvider = Provider<List<Transaction>>((ref) {
@@ -99,10 +99,16 @@ final filteredTransactionsProvider = Provider<List<Transaction>>((ref) {
     }
     if (f.dateRange != null) {
       final d = DateTime(t.date.year, t.date.month, t.date.day);
-      final start = DateTime(f.dateRange!.start.year, f.dateRange!.start.month,
-          f.dateRange!.start.day);
+      final start = DateTime(
+        f.dateRange!.start.year,
+        f.dateRange!.start.month,
+        f.dateRange!.start.day,
+      );
       final end = DateTime(
-          f.dateRange!.end.year, f.dateRange!.end.month, f.dateRange!.end.day);
+        f.dateRange!.end.year,
+        f.dateRange!.end.month,
+        f.dateRange!.end.day,
+      );
       if (d.isBefore(start) || d.isAfter(end)) return false;
     }
     if (f.query.trim().isNotEmpty) {

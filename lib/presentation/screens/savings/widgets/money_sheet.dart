@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -85,8 +87,8 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
     _initialized = true;
     final pocketAccount = widget.pocket?.accountId;
     final eligible = accounts.where((a) => !a.isCredit).toList();
-    _accountId = pocketAccount ??
-        (eligible.isNotEmpty ? eligible.first.id : null);
+    _accountId =
+        pocketAccount ?? (eligible.isNotEmpty ? eligible.first.id : null);
     final (suggested, _) = _shortcuts();
     if (suggested != null && widget.mode != MoneyMode.withdraw) {
       _amountStr = suggested.toStringAsFixed(0);
@@ -116,9 +118,8 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
     final target = _targets.fold<double>(0, (s, x) => s + x.targetAmount);
     final (suggested, fill) = _shortcuts();
     final account = accounts.where((a) => a.id == _accountId).firstOrNull;
-    final accountLocked = pocket != null &&
-        pocket.accountId != null &&
-        pocket.savedAmount > 0;
+    final accountLocked =
+        pocket != null && pocket.accountId != null && pocket.savedAmount > 0;
 
     final formatted = rules.groupRaw(_amountStr);
     final amountText = settings.currencySymbolBefore
@@ -131,7 +132,11 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-          Dimens.screenPaddingH, 0, Dimens.screenPaddingH, 20),
+        Dimens.screenPaddingH,
+        0,
+        Dimens.screenPaddingH,
+        20,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -140,27 +145,38 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
               Container(
                 width: 40,
                 height: 40,
-                decoration:
-                    BoxDecoration(color: p.surfaceSubtle, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: p.surfaceSubtle,
+                  shape: BoxShape.circle,
+                ),
                 child: Icon(
-                    AppIcons.resolve(pocket?.iconName ??
-                        widget.group!.group.iconName),
-                    size: 19,
-                    color: p.ink),
+                  AppIcons.resolve(
+                    pocket?.iconName ?? widget.group!.group.iconName,
+                  ),
+                  size: 19,
+                  color: p.ink,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title,
-                        style: AppTextStyles.title.copyWith(fontSize: 17, color: p.ink)),
+                    Text(
+                      title,
+                      style: AppTextStyles.title.copyWith(
+                        fontSize: 17,
+                        color: p.ink,
+                      ),
+                    ),
                     Text(
                       widget.mode == MoneyMode.distribute
                           ? l10n.svDistributeNote
                           : l10n.svProgress(fmt(saved), fmt(target)),
-                      style: AppTextStyles.caption
-                          .copyWith(fontSize: 13, color: p.inkMuted),
+                      style: AppTextStyles.caption.copyWith(
+                        fontSize: 13,
+                        color: p.inkMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -170,10 +186,13 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
           const SizedBox(height: 20),
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text(amountText,
-                style: AppTextStyles.amountInput.copyWith(
-                    fontSize: 52,
-                    color: _amountStr.isEmpty ? p.inkHint : p.ink)),
+            child: Text(
+              amountText,
+              style: AppTextStyles.amountInput.copyWith(
+                fontSize: 52,
+                color: _amountStr.isEmpty ? p.inkHint : p.ink,
+              ),
+            ),
           ),
           const SizedBox(height: 16),
           Wrap(
@@ -185,10 +204,11 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
                 _chip(l10n.svSuggested(fmt(suggested)), suggested),
               if (fill != null)
                 _chip(
-                    widget.mode == MoneyMode.withdraw
-                        ? fmt(fill)
-                        : l10n.svFill(fmt(fill)),
-                    fill),
+                  widget.mode == MoneyMode.withdraw
+                      ? fmt(fill)
+                      : l10n.svFill(fmt(fill)),
+                  fill,
+                ),
             ],
           ),
           if (widget.mode != MoneyMode.withdraw && accounts.isNotEmpty) ...[
@@ -205,28 +225,38 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
                     ? null
                     : () => _pickAccount(accounts, setAside, fmt),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   child: Row(
                     children: [
-                      Icon(Icons.account_balance_outlined,
-                          size: 18, color: p.inkMuted),
+                      Icon(
+                        Icons.account_balance_outlined,
+                        size: 18,
+                        color: p.inkMuted,
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(l10n.svFromAccount,
-                                style: AppTextStyles.caption
-                                    .copyWith(color: p.inkMuted)),
+                            Text(
+                              l10n.svFromAccount,
+                              style: AppTextStyles.caption.copyWith(
+                                color: p.inkMuted,
+                              ),
+                            ),
                             Text(
                               account == null
                                   ? l10n.svNoAccount
                                   : '${account.name}, ${l10n.available.toLowerCase()} ${fmt(account.balance - (setAside[account.id] ?? 0))}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.rowTitle
-                                  .copyWith(fontWeight: FontWeight.w600, color: p.ink),
+                              style: AppTextStyles.rowTitle.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: p.ink,
+                              ),
                             ),
                           ],
                         ),
@@ -240,15 +270,19 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
             ),
             if (account != null) ...[
               const SizedBox(height: 8),
-              Text(l10n.svSetAsideNote(account.name),
-                  style: AppTextStyles.caption.copyWith(color: p.inkMuted)),
+              Text(
+                l10n.svSetAsideNote(account.name),
+                style: AppTextStyles.caption.copyWith(color: p.inkMuted),
+              ),
             ],
           ],
           if (widget.mode == MoneyMode.withdraw) ...[
             const SizedBox(height: 12),
-            Text(l10n.svWithdrawNote,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.caption.copyWith(color: p.inkMuted)),
+            Text(
+              l10n.svWithdrawNote,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.caption.copyWith(color: p.inkMuted),
+            ),
           ],
           const Spacer(),
           NumericKeypad(
@@ -276,8 +310,11 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
     return ChoiceChip(
       label: Text(label),
       selected: selected,
-      onSelected: (_) => setState(() => _amountStr = value.toStringAsFixed(
-          value == value.roundToDouble() ? 0 : 2)),
+      onSelected: (_) => setState(
+        () => _amountStr = value.toStringAsFixed(
+          value == value.roundToDouble() ? 0 : 2,
+        ),
+      ),
     );
   }
 
@@ -298,8 +335,11 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
     });
   }
 
-  Future<void> _pickAccount(List<Account> accounts, Map<int, double> setAside,
-      String Function(double) fmt) async {
+  Future<void> _pickAccount(
+    List<Account> accounts,
+    Map<int, double> setAside,
+    String Function(double) fmt,
+  ) async {
     final l10n = context.l10n;
     final picked = await showModalBottomSheet<int>(
       context: context,
@@ -313,7 +353,8 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
                 leading: Icon(AppIcons.resolve(a.iconName)),
                 title: Text(a.name),
                 subtitle: Text(
-                    '${l10n.accSpendable}: ${fmt(a.balance - (setAside[a.id] ?? 0))}'),
+                  '${l10n.accSpendable}: ${fmt(a.balance - (setAside[a.id] ?? 0))}',
+                ),
                 trailing: a.id == _accountId
                     ? Icon(Icons.check_rounded, color: sheet.palette.ink)
                     : null,
@@ -332,15 +373,21 @@ class _MoneySheetState extends ConsumerState<MoneySheet> {
     var completed = false;
     switch (widget.mode) {
       case MoneyMode.contribute:
-        completed =
-            await repo.contribute(widget.pocket!.id, _amount, _accountId);
+        completed = await repo.contribute(
+          widget.pocket!.id,
+          _amount,
+          _accountId,
+        );
       case MoneyMode.withdraw:
         await repo.withdraw(widget.pocket!.id, _amount);
       case MoneyMode.distribute:
-        completed =
-            await repo.distribute(widget.group!.pockets, _amount, _accountId);
+        completed = await repo.distribute(
+          widget.group!.pockets,
+          _amount,
+          _accountId,
+        );
     }
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     navigator.pop(completed);
   }
 }

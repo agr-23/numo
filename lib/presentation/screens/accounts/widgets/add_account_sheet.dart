@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/l10n/l10n.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/constants/dimens.dart';
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/amount_input.dart';
 import '../../../../data/models/account.dart';
@@ -74,8 +76,9 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
     final isCredit = _type == AccountType.credit;
 
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: DraggableScrollableSheet(
         expand: false,
         initialChildSize: 0.85,
@@ -84,13 +87,17 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
           controller: controller,
           padding: const EdgeInsets.all(Dimens.screenPaddingH),
           children: [
-            Text(_isEdit ? l10n.accEdit : l10n.accNew,
-                style: theme.textTheme.titleLarge),
+            Text(
+              _isEdit ? l10n.accEdit : l10n.accNew,
+              style: theme.textTheme.titleLarge,
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _nameCtrl,
               decoration: InputDecoration(
-                  labelText: l10n.name, hintText: l10n.accNameHint),
+                labelText: l10n.name,
+                hintText: l10n.accNameHint,
+              ),
             ),
             const SizedBox(height: 16),
             Text(l10n.type, style: theme.textTheme.titleMedium),
@@ -139,7 +146,9 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             ] else
               AmountField(
                 controller: _balanceCtrl,
-                label: _isEdit ? l10n.accCurrentBalance : l10n.accInitialBalance,
+                label: _isEdit
+                    ? l10n.accCurrentBalance
+                    : l10n.accInitialBalance,
               ),
             const SizedBox(height: 16),
             Text(l10n.color, style: theme.textTheme.titleMedium),
@@ -158,7 +167,8 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             const SizedBox(height: 24),
             FilledButton(
               style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
+                minimumSize: const Size.fromHeight(Dimens.buttonHeight),
+              ),
               onPressed: _save,
               child: Text(_isEdit ? l10n.accSaveChanges : l10n.accCreate),
             ),
@@ -202,14 +212,16 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
       messenger.showSnackBar(
-          SnackBar(content: Text(context.l10n.accNameMissing)));
+        SnackBar(content: Text(context.l10n.accNameMissing)),
+      );
       return;
     }
     final isCredit = _type == AccountType.credit;
     final limit = rules.parse(_limitCtrl.text);
     if (isCredit && limit <= 0) {
       messenger.showSnackBar(
-          SnackBar(content: Text(context.l10n.accLimitMissing)));
+        SnackBar(content: Text(context.l10n.accLimitMissing)),
+      );
       return;
     }
 
@@ -230,7 +242,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
 
     final repo = ref.read(accountRepositoryProvider);
     _isEdit ? await repo.update(account) : await repo.add(account);
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     if (!mounted) return;
     Navigator.of(context).pop();
   }

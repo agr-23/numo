@@ -10,21 +10,20 @@ Pocket pocket({
   DateTime? due,
   int? accountId,
   int? lastRefill,
-}) =>
-    Pocket()
-      ..id = id
-      ..groupId = 1
-      ..name = 'P$id'
-      ..iconName = 'shield'
-      ..kind = kind
-      ..targetAmount = target
-      ..savedAmount = saved
-      ..dueDate = due
-      ..accountId = accountId
-      ..lastRefillMonth = lastRefill
-      ..isCompleted = false
-      ..sortOrder = 0
-      ..createdAt = DateTime(2026);
+}) => Pocket()
+  ..id = id
+  ..groupId = 1
+  ..name = 'P$id'
+  ..iconName = 'shield'
+  ..kind = kind
+  ..targetAmount = target
+  ..savedAmount = saved
+  ..dueDate = due
+  ..accountId = accountId
+  ..lastRefillMonth = lastRefill
+  ..isCompleted = false
+  ..sortOrder = 0
+  ..createdAt = DateTime(2026);
 
 void main() {
   final now = DateTime(2026, 11, 10);
@@ -37,31 +36,41 @@ void main() {
     });
 
     test('mensual: lo que falta para completar el mes', () {
-      final fuel =
-          pocket(kind: PocketKind.monthly, target: 400000, saved: 280000);
+      final fuel = pocket(
+        kind: PocketKind.monthly,
+        target: 400000,
+        saved: 280000,
+      );
       expect(PocketMath.suggestedMonthly(fuel, now), 120000);
     });
 
     test('redondea a miles hacia arriba', () {
       // Impuesto: faltan 1.790.000 en 7 meses → 255.715 → 256.000.
       final tax = pocket(
-          target: 1940000, saved: 150000, due: DateTime(2027, 6, 30));
+        target: 1940000,
+        saved: 150000,
+        due: DateTime(2027, 6, 30),
+      );
       expect(PocketMath.suggestedMonthly(tax, now), 256000);
     });
 
     test('meta sin fecha no sugiere ritmo', () {
       expect(
-          PocketMath.suggestedMonthly(pocket(kind: PocketKind.goal), now), null);
+        PocketMath.suggestedMonthly(pocket(kind: PocketKind.goal), now),
+        null,
+      );
     });
 
     test('completo sugiere 0', () {
-      expect(PocketMath.suggestedMonthly(pocket(saved: 980000, due: now), now),
-          0);
+      expect(
+        PocketMath.suggestedMonthly(pocket(saved: 980000, due: now), now),
+        0,
+      );
     });
   });
 
   test('repartir: según lo que falta y suma exacta', () {
-    final a = pocket(id: 1, target: 300000, saved: 0); // faltan 300.000
+    final a = pocket(target: 300000); // faltan 300.000
     final b = pocket(id: 2, target: 200000, saved: 100000); // faltan 100.000
     final shares = PocketMath.distribute([a, b], 100000);
     expect(shares[1], 75000);
@@ -70,7 +79,7 @@ void main() {
   });
 
   test('repartir: si todo está lleno, según la meta', () {
-    final a = pocket(id: 1, target: 100, saved: 100);
+    final a = pocket(target: 100, saved: 100);
     final b = pocket(id: 2, target: 300, saved: 300);
     final shares = PocketMath.distribute([a, b], 40);
     expect(shares[1], 10);
@@ -80,10 +89,11 @@ void main() {
   group('recargas y vencimientos', () {
     test('mensual: recarga una vez por mes y acumula lo no gastado', () {
       final fuel = pocket(
-          kind: PocketKind.monthly,
-          target: 400000,
-          saved: 50000,
-          lastRefill: 202609);
+        kind: PocketKind.monthly,
+        target: 400000,
+        saved: 50000,
+        lastRefill: 202609,
+      );
       expect(PocketMath.roll(fuel, now), isTrue);
       // Octubre y noviembre: +400.000 cada uno, sobre los 50.000 que quedaban.
       expect(fuel.savedAmount, 850000);
@@ -95,7 +105,10 @@ void main() {
 
     test('mensual: cruza el año', () {
       final p = pocket(
-          kind: PocketKind.monthly, target: 10, saved: 0, lastRefill: 202612);
+        kind: PocketKind.monthly,
+        target: 10,
+        lastRefill: 202612,
+      );
       PocketMath.roll(p, DateTime(2027, 1, 2));
       expect(p.savedAmount, 10);
       expect(p.lastRefillMonth, 202701);
@@ -110,7 +123,7 @@ void main() {
 
   test('apartado por cuenta ignora saldos negativos y sin cuenta', () {
     final map = PocketMath.setAsideByAccount([
-      pocket(id: 1, saved: 100, accountId: 7),
+      pocket(saved: 100, accountId: 7),
       pocket(id: 2, saved: 50, accountId: 7),
       pocket(id: 3, saved: -20, accountId: 7),
       pocket(id: 4, saved: 999),

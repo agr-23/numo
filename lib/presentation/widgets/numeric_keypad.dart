@@ -70,8 +70,10 @@ class NumericKeypad extends StatelessWidget {
         child: Center(
           child: isBackspace
               ? Icon(Icons.backspace_outlined, color: p.ink, size: 22)
-              : Text(label,
-                  style: AppTextStyles.keypadDigit.copyWith(color: p.ink)),
+              : Text(
+                  label,
+                  style: AppTextStyles.keypadDigit.copyWith(color: p.ink),
+                ),
         ),
       ),
     );

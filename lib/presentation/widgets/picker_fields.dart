@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/numo_palette.dart';
 import '../../core/constants/app_icons.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/numo_palette.dart';
 
 /// Selector de color entre la paleta predefinida (12 colores).
 class ColorPickerRow extends StatelessWidget {
@@ -77,10 +77,13 @@ class IconPickerGrid extends StatelessWidget {
                 color: name == selectedIcon ? p.ink : p.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                    color: name == selectedIcon ? p.ink : p.border),
+                  color: name == selectedIcon ? p.ink : p.border,
+                ),
               ),
-              child: Icon(AppIcons.resolve(name),
-                  color: name == selectedIcon ? p.onInk : p.ink),
+              child: Icon(
+                AppIcons.resolve(name),
+                color: name == selectedIcon ? p.onInk : p.ink,
+              ),
             ),
           ),
       ],
