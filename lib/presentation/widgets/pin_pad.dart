@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../core/theme/numo_palette.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/theme/numo_palette.dart';
 
 /// Teclado de PIN de 4 dígitos con indicadores y biometría opcional.
 /// [onCompleted] devuelve true si el PIN es válido; si devuelve false,
@@ -36,11 +38,11 @@ class _PinPadState extends State<PinPad> {
       _error = false;
       _pin += d;
     });
-    HapticFeedback.selectionClick();
+    unawaited(HapticFeedback.selectionClick());
     if (_pin.length == 4) {
       final ok = await widget.onCompleted(_pin);
       if (!ok && mounted) {
-        HapticFeedback.heavyImpact();
+        unawaited(HapticFeedback.heavyImpact());
         setState(() {
           _error = true;
           _pin = '';
@@ -90,9 +92,12 @@ class _PinPadState extends State<PinPad> {
         if (_error)
           Padding(
             padding: const EdgeInsets.only(top: 12),
-            child: Text(context.l10n.wrongPin,
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: context.palette.expense)),
+            child: Text(
+              context.l10n.wrongPin,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: context.palette.expense,
+              ),
+            ),
           ),
         const SizedBox(height: 32),
         _keypad(),
@@ -101,7 +106,20 @@ class _PinPadState extends State<PinPad> {
   }
 
   Widget _keypad() {
-    final keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'bio', '0', 'del'];
+    final keys = [
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      'bio',
+      '0',
+      'del',
+    ];
     return SizedBox(
       width: 300,
       child: GridView.count(

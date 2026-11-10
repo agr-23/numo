@@ -63,7 +63,8 @@ final debtOverviewProvider = Provider<DebtOverview>((ref) {
     if (av != null) available = (available ?? 0) + av;
     final p = c.nextPaymentDate;
     // Solo interesa el pago si hay deuda que pagar.
-    if (p != null && c.balance > 0 &&
+    if (p != null &&
+        c.balance > 0 &&
         (nextPayment == null || p.isBefore(nextPayment))) {
       nextPayment = p;
       nextPaymentCard = c.name;

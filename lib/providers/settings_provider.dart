@@ -7,8 +7,9 @@ import '../data/models/app_settings.dart';
 import '../data/services/isar_service.dart';
 
 /// Expone los [AppSettings] actuales de forma síncrona y reactiva.
-final settingsProvider =
-    NotifierProvider<SettingsNotifier, AppSettings>(SettingsNotifier.new);
+final settingsProvider = NotifierProvider<SettingsNotifier, AppSettings>(
+  SettingsNotifier.new,
+);
 
 class SettingsNotifier extends Notifier<AppSettings> {
   Isar get _isar => IsarService.instance.isar;

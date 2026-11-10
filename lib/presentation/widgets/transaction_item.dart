@@ -23,14 +23,16 @@ class TransactionItem extends StatelessWidget {
     final category = transaction.category.value;
     final account = transaction.account.value;
 
-    final iconName =
-        isTransfer ? 'payments' : (category?.iconName ?? 'more_horiz');
+    final iconName = isTransfer
+        ? 'payments'
+        : (category?.iconName ?? 'more_horiz');
     // "Comida, con Bancolombia" / "Bancolombia → Visa Oro"
     final subtitle = isTransfer
         ? '${account?.name ?? '—'} → ${transaction.toAccount.value?.name ?? '—'}'
-        : [categoryLabel(category, l10n), account?.name]
-            .where((e) => e != null && e.isNotEmpty)
-            .join(', ');
+        : [
+            categoryLabel(category, l10n),
+            account?.name,
+          ].where((e) => e != null && e.isNotEmpty).join(', ');
     final isRecurring =
         transaction.isRecurring || transaction.parentRecurringId != null;
 

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/numo_palette.dart';
-import '../../../core/l10n/l10n.dart';
+import '../../../core/constants/app_info.dart';
 import '../../../core/constants/currencies.dart';
 import '../../../core/constants/dimens.dart';
+import '../../../core/l10n/l10n.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/pin_hasher.dart';
 import '../../../data/models/app_settings.dart';
 import '../../../data/services/export_service.dart';
@@ -50,23 +51,29 @@ class SettingsScreen extends ConsumerWidget {
                 : Text(l10n.setBiometricNeedsPin),
             value: settings.biometricEnabled,
             activeThumbColor: context.palette.ink,
-            onChanged: settings.pinEnabled
-                ? (v) => notifier.setBiometric(v)
-                : null,
+            onChanged: settings.pinEnabled ? notifier.setBiometric : null,
           ),
 
           _header(theme, l10n.setAppearance),
           Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: Dimens.screenPaddingH, vertical: 8),
+              horizontal: Dimens.screenPaddingH,
+              vertical: 8,
+            ),
             child: SegmentedButton<AppTheme>(
               segments: [
                 ButtonSegment(
-                    value: AppTheme.light, label: Text(l10n.setThemeLight)),
+                  value: AppTheme.light,
+                  label: Text(l10n.setThemeLight),
+                ),
                 ButtonSegment(
-                    value: AppTheme.dark, label: Text(l10n.setThemeDark)),
+                  value: AppTheme.dark,
+                  label: Text(l10n.setThemeDark),
+                ),
                 ButtonSegment(
-                    value: AppTheme.system, label: Text(l10n.setThemeAuto)),
+                  value: AppTheme.system,
+                  label: Text(l10n.setThemeAuto),
+                ),
               ],
               selected: {settings.theme},
               onSelectionChanged: (s) => notifier.setTheme(s.first),
@@ -84,8 +91,7 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.attach_money),
             title: Text(l10n.setCurrency),
-            subtitle: Text(
-                '${settings.currency} (${settings.currencySymbol})'),
+            subtitle: Text('${settings.currency} (${settings.currencySymbol})'),
             onTap: () => _pickCurrency(context, ref),
           ),
           ListTile(
@@ -112,8 +118,10 @@ class SettingsScreen extends ConsumerWidget {
           ),
           ListTile(
             leading: Icon(Icons.delete_forever, color: context.palette.expense),
-            title: Text(l10n.setDeleteAll,
-                style: TextStyle(color: context.palette.expense)),
+            title: Text(
+              l10n.setDeleteAll,
+              style: TextStyle(color: context.palette.expense),
+            ),
             onTap: () => _deleteAll(context),
           ),
 
@@ -121,7 +129,7 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: Text(l10n.appTagline),
-            subtitle: Text(l10n.appVersion('1.0.0')),
+            subtitle: Text(l10n.appVersion(kAppVersion)),
           ),
         ],
       ),
@@ -131,14 +139,19 @@ class SettingsScreen extends ConsumerWidget {
   Widget _header(ThemeData theme, String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(Dimens.screenPaddingH, 16, 0, 4),
-      child: Text(title,
-          style: theme.textTheme.bodySmall
-              ?.copyWith(fontWeight: FontWeight.w600)),
+      child: Text(
+        title,
+        style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+      ),
     );
   }
 
-  Future<void> _togglePin(BuildContext context, WidgetRef ref,
-      AppSettings settings, bool enable) async {
+  Future<void> _togglePin(
+    BuildContext context,
+    WidgetRef ref,
+    AppSettings settings,
+    bool enable,
+  ) async {
     final notifier = ref.read(settingsProvider.notifier);
     if (enable) {
       final pin = await context.push<String>('/create-pin');
@@ -211,7 +224,10 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _pickLanguage(
-      BuildContext context, WidgetRef ref, String? current) async {
+    BuildContext context,
+    WidgetRef ref,
+    String? current,
+  ) async {
     final l10n = context.l10n;
     final options = <(String?, String)>[
       (null, l10n.languageSystem),
@@ -242,7 +258,10 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _pickStartDay(
-      BuildContext context, WidgetRef ref, int current) async {
+    BuildContext context,
+    WidgetRef ref,
+    int current,
+  ) async {
     await showModalBottomSheet(
       context: context,
       builder: (_) => GridView.count(
@@ -258,11 +277,15 @@ class SettingsScreen extends ConsumerWidget {
               },
               child: Center(
                 child: CircleAvatar(
-                  backgroundColor:
-                      d == current ? context.palette.ink : Colors.transparent,
-                  child: Text('$d',
-                      style: TextStyle(
-                          color: d == current ? context.palette.onInk : null)),
+                  backgroundColor: d == current
+                      ? context.palette.ink
+                      : Colors.transparent,
+                  child: Text(
+                    '$d',
+                    style: TextStyle(
+                      color: d == current ? context.palette.onInk : null,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -278,7 +301,8 @@ class SettingsScreen extends ConsumerWidget {
       await ExportService.exportTransactions(l10n);
     } catch (e) {
       messenger.showSnackBar(
-          SnackBar(content: Text(l10n.setExportFailed(e.toString()))));
+        SnackBar(content: Text(l10n.setExportFailed(e.toString()))),
+      );
     }
   }
 
@@ -292,12 +316,16 @@ class SettingsScreen extends ConsumerWidget {
         content: Text(l10n.setDeleteAllBody),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.cancel)),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
           FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: context.palette.expense),
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(l10n.continueLabel)),
+            style: FilledButton.styleFrom(
+              backgroundColor: context.palette.expense,
+            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.continueLabel),
+          ),
         ],
       ),
     );
@@ -322,21 +350,25 @@ class SettingsScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(l10n.cancel)),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
           FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: context.palette.expense),
-              onPressed: () => Navigator.of(context).pop(
-                  controller.text.trim().toUpperCase() == l10n.setConfirmWord),
-              child: Text(l10n.setDeleteEverything)),
+            style: FilledButton.styleFrom(
+              backgroundColor: context.palette.expense,
+            ),
+            onPressed: () => Navigator.of(
+              context,
+            ).pop(controller.text.trim().toUpperCase() == l10n.setConfirmWord),
+            child: Text(l10n.setDeleteEverything),
+          ),
         ],
       ),
     );
     controller.dispose();
     if (step2 == true) {
       await IsarService.instance.clearAll();
-      messenger.showSnackBar(
-          SnackBar(content: Text(l10n.setAllDeleted)));
+      messenger.showSnackBar(SnackBar(content: Text(l10n.setAllDeleted)));
     }
   }
 }

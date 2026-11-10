@@ -11,8 +11,10 @@ class RecurrenceService {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    final templates =
-        await isar.transactions.filter().isRecurringEqualTo(true).findAll();
+    final templates = await isar.transactions
+        .filter()
+        .isRecurringEqualTo(true)
+        .findAll();
 
     for (final template in templates) {
       template.account.loadSync();
@@ -42,11 +44,7 @@ class RecurrenceService {
           ..parentRecurringId = template.id
           ..pocketId = template.pocketId;
 
-        await repo.add(
-          copy,
-          accountId: accountId,
-          categoryId: categoryId,
-        );
+        await repo.add(copy, accountId: accountId, categoryId: categoryId);
 
         next = _nextDate(next, freq);
         generated = true;

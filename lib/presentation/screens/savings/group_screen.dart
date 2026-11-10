@@ -33,8 +33,9 @@ class GroupScreen extends ConsumerStatefulWidget {
 }
 
 class _GroupScreenState extends ConsumerState<GroupScreen> {
-  late final ConfettiController _confetti =
-      ConfettiController(duration: const Duration(seconds: 2));
+  late final ConfettiController _confetti = ConfettiController(
+    duration: const Duration(seconds: 2),
+  );
 
   @override
   void dispose() {
@@ -112,7 +113,11 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
       case 'withdraw':
         await MoneySheet.withdraw(context, pocket);
       case 'edit':
-        await PocketSheet.show(context, groupId: pocket.groupId, pocket: pocket);
+        await PocketSheet.show(
+          context,
+          groupId: pocket.groupId,
+          pocket: pocket,
+        );
     }
   }
 
@@ -133,8 +138,8 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
     final suggestions = template == null
         ? const <PocketSeed>[]
         : template.pockets
-            .where((s) => !existing.contains(s.label(l10n).toLowerCase()))
-            .toList();
+              .where((s) => !existing.contains(s.label(l10n).toLowerCase()))
+              .toList();
 
     final sections = [
       (PocketKind.monthly, l10n.svSectionMonthly),
@@ -157,23 +162,40 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
         children: [
           ListView(
             padding: const EdgeInsets.fromLTRB(
-                Dimens.screenPaddingH, 8, Dimens.screenPaddingH, 32),
+              Dimens.screenPaddingH,
+              8,
+              Dimens.screenPaddingH,
+              32,
+            ),
             children: [
-              Text(l10n.svSetAside,
-                  style: AppTextStyles.caption
-                      .copyWith(fontSize: 13, color: p.inkMuted)),
+              Text(
+                l10n.svSetAside,
+                style: AppTextStyles.caption.copyWith(
+                  fontSize: 13,
+                  color: p.inkMuted,
+                ),
+              ),
               FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.centerLeft,
-                child: Text(fmt(view.saved),
-                    style: AppTextStyles.amountHero.copyWith(color: p.ink)),
+                child: Text(
+                  fmt(view.saved),
+                  style: AppTextStyles.amountHero.copyWith(color: p.ink),
+                ),
               ),
-              Text(l10n.svOfPockets(fmt(view.target), view.pockets.length),
-                  style: AppTextStyles.caption
-                      .copyWith(fontSize: 13, color: p.inkMuted)),
+              Text(
+                l10n.svOfPockets(fmt(view.target), view.pockets.length),
+                style: AppTextStyles.caption.copyWith(
+                  fontSize: 13,
+                  color: p.inkMuted,
+                ),
+              ),
               const SizedBox(height: 12),
               BudgetProgressBar(
-                  spent: view.saved, limit: view.target, color: p.ink),
+                spent: view.saved,
+                limit: view.target,
+                color: p.ink,
+              ),
               if (view.pockets.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Row(
@@ -184,8 +206,9 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                         icon: const Icon(Icons.add_rounded, size: 18),
                         label: Text(l10n.goalContribute),
                         style: FilledButton.styleFrom(
-                            minimumSize: const Size.fromHeight(44),
-                            textStyle: AppTextStyles.labelFrom(14)),
+                          minimumSize: const Size.fromHeight(44),
+                          textStyle: AppTextStyles.labelFrom(14),
+                        ),
                       ),
                     ),
                     if (view.pockets.length > 1) ...[
@@ -193,7 +216,8 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () async => _celebrateIf(
-                              await MoneySheet.distribute(context, view)),
+                            await MoneySheet.distribute(context, view),
+                          ),
                           child: Text(l10n.svDistribute),
                         ),
                       ),
@@ -204,8 +228,10 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
               for (final (kind, title) in sections)
                 if (view.ofKind(kind).isNotEmpty) ...[
                   const SizedBox(height: 22),
-                  Text(title,
-                      style: AppTextStyles.section.copyWith(color: p.ink)),
+                  Text(
+                    title,
+                    style: AppTextStyles.section.copyWith(color: p.ink),
+                  ),
                   const SizedBox(height: 4),
                   for (final pocket in view.ofKind(kind))
                     _PocketRow(
@@ -215,14 +241,18 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                     ),
                   if (kind == PocketKind.monthly) ...[
                     const SizedBox(height: 6),
-                    Text(l10n.svMonthlyNote,
-                        style: AppTextStyles.caption.copyWith(color: p.inkMuted)),
+                    Text(
+                      l10n.svMonthlyNote,
+                      style: AppTextStyles.caption.copyWith(color: p.inkMuted),
+                    ),
                   ],
                 ],
               if (suggestions.isNotEmpty) ...[
                 const SizedBox(height: 24),
-                Text(l10n.svSuggestions,
-                    style: AppTextStyles.section.copyWith(color: p.ink)),
+                Text(
+                  l10n.svSuggestions,
+                  style: AppTextStyles.section.copyWith(color: p.ink),
+                ),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,
@@ -232,8 +262,11 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                       ActionChip(
                         avatar: Icon(AppIcons.resolve(s.iconName), size: 16),
                         label: Text(s.label(l10n)),
-                        onPressed: () => PocketSheet.show(context,
-                            groupId: view.group.id, seed: s),
+                        onPressed: () => PocketSheet.show(
+                          context,
+                          groupId: view.group.id,
+                          seed: s,
+                        ),
                       ),
                   ],
                 ),
@@ -245,7 +278,8 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                 icon: const Icon(Icons.add_rounded, size: 18),
                 label: Text(l10n.svAddPocket),
                 style: TextButton.styleFrom(
-                    textStyle: AppTextStyles.labelFrom(15)),
+                  textStyle: AppTextStyles.labelFrom(15),
+                ),
               ),
             ],
           ),
@@ -256,9 +290,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
               blastDirection: math.pi / 2,
               emissionFrequency: 0.05,
               numberOfParticles: 20,
-              maxBlastForce: 20,
               minBlastForce: 8,
-              gravity: 0.2,
               colors: AppColors.palette,
             ),
           ),
@@ -272,8 +304,11 @@ class _PocketRow extends StatelessWidget {
   final Pocket pocket;
   final String Function(double) fmt;
   final VoidCallback onTap;
-  const _PocketRow(
-      {required this.pocket, required this.fmt, required this.onTap});
+  const _PocketRow({
+    required this.pocket,
+    required this.fmt,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -292,24 +327,29 @@ class _PocketRow extends StatelessWidget {
       }
     }
     final negative = pocket.savedAmount < 0;
-    final barColor =
-        negative || dueColor == p.expense ? p.expense : p.ink;
+    final barColor = negative || dueColor == p.expense ? p.expense : p.ink;
 
     return InkWell(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: p.track))),
+          border: Border(bottom: BorderSide(color: p.track)),
+        ),
         child: Row(
           children: [
             Container(
               width: 34,
               height: 34,
-              decoration:
-                  BoxDecoration(color: p.surfaceSubtle, shape: BoxShape.circle),
-              child: Icon(AppIcons.resolve(pocket.iconName),
-                  size: 17, color: p.ink),
+              decoration: BoxDecoration(
+                color: p.surfaceSubtle,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                AppIcons.resolve(pocket.iconName),
+                size: 17,
+                color: p.ink,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -319,25 +359,30 @@ class _PocketRow extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(pocket.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style:
-                                AppTextStyles.rowTitle.copyWith(color: p.ink)),
+                        child: Text(
+                          pocket.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.rowTitle.copyWith(color: p.ink),
+                        ),
                       ),
                       Text.rich(
-                        TextSpan(children: [
-                          TextSpan(
-                            text: fmt(pocket.savedAmount),
-                            style: AppTextStyles.rowAmount.copyWith(
-                                color: negative ? p.expense : p.ink),
-                          ),
-                          TextSpan(
-                            text: ' / ${fmt(pocket.targetAmount)}',
-                            style: AppTextStyles.bodyMedium
-                                .copyWith(color: p.inkMuted),
-                          ),
-                        ]),
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: fmt(pocket.savedAmount),
+                              style: AppTextStyles.rowAmount.copyWith(
+                                color: negative ? p.expense : p.ink,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' / ${fmt(pocket.targetAmount)}',
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: p.inkMuted,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -350,8 +395,10 @@ class _PocketRow extends StatelessWidget {
                   ),
                   if (due != null) ...[
                     const SizedBox(height: 4),
-                    Text(due,
-                        style: AppTextStyles.caption.copyWith(color: dueColor)),
+                    Text(
+                      due,
+                      style: AppTextStyles.caption.copyWith(color: dueColor),
+                    ),
                   ],
                 ],
               ),

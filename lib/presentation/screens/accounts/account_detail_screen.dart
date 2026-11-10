@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/numo_palette.dart';
-import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
+import '../../../core/l10n/l10n.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/account.dart';
@@ -51,7 +51,11 @@ class AccountDetailScreen extends ConsumerWidget {
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
-            Dimens.screenPaddingH, 8, Dimens.screenPaddingH, 24),
+          Dimens.screenPaddingH,
+          8,
+          Dimens.screenPaddingH,
+          24,
+        ),
         children: [
           if (account.isCredit)
             _CreditSummary(account: account, settings: settings)
@@ -68,7 +72,9 @@ class AccountDetailScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(top: 24),
               child: EmptyState(
-                  icon: Icons.receipt_long, message: l10n.accNoTransactions),
+                icon: Icons.receipt_long,
+                message: l10n.accNoTransactions,
+              ),
             )
           else
             ...txs.map(
@@ -89,8 +95,11 @@ class _BalanceSummary extends StatelessWidget {
 
   /// Dinero de esta cuenta apartado en bolsillos.
   final double setAside;
-  const _BalanceSummary(
-      {required this.account, required this.settings, required this.setAside});
+  const _BalanceSummary({
+    required this.account,
+    required this.settings,
+    required this.setAside,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -110,12 +119,16 @@ class _BalanceSummary extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(context.l10n.accBalanceAvailable,
-                      style: theme.textTheme.bodySmall),
+                  Text(
+                    context.l10n.accBalanceAvailable,
+                    style: theme.textTheme.bodySmall,
+                  ),
                   Text(
                     CurrencyFormatter.format(account.balance, settings),
                     style: theme.textTheme.titleLarge?.copyWith(
-                      color: account.balance < 0 ? context.palette.expense : null,
+                      color: account.balance < 0
+                          ? context.palette.expense
+                          : null,
                     ),
                   ),
                   if (setAside > 0) ...[
@@ -126,8 +139,9 @@ class _BalanceSummary extends StatelessWidget {
                     ),
                     Text(
                       '${context.l10n.accSpendable}: ${CurrencyFormatter.format(account.balance - setAside, settings)}',
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.w600),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ],
@@ -174,8 +188,12 @@ class _CreditSummary extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(available != null ? l10n.accCreditAvailable : l10n.accCurrentDebt,
-                          style: theme.textTheme.bodySmall),
+                      Text(
+                        available != null
+                            ? l10n.accCreditAvailable
+                            : l10n.accCurrentDebt,
+                        style: theme.textTheme.bodySmall,
+                      ),
                       Text(
                         _fmt(available ?? account.balance),
                         style: theme.textTheme.titleLarge?.copyWith(
@@ -192,10 +210,16 @@ class _CreditSummary extends StatelessWidget {
             if (account.creditLimit != null) ...[
               const SizedBox(height: 16),
               BudgetProgressBar(
-                  spent: account.balance, limit: account.creditLimit!),
+                spent: account.balance,
+                limit: account.creditLimit!,
+              ),
               const SizedBox(height: 12),
-              _row(theme, l10n.debt, _fmt(account.balance),
-                  color: context.palette.expense),
+              _row(
+                theme,
+                l10n.debt,
+                _fmt(account.balance),
+                color: context.palette.expense,
+              ),
               _row(theme, l10n.accCreditLimit, _fmt(account.creditLimit!)),
             ],
             const Divider(height: 24),
@@ -212,7 +236,9 @@ class _CreditSummary extends StatelessWidget {
                   ? context.palette.warning
                   : null,
             ),
-            if (statement == null || payment == null || account.creditLimit == null)
+            if (statement == null ||
+                payment == null ||
+                account.creditLimit == null)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
@@ -226,8 +252,7 @@ class _CreditSummary extends StatelessWidget {
               child: FilledButton.tonalIcon(
                 icon: const Icon(Icons.payments_outlined),
                 label: Text(l10n.accPayCard),
-                onPressed: () =>
-                    context.push('/add-transfer?to=${account.id}'),
+                onPressed: () => context.push('/add-transfer?to=${account.id}'),
               ),
             ),
           ],
@@ -245,8 +270,10 @@ class _CreditSummary extends StatelessWidget {
           Text(label, style: theme.textTheme.bodySmall),
           Text(
             value,
-            style: theme.textTheme.bodyLarge
-                ?.copyWith(fontWeight: FontWeight.w600, color: color),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
           ),
         ],
       ),

@@ -13,7 +13,7 @@ import '../services/isar_service.dart';
 /// Exporta todas las transacciones a CSV y abre el menú de compartir.
 class ExportService {
   static Future<void> exportTransactions(AppLocalizations l10n) async {
-    final Isar isar = IsarService.instance.isar;
+    final isar = IsarService.instance.isar;
     final txs = await isar.transactions.where().sortByDate().findAll();
     for (final t in txs) {
       t.category.loadSync();

@@ -29,12 +29,12 @@ import 'package:numo/presentation/screens/accounts/accounts_screen.dart';
 import 'package:numo/presentation/screens/add_transaction/add_transaction_screen.dart';
 import 'package:numo/presentation/screens/analytics/analytics_screen.dart';
 import 'package:numo/presentation/screens/budgets/budgets_screen.dart';
+import 'package:numo/presentation/screens/dashboard/dashboard_screen.dart';
+import 'package:numo/presentation/screens/home/home_shell.dart';
 import 'package:numo/presentation/screens/savings/group_screen.dart';
 import 'package:numo/presentation/screens/savings/savings_screen.dart';
 import 'package:numo/presentation/screens/settings/settings_screen.dart';
 import 'package:numo/presentation/screens/transactions/transactions_screen.dart';
-import 'package:numo/presentation/screens/dashboard/dashboard_screen.dart';
-import 'package:numo/presentation/screens/home/home_shell.dart';
 import 'package:numo/providers/accounts_provider.dart';
 import 'package:numo/providers/budgets_provider.dart';
 import 'package:numo/providers/categories_provider.dart';
@@ -57,10 +57,12 @@ Future<void> _loadFonts() async {
   }
   await inter.load();
   // Íconos de Material desde el SDK de Flutter.
-  final flutterRoot = Platform.environment['FLUTTER_ROOT'] ??
+  final flutterRoot =
+      Platform.environment['FLUTTER_ROOT'] ??
       '${Platform.environment['HOME']}/flutter';
   final icons = File(
-      '$flutterRoot/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
+    '$flutterRoot/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
+  );
   final loader = FontLoader('MaterialIcons')
     ..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())));
   await loader.load();
@@ -80,24 +82,29 @@ class _Data {
     for (var i = 0; i < categories.length; i++) {
       categories[i].id = i + 1;
     }
-    Account acc(int id, String name, AccountType type, double balance,
-            {double? limit, int? pay}) =>
-        Account()
-          ..id = id
-          ..name = name
-          ..type = type
-          ..balance = balance
-          ..creditLimit = limit
-          ..paymentDueDay = pay
-          ..statementDay = pay == null ? null : 30
-          ..colorHex = '#000000'
-          ..iconName = type == AccountType.credit
-              ? 'credit_card'
-              : type == AccountType.bank
-                  ? 'account_balance'
-                  : 'account_balance_wallet'
-          ..createdAt = DateTime(2026)
-          ..isActive = true;
+    Account acc(
+      int id,
+      String name,
+      AccountType type,
+      double balance, {
+      double? limit,
+      int? pay,
+    }) => Account()
+      ..id = id
+      ..name = name
+      ..type = type
+      ..balance = balance
+      ..creditLimit = limit
+      ..paymentDueDay = pay
+      ..statementDay = pay == null ? null : 30
+      ..colorHex = '#000000'
+      ..iconName = type == AccountType.credit
+          ? 'credit_card'
+          : type == AccountType.bank
+          ? 'account_balance'
+          : 'account_balance_wallet'
+      ..createdAt = DateTime(2026)
+      ..isActive = true;
     accounts = [
       acc(1, 'Bancolombia', AccountType.bank, 4240000),
       acc(2, 'Efectivo', AccountType.cash, 180000),
@@ -105,8 +112,14 @@ class _Data {
     ];
 
     final now = DateTime.now();
-    Transaction tx(String title, double amount, TransactionType type,
-        String catKey, int accountId, int daysAgo) {
+    Transaction tx(
+      String title,
+      double amount,
+      TransactionType type,
+      String catKey,
+      int accountId,
+      int daysAgo,
+    ) {
       final t = Transaction()
         ..id = title.hashCode
         ..title = title
@@ -155,32 +168,73 @@ class _Data {
       group(2, 'Viaje a Cartagena', 'flight', 'trip'),
     ];
     var pid = 0;
-    Pocket pocket(int g, String name, String icon, PocketKind kind,
-            double target, double saved, [DateTime? due]) =>
-        Pocket()
-          ..id = ++pid
-          ..groupId = g
-          ..name = name
-          ..iconName = icon
-          ..kind = kind
-          ..targetAmount = target
-          ..savedAmount = saved
-          ..dueDate = due
-          ..accountId = 1
-          ..isCompleted = false
-          ..sortOrder = pid
-          ..createdAt = DateTime(2026);
+    Pocket pocket(
+      int g,
+      String name,
+      String icon,
+      PocketKind kind,
+      double target,
+      double saved, [
+      DateTime? due,
+    ]) => Pocket()
+      ..id = ++pid
+      ..groupId = g
+      ..name = name
+      ..iconName = icon
+      ..kind = kind
+      ..targetAmount = target
+      ..savedAmount = saved
+      ..dueDate = due
+      ..accountId = 1
+      ..isCompleted = false
+      ..sortOrder = pid
+      ..createdAt = DateTime(2026);
     final y = now.year;
     pockets = [
-      pocket(1, 'Gasolina', 'local_gas_station', PocketKind.monthly, 400000, 280000),
-      pocket(1, 'Parqueaderos', 'local_parking', PocketKind.monthly, 150000, 90000),
+      pocket(
+        1,
+        'Gasolina',
+        'local_gas_station',
+        PocketKind.monthly,
+        400000,
+        280000,
+      ),
+      pocket(
+        1,
+        'Parqueaderos',
+        'local_parking',
+        PocketKind.monthly,
+        150000,
+        90000,
+      ),
       pocket(1, 'Peajes', 'toll', PocketKind.monthly, 120000, 60000),
-      pocket(1, 'SOAT', 'shield', PocketKind.yearly, 980000, 420000,
-          DateTime(now.month <= 3 ? y : y + 1, 3, 12)),
-      pocket(1, 'Técnico-mecánica', 'build', PocketKind.yearly, 310000, 150000,
-          DateTime(now.month <= 4 ? y : y + 1, 4, 20)),
-      pocket(1, 'Impuesto vehicular', 'receipt_long', PocketKind.yearly,
-          1940000, 150000, DateTime(now.month <= 6 ? y : y + 1, 6, 30)),
+      pocket(
+        1,
+        'SOAT',
+        'shield',
+        PocketKind.yearly,
+        980000,
+        420000,
+        DateTime(now.month <= 3 ? y : y + 1, 3, 12),
+      ),
+      pocket(
+        1,
+        'Técnico-mecánica',
+        'build',
+        PocketKind.yearly,
+        310000,
+        150000,
+        DateTime(now.month <= 4 ? y : y + 1, 4, 20),
+      ),
+      pocket(
+        1,
+        'Impuesto vehicular',
+        'receipt_long',
+        PocketKind.yearly,
+        1940000,
+        150000,
+        DateTime(now.month <= 6 ? y : y + 1, 6, 30),
+      ),
       pocket(2, 'Tiquetes', 'flight', PocketKind.goal, 900000, 900000),
       pocket(2, 'Hospedaje', 'hotel', PocketKind.goal, 1200000, 385000),
     ];
@@ -205,13 +259,15 @@ Widget _app({
         StatefulShellRoute.indexedStack(
           builder: (_, __, shell) => HomeShell(navigationShell: shell),
           branches: [
-            StatefulShellBranch(routes: [
-              GoRoute(path: '/home', builder: (_, __) => home),
-            ]),
+            StatefulShellBranch(
+              routes: [GoRoute(path: '/home', builder: (_, __) => home)],
+            ),
             for (final p in ['/b', '/c', '/d'])
-              StatefulShellBranch(routes: [
-                GoRoute(path: p, builder: (_, __) => const SizedBox()),
-              ]),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(path: p, builder: (_, __) => const SizedBox()),
+                ],
+              ),
           ],
         )
       else
@@ -223,7 +279,9 @@ Widget _app({
     overrides: [
       settingsProvider.overrideWith(() => _FakeSettings(settings)),
       accountsProvider.overrideWith((ref) => Stream.value(data.accounts)),
-      transactionsProvider.overrideWith((ref) => Stream.value(data.transactions)),
+      transactionsProvider.overrideWith(
+        (ref) => Stream.value(data.transactions),
+      ),
       categoriesProvider.overrideWith((ref) => Stream.value(data.categories)),
       budgetsProvider.overrideWith((ref) => Stream.value(data.budgets)),
       savingsGroupsProvider.overrideWith((ref) => Stream.value(data.groups)),
@@ -257,7 +315,9 @@ Future<void> _shoot(WidgetTester tester, Widget app, String name) async {
     await tester.pump(const Duration(milliseconds: 100));
   }
   await expectLater(
-      find.byType(MaterialApp), matchesGoldenFile('out/$name.png'));
+    find.byType(MaterialApp),
+    matchesGoldenFile('out/$name.png'),
+  );
 }
 
 void main() {

@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/numo_palette.dart';
-import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
+import '../../../core/l10n/l10n.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/transaction.dart';
@@ -19,8 +21,7 @@ class TransactionsScreen extends ConsumerStatefulWidget {
   const TransactionsScreen({super.key});
 
   @override
-  ConsumerState<TransactionsScreen> createState() =>
-      _TransactionsScreenState();
+  ConsumerState<TransactionsScreen> createState() => _TransactionsScreenState();
 }
 
 class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
@@ -116,7 +117,11 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
           : ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.fromLTRB(
-                  Dimens.screenPaddingH, 8, Dimens.screenPaddingH, 96),
+                Dimens.screenPaddingH,
+                8,
+                Dimens.screenPaddingH,
+                96,
+              ),
               itemCount: groups.length,
               itemBuilder: (_, i) => _dayGroup(groups[i]),
             ),
@@ -135,12 +140,16 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(DateFormatter.groupHeader(group.day, context.l10n),
-                  style: theme.textTheme.titleMedium),
+              Text(
+                DateFormatter.groupHeader(group.day, context.l10n),
+                style: theme.textTheme.titleMedium,
+              ),
               Text(
                 CurrencyFormatter.signed(net, settings, isIncome: net >= 0),
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: net >= 0 ? context.palette.income : context.palette.expense,
+                  color: net >= 0
+                      ? context.palette.income
+                      : context.palette.expense,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -176,7 +185,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
       ),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
-          context.push('/edit-transaction/${t.id}');
+          unawaited(context.push('/edit-transaction/${t.id}'));
           return false;
         }
         return true;

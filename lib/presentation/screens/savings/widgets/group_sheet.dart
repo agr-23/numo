@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +24,9 @@ class GroupSheet extends ConsumerStatefulWidget {
       context: context,
       isScrollControlled: true,
       builder: (_) => FractionallySizedBox(
-          heightFactor: 0.85, child: GroupSheet._(group: group)),
+        heightFactor: 0.85,
+        child: GroupSheet._(group: group),
+      ),
     );
   }
 
@@ -69,18 +73,27 @@ class _GroupSheetState extends ConsumerState<GroupSheet> {
     final p = context.palette;
     final l10n = context.l10n;
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: ListView(
         padding: const EdgeInsets.fromLTRB(
-            Dimens.screenPaddingH, 0, Dimens.screenPaddingH, 24),
+          Dimens.screenPaddingH,
+          0,
+          Dimens.screenPaddingH,
+          24,
+        ),
         children: [
-          Text(_isEdit ? l10n.svEditGroup : l10n.svNewGroup,
-              style: AppTextStyles.headline.copyWith(color: p.ink)),
+          Text(
+            _isEdit ? l10n.svEditGroup : l10n.svNewGroup,
+            style: AppTextStyles.headline.copyWith(color: p.ink),
+          ),
           if (!_isEdit) ...[
             const SizedBox(height: 16),
-            Text(l10n.svTemplates,
-                style: AppTextStyles.section.copyWith(color: p.ink)),
+            Text(
+              l10n.svTemplates,
+              style: AppTextStyles.section.copyWith(color: p.ink),
+            ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -134,9 +147,10 @@ class _GroupSheetState extends ConsumerState<GroupSheet> {
   Future<void> _save() async {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
-      HapticFeedback.heavyImpact();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(context.l10n.writeName)));
+      unawaited(HapticFeedback.heavyImpact());
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.writeName)));
       return;
     }
     final router = GoRouter.of(context);
@@ -147,10 +161,10 @@ class _GroupSheetState extends ConsumerState<GroupSheet> {
       ..colorHex = widget.group?.colorHex ?? '#111114'
       ..templateKey = _template;
     final id = await ref.read(pocketRepositoryProvider).saveGroup(group);
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     navigator.pop();
     // Un grupo nuevo abre su detalle para agregar los bolsillos.
-    if (!_isEdit) router.push('/savings-group/$id');
+    if (!_isEdit) unawaited(router.push('/savings-group/$id'));
   }
 
   Future<void> _delete() async {
@@ -163,11 +177,13 @@ class _GroupSheetState extends ConsumerState<GroupSheet> {
         content: Text(ctx.l10n.svDeleteGroupBody),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(ctx.l10n.cancel)),
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(ctx.l10n.cancel),
+          ),
           FilledButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: Text(ctx.l10n.delete)),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(ctx.l10n.delete),
+          ),
         ],
       ),
     );

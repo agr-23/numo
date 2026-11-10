@@ -31,8 +31,10 @@ class EmptyState extends StatelessWidget {
             Container(
               width: 72,
               height: 72,
-              decoration:
-                  BoxDecoration(color: p.surfaceSubtle, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: p.surfaceSubtle,
+                shape: BoxShape.circle,
+              ),
               child: Icon(icon, size: 32, color: p.ink),
             ),
             const SizedBox(height: Dimens.cardPadding),

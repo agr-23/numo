@@ -2,10 +2,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/numo_palette.dart';
-import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../data/models/app_settings.dart';
 import '../../../providers/analytics_provider.dart';
@@ -35,7 +35,11 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       appBar: AppBar(title: Text(l10n.anTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
-            Dimens.screenPaddingH, 8, Dimens.screenPaddingH, 96),
+          Dimens.screenPaddingH,
+          8,
+          Dimens.screenPaddingH,
+          96,
+        ),
         children: [
           _periodSelector(period),
           const SizedBox(height: Dimens.sectionGap),
@@ -57,8 +61,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           if (summary.slices.isNotEmpty) ...[
             Text(l10n.anRanking, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
-            for (final s in summary.slices)
-              _rankingRow(theme, s, settings),
+            for (final s in summary.slices) _rankingRow(theme, s, settings),
           ],
         ],
       ),
@@ -105,7 +108,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   }
 
   Widget _metricCards(
-      ThemeData theme, AnalyticsSummary summary, AppSettings settings) {
+    ThemeData theme,
+    AnalyticsSummary summary,
+    AppSettings settings,
+  ) {
     Widget card(String label, double value, Color color) {
       return Expanded(
         child: Container(
@@ -124,9 +130,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 child: Text(
                   CurrencyFormatter.format(value, settings),
                   style: TextStyle(
-                      color: color,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16),
+                    color: color,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],
@@ -141,24 +148,32 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         const SizedBox(width: 8),
         card(context.l10n.expenses, summary.expense, context.palette.expense),
         const SizedBox(width: 8),
-        card(context.l10n.balance, summary.net,
-            summary.net >= 0 ? context.palette.income : context.palette.expense),
+        card(
+          context.l10n.balance,
+          summary.net,
+          summary.net >= 0 ? context.palette.income : context.palette.expense,
+        ),
       ],
     );
   }
 
   Widget _donut(
-      ThemeData theme, AnalyticsSummary summary, AppSettings settings) {
+    ThemeData theme,
+    AnalyticsSummary summary,
+    AppSettings settings,
+  ) {
     if (summary.slices.isEmpty) {
       return SizedBox(
         height: 200,
         child: EmptyState(
-            icon: Icons.pie_chart_outline,
-            message: context.l10n.anNoExpenses),
+          icon: Icons.pie_chart_outline,
+          message: context.l10n.anNoExpenses,
+        ),
       );
     }
 
-    final centerText = _touchedSlice >= 0 && _touchedSlice < summary.slices.length
+    final centerText =
+        _touchedSlice >= 0 && _touchedSlice < summary.slices.length
         ? summary.slices[_touchedSlice]
         : null;
 
@@ -196,21 +211,29 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(categoryLabel(centerText.category, context.l10n),
-                        style: theme.textTheme.bodySmall,
-                        textAlign: TextAlign.center),
+                    Text(
+                      categoryLabel(centerText.category, context.l10n),
+                      style: theme.textTheme.bodySmall,
+                      textAlign: TextAlign.center,
+                    ),
                     Text(
                       CurrencyFormatter.format(centerText.amount, settings),
                       style: theme.textTheme.titleMedium,
                     ),
-                    Text('${(centerText.percent * 100).toStringAsFixed(0)}%',
-                        style: theme.textTheme.bodySmall),
+                    Text(
+                      '${(centerText.percent * 100).toStringAsFixed(0)}%',
+                      style: theme.textTheme.bodySmall,
+                    ),
                   ],
                 )
               else
-                Text(context.l10n.anTotal(CurrencyFormatter.format(summary.expense, settings)),
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyLarge),
+                Text(
+                  context.l10n.anTotal(
+                    CurrencyFormatter.format(summary.expense, settings),
+                  ),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyLarge,
+                ),
             ],
           ),
         ),
@@ -232,8 +255,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  Text('${categoryLabel(s.category, context.l10n)} ${(s.percent * 100).toStringAsFixed(0)}%',
-                      style: theme.textTheme.bodySmall),
+                  Text(
+                    '${categoryLabel(s.category, context.l10n)} ${(s.percent * 100).toStringAsFixed(0)}%',
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ],
               ),
           ],
@@ -243,17 +268,22 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   }
 
   Widget _barChart(
-      ThemeData theme, List<PeriodBar> series, AppSettings settings) {
+    ThemeData theme,
+    List<PeriodBar> series,
+    AppSettings settings,
+  ) {
     final maxVal = series.fold<double>(
-        0,
-        (m, b) => [m, b.income, b.expense]
-            .reduce((a, c) => a > c ? a : c));
+      0,
+      (m, b) => [m, b.income, b.expense].reduce((a, c) => a > c ? a : c),
+    );
     if (maxVal <= 0) {
       return SizedBox(
         height: 180,
         child: Center(
-          child: Text(context.l10n.anNoChartData,
-              style: theme.textTheme.bodySmall),
+          child: Text(
+            context.l10n.anNoChartData,
+            style: theme.textTheme.bodySmall,
+          ),
         ),
       );
     }
@@ -266,12 +296,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           gridData: const FlGridData(show: false),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
-            leftTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles:
-                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            leftTitles: const AxisTitles(),
+            rightTitles: const AxisTitles(),
+            topTitles: const AxisTitles(),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
@@ -280,8 +307,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   if (i < 0 || i >= series.length) return const SizedBox();
                   return Padding(
                     padding: const EdgeInsets.only(top: 6),
-                    child: Text(series[i].label,
-                        style: theme.textTheme.bodySmall),
+                    child: Text(
+                      series[i].label,
+                      style: theme.textTheme.bodySmall,
+                    ),
                   );
                 },
               ),
@@ -322,8 +351,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     );
   }
 
-  Widget _rankingRow(
-      ThemeData theme, CategorySlice s, AppSettings settings) {
+  Widget _rankingRow(ThemeData theme, CategorySlice s, AppSettings settings) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -338,14 +366,22 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           ),
           const SizedBox(width: 10),
           Expanded(
-              child: Text(categoryLabel(s.category, context.l10n),
-                  style: theme.textTheme.bodyLarge)),
-          Text('${(s.percent * 100).toStringAsFixed(0)}%',
-              style: theme.textTheme.bodySmall),
+            child: Text(
+              categoryLabel(s.category, context.l10n),
+              style: theme.textTheme.bodyLarge,
+            ),
+          ),
+          Text(
+            '${(s.percent * 100).toStringAsFixed(0)}%',
+            style: theme.textTheme.bodySmall,
+          ),
           const SizedBox(width: 10),
-          Text(CurrencyFormatter.format(s.amount, settings),
-              style: theme.textTheme.bodyLarge
-                  ?.copyWith(fontWeight: FontWeight.w600)),
+          Text(
+            CurrencyFormatter.format(s.amount, settings),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );

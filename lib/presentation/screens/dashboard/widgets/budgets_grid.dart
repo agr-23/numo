@@ -23,17 +23,22 @@ class BudgetsGrid extends ConsumerWidget {
     final views = ref.watch(budgetViewsProvider).take(_max).toList();
     if (views.isEmpty) return const _CreateBudgetCard();
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final width = (constraints.maxWidth - 10) / 2;
-      return Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: [
-          for (final v in views)
-            SizedBox(width: width, child: _BudgetTile(view: v)),
-        ],
-      );
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = (constraints.maxWidth - 10) / 2;
+        return Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            for (final v in views)
+              SizedBox(
+                width: width,
+                child: _BudgetTile(view: v),
+              ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -50,9 +55,11 @@ class _BudgetTile extends ConsumerWidget {
     final label = view.isExceeded
         ? l10n.budExceeded
         : view.isNearLimit
-            ? l10n.budNearLimit
-            : l10n.amountOf(CurrencyFormatter.format(view.spent, settings),
-                CurrencyFormatter.format(view.limit, settings));
+        ? l10n.budNearLimit
+        : l10n.amountOf(
+            CurrencyFormatter.format(view.spent, settings),
+            CurrencyFormatter.format(view.limit, settings),
+          );
 
     return Material(
       color: p.surface,
@@ -71,22 +78,26 @@ class _BudgetTile extends ConsumerWidget {
               Row(
                 children: [
                   CategoryIcon(
-                      iconName: view.category?.iconName ?? 'more_horiz',
-                      size: 28),
+                    iconName: view.category?.iconName ?? 'more_horiz',
+                    size: 28,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       categoryLabel(view.category, l10n),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.rowTitle
-                          .copyWith(fontSize: 13, color: p.ink),
+                      style: AppTextStyles.rowTitle.copyWith(
+                        fontSize: 13,
+                        color: p.ink,
+                      ),
                     ),
                   ),
                   Text(
                     '${(view.progress * 100).round()}%',
-                    style: AppTextStyles.labelFrom(12)
-                        .copyWith(color: alert ? p.expense : p.inkMuted),
+                    style: AppTextStyles.labelFrom(
+                      12,
+                    ).copyWith(color: alert ? p.expense : p.inkMuted),
                   ),
                 ],
               ),
@@ -97,8 +108,9 @@ class _BudgetTile extends ConsumerWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption
-                    .copyWith(color: alert ? p.expense : p.inkMuted),
+                style: AppTextStyles.caption.copyWith(
+                  color: alert ? p.expense : p.inkMuted,
+                ),
               ),
             ],
           ),

@@ -124,10 +124,13 @@ class AppTheme {
         // Chip sin seleccionar / seleccionado (Flutter usa
         // secondaryLabelStyle para el texto del chip seleccionado).
         labelStyle: AppTextStyles.labelFrom(13).copyWith(color: p.ink),
-        secondaryLabelStyle: AppTextStyles.labelFrom(13).copyWith(color: p.onInk),
+        secondaryLabelStyle: AppTextStyles.labelFrom(
+          13,
+        ).copyWith(color: p.onInk),
         side: WidgetStateBorderSide.resolveWith(
           (s) => BorderSide(
-              color: s.contains(WidgetState.selected) ? p.ink : p.borderStrong),
+            color: s.contains(WidgetState.selected) ? p.ink : p.borderStrong,
+          ),
         ),
         showCheckmark: false,
         shape: const StadiumBorder(),
@@ -168,8 +171,8 @@ class AppTheme {
           final color = s.contains(WidgetState.error)
               ? p.expense
               : s.contains(WidgetState.focused)
-                  ? p.ink
-                  : p.inkMuted;
+              ? p.ink
+              : p.inkMuted;
           return AppTextStyles.body.copyWith(color: color);
         }),
         helperStyle: AppTextStyles.caption.copyWith(color: p.inkMuted),
@@ -204,8 +207,9 @@ class AppTheme {
         showDragHandle: true,
         dragHandleColor: p.borderStrong,
         shape: const RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(Dimens.sheetRadius)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(Dimens.sheetRadius),
+          ),
         ),
       ),
       dialogTheme: DialogThemeData(

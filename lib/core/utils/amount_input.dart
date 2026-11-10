@@ -143,7 +143,6 @@ class _AmountFormatter extends TextInputFormatter {
 
     if (intDigits.isEmpty && !hasDecimal) {
       return const TextEditingValue(
-        text: '',
         selection: TextSelection.collapsed(offset: 0),
       );
     }

@@ -18,13 +18,17 @@ class CurrencyFormatter {
     return _cache.putIfAbsent('$currency/$decimals', () {
       final locale = currencyByCode(currency).locale;
       return NumberFormat.decimalPatternDigits(
-          locale: locale, decimalDigits: decimals);
+        locale: locale,
+        decimalDigits: decimals,
+      );
     });
   }
 
   static String format(double amount, AppSettings settings) {
-    final number = _numberFormat(settings.currency, settings.currencyDecimals)
-        .format(amount.abs());
+    final number = _numberFormat(
+      settings.currency,
+      settings.currencyDecimals,
+    ).format(amount.abs());
     final withSymbol = settings.currencySymbolBefore
         ? '${settings.currencySymbol}$number'
         : '$number ${settings.currencySymbol}';
@@ -32,8 +36,11 @@ class CurrencyFormatter {
   }
 
   /// Igual que [format] pero con signo explícito (+/−) para movimientos.
-  static String signed(double amount, AppSettings settings,
-      {required bool isIncome}) {
+  static String signed(
+    double amount,
+    AppSettings settings, {
+    required bool isIncome,
+  }) {
     final base = format(amount.abs(), settings);
     return isIncome ? '+$base' : '−$base';
   }

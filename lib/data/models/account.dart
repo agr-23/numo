@@ -46,9 +46,8 @@ extension CreditCardX on Account {
       isCredit && creditLimit != null ? creditLimit! - balance : null;
 
   /// Fracción del cupo usada (0..1+). Null si no hay cupo configurado.
-  double? get usage => isCredit && (creditLimit ?? 0) > 0
-      ? balance / creditLimit!
-      : null;
+  double? get usage =>
+      isCredit && (creditLimit ?? 0) > 0 ? balance / creditLimit! : null;
 
   /// Próxima fecha de corte a partir de hoy (incluido).
   DateTime? get nextStatementDate =>

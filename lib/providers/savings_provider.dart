@@ -5,8 +5,9 @@ import '../data/models/pocket.dart';
 import '../data/models/savings_group.dart';
 import '../data/repositories/pocket_repository.dart';
 
-final pocketRepositoryProvider =
-    Provider<PocketRepository>((ref) => PocketRepository());
+final pocketRepositoryProvider = Provider<PocketRepository>(
+  (ref) => PocketRepository(),
+);
 
 final savingsGroupsProvider = StreamProvider<List<SavingsGroup>>((ref) {
   return ref.watch(pocketRepositoryProvider).watchGroups();
@@ -31,10 +32,11 @@ class GroupView {
 
   /// Bolsillo con fecha (anual o meta) que vence primero y aún le falta.
   Pocket? get mostUrgent {
-    final dated = pockets
-        .where((p) => p.dueDate != null && PocketMath.remaining(p) > 0)
-        .toList()
-      ..sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
+    final dated =
+        pockets
+            .where((p) => p.dueDate != null && PocketMath.remaining(p) > 0)
+            .toList()
+          ..sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
     return dated.isEmpty ? null : dated.first;
   }
 
@@ -73,7 +75,11 @@ class SavingsOverview {
   /// Bolsillos sin cuenta (metas antiguas): dinero registrado aparte.
   final double savedOutsideAccounts;
   const SavingsOverview(
-      this.groupCount, this.saved, this.target, this.savedOutsideAccounts);
+    this.groupCount,
+    this.saved,
+    this.target,
+    this.savedOutsideAccounts,
+  );
   double get progress => target <= 0 ? 0 : (saved / target).clamp(0.0, 1.0);
 }
 

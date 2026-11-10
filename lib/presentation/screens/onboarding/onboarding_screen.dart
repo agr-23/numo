@@ -1,14 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/numo_palette.dart';
-import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/currencies.dart';
 import '../../../core/constants/dimens.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/amount_input.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../data/models/account.dart';
@@ -52,7 +54,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     FocusScope.of(context).unfocus();
     if (_page < _pageCount - 1) {
       _pageCtrl.nextPage(
-          duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     } else {
       _finish();
     }
@@ -63,7 +67,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
       messenger.showSnackBar(
-          SnackBar(content: Text(context.l10n.onbAccountNameMissing)));
+        SnackBar(content: Text(context.l10n.onbAccountNameMissing)),
+      );
       _pageCtrl.jumpToPage(_accountPage);
       return;
     }
@@ -84,7 +89,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     await ref.read(accountRepositoryProvider).add(account);
     await ref.read(settingsProvider.notifier).setCurrency(_currency);
     await ref.read(settingsProvider.notifier).completeOnboarding();
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     if (!mounted) return;
     context.go('/home/dashboard');
   }
@@ -103,9 +108,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 duration: const Duration(milliseconds: 200),
                 child: TextButton(
                   onPressed: _page < _currencyPage
-                      ? () => _pageCtrl.animateToPage(_currencyPage,
+                      ? () => _pageCtrl.animateToPage(
+                          _currencyPage,
                           duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOut)
+                          curve: Curves.easeOut,
+                        )
                       : null,
                   child: Text(l10n.onbSkip),
                 ),
@@ -149,7 +156,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 width: double.infinity,
                 height: 52,
                 child: FilledButton(
-                  
                   onPressed: _next,
                   child: Text(switch (_page) {
                     0 => l10n.onbStart,
@@ -176,7 +182,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             width: _page == i ? 22 : 8,
             height: 8,
             decoration: BoxDecoration(
-              color: _page == i ? context.palette.ink : Theme.of(context).dividerColor,
+              color: _page == i
+                  ? context.palette.ink
+                  : Theme.of(context).dividerColor,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -199,22 +207,29 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               borderRadius: BorderRadius.circular(28),
             ),
             child: Center(
-              child: Text('N',
-                  style: TextStyle(
-                      color: context.palette.onInk,
-                      fontSize: 48,
-                      fontWeight: FontWeight.w700)),
+              child: Text(
+                'N',
+                style: TextStyle(
+                  color: context.palette.onInk,
+                  fontSize: 48,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 32),
-          Text(context.l10n.onbWelcomeTitle,
-              textAlign: TextAlign.center, style: theme.textTheme.titleLarge),
+          Text(
+            context.l10n.onbWelcomeTitle,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleLarge,
+          ),
           const SizedBox(height: 12),
           Text(
             context.l10n.onbWelcomeBody,
             textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge
-                ?.copyWith(color: theme.textTheme.bodySmall?.color),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: theme.textTheme.bodySmall?.color,
+            ),
           ),
           const SizedBox(height: 32),
           Text(context.l10n.onbLanguage, style: theme.textTheme.bodySmall),
@@ -263,7 +278,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               padding: const EdgeInsets.only(bottom: 14),
               child: Row(
                 children: [
-                  Icon(pIcon, size: 22, color: theme.textTheme.bodySmall?.color),
+                  Icon(
+                    pIcon,
+                    size: 22,
+                    color: theme.textTheme.bodySmall?.color,
+                  ),
                   const SizedBox(width: 14),
                   Expanded(child: Text(text, style: theme.textTheme.bodyLarge)),
                 ],
@@ -285,8 +304,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         TextField(
           controller: _nameCtrl,
           decoration: InputDecoration(
-              labelText: context.l10n.name,
-              hintText: context.l10n.onbAccountHint),
+            labelText: context.l10n.name,
+            hintText: context.l10n.onbAccountHint,
+          ),
         ),
         const SizedBox(height: 20),
         Text(context.l10n.type, style: theme.textTheme.titleMedium),
@@ -354,17 +374,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(context.l10n.onbCurrencyPreview,
-                  style: TextStyle(
-                      color: context.palette.onInk.withValues(alpha: 0.7),
-                      fontSize: 13)),
+              Text(
+                context.l10n.onbCurrencyPreview,
+                style: TextStyle(
+                  color: context.palette.onInk.withValues(alpha: 0.7),
+                  fontSize: 13,
+                ),
+              ),
               const SizedBox(height: 4),
               Text(
                 CurrencyFormatter.format(1250000, previewSettings),
                 style: TextStyle(
-                    color: context.palette.onInk,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w700),
+                  color: context.palette.onInk,
+                  fontSize: 26,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),

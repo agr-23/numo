@@ -10,20 +10,24 @@ import 'package:numo/data/models/category.dart';
 /// Monta un widget con el idioma [locale] y devuelve sus textos.
 Future<AppLocalizations> pumpL10n(WidgetTester tester, Locale locale) async {
   late AppLocalizations l10n;
-  await tester.pumpWidget(MaterialApp(
-    locale: locale,
-    supportedLocales: kSupportedLocales,
-    localizationsDelegates: const [
-      AppLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    home: Builder(builder: (context) {
-      l10n = context.l10n;
-      return const SizedBox();
-    }),
-  ));
+  await tester.pumpWidget(
+    MaterialApp(
+      locale: locale,
+      supportedLocales: kSupportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: Builder(
+        builder: (context) {
+          l10n = context.l10n;
+          return const SizedBox();
+        },
+      ),
+    ),
+  );
   return l10n;
 }
 
@@ -37,7 +41,7 @@ Category predefined(String key, String spanishName) => Category()
   ..sortOrder = 0;
 
 void main() {
-  setUpAll(() => initializeDateFormatting());
+  setUpAll(initializeDateFormatting);
 
   testWidgets('textos en español e inglés', (tester) async {
     final es = await pumpL10n(tester, const Locale('es'));
@@ -51,8 +55,9 @@ void main() {
     expect(en.inDays(3), 'in 3 days');
   });
 
-  testWidgets('categorías predefinidas se traducen, las propias no',
-      (tester) async {
+  testWidgets('categorías predefinidas se traducen, las propias no', (
+    tester,
+  ) async {
     final en = await pumpL10n(tester, const Locale('en'));
     expect(categoryLabel(predefined('food', 'Comida'), en), 'Food');
     expect(categoryLabel(predefined('salary', 'Salario'), en), 'Salary');

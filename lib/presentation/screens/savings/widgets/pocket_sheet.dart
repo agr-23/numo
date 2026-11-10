@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,8 +30,12 @@ class PocketSheet extends ConsumerStatefulWidget {
 
   const PocketSheet._({required this.groupId, this.pocket, this.seed});
 
-  static Future<void> show(BuildContext context,
-      {required int groupId, Pocket? pocket, PocketSeed? seed}) {
+  static Future<void> show(
+    BuildContext context, {
+    required int groupId,
+    Pocket? pocket,
+    PocketSeed? seed,
+  }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -108,14 +114,21 @@ class _PocketSheetState extends ConsumerState<PocketSheet> {
     };
 
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: ListView(
         padding: const EdgeInsets.fromLTRB(
-            Dimens.screenPaddingH, 0, Dimens.screenPaddingH, 24),
+          Dimens.screenPaddingH,
+          0,
+          Dimens.screenPaddingH,
+          24,
+        ),
         children: [
-          Text(_isEdit ? l10n.svEditPocket : l10n.svNewPocket,
-              style: AppTextStyles.headline.copyWith(color: p.ink)),
+          Text(
+            _isEdit ? l10n.svEditPocket : l10n.svNewPocket,
+            style: AppTextStyles.headline.copyWith(color: p.ink),
+          ),
           const SizedBox(height: 16),
           TextField(
             controller: _nameCtrl,
@@ -127,10 +140,17 @@ class _PocketSheetState extends ConsumerState<PocketSheet> {
             showSelectedIcon: false,
             segments: [
               ButtonSegment(
-                  value: PocketKind.monthly, label: Text(l10n.svKindMonthly)),
+                value: PocketKind.monthly,
+                label: Text(l10n.svKindMonthly),
+              ),
               ButtonSegment(
-                  value: PocketKind.yearly, label: Text(l10n.svKindYearly)),
-              ButtonSegment(value: PocketKind.goal, label: Text(l10n.svKindGoal)),
+                value: PocketKind.yearly,
+                label: Text(l10n.svKindYearly),
+              ),
+              ButtonSegment(
+                value: PocketKind.goal,
+                label: Text(l10n.svKindGoal),
+              ),
             ],
             selected: {_kind},
             onSelectionChanged: (s) => setState(() => _kind = s.first),
@@ -142,12 +162,14 @@ class _PocketSheetState extends ConsumerState<PocketSheet> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.event_outlined),
-              title: Text(_kind == PocketKind.yearly
-                  ? l10n.svNextDue
-                  : l10n.goalDeadlineOptional),
-              subtitle: Text(_due == null
-                  ? l10n.svPickDate
-                  : DateFormatter.longDay(_due!)),
+              title: Text(
+                _kind == PocketKind.yearly
+                    ? l10n.svNextDue
+                    : l10n.goalDeadlineOptional,
+              ),
+              subtitle: Text(
+                _due == null ? l10n.svPickDate : DateFormatter.longDay(_due!),
+              ),
               trailing: _due == null || _kind == PocketKind.yearly
                   ? const Icon(Icons.chevron_right_rounded)
                   : IconButton(
@@ -160,8 +182,10 @@ class _PocketSheetState extends ConsumerState<PocketSheet> {
           ],
           if (accounts.isNotEmpty) ...[
             const SizedBox(height: 8),
-            Text(l10n.svFromAccount,
-                style: AppTextStyles.section.copyWith(color: p.ink)),
+            Text(
+              l10n.svFromAccount,
+              style: AppTextStyles.section.copyWith(color: p.ink),
+            ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -180,8 +204,10 @@ class _PocketSheetState extends ConsumerState<PocketSheet> {
             ),
             if (account != null) ...[
               const SizedBox(height: 6),
-              Text(l10n.svSetAsideNote(account.name),
-                  style: AppTextStyles.caption.copyWith(color: p.inkMuted)),
+              Text(
+                l10n.svSetAsideNote(account.name),
+                style: AppTextStyles.caption.copyWith(color: p.inkMuted),
+              ),
             ],
           ],
           const SizedBox(height: 16),
@@ -200,7 +226,8 @@ class _PocketSheetState extends ConsumerState<PocketSheet> {
             const SizedBox(height: 8),
             TextButton(
               onPressed: () => _delete(
-                  CurrencyFormatter.format(widget.pocket!.savedAmount, settings)),
+                CurrencyFormatter.format(widget.pocket!.savedAmount, settings),
+              ),
               style: TextButton.styleFrom(foregroundColor: p.expense),
               child: Text(l10n.svDeletePocket),
             ),
@@ -236,7 +263,7 @@ class _PocketSheetState extends ConsumerState<PocketSheet> {
       error = l10n.svDueRequired;
     }
     if (error != null) {
-      HapticFeedback.heavyImpact();
+      unawaited(HapticFeedback.heavyImpact());
       messenger.showSnackBar(SnackBar(content: Text(error)));
       return;
     }
@@ -251,7 +278,7 @@ class _PocketSheetState extends ConsumerState<PocketSheet> {
       ..accountId = _accountId;
     if (widget.pocket == null) pocket.savedAmount = 0;
     await ref.read(pocketRepositoryProvider).savePocket(pocket);
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -264,11 +291,13 @@ class _PocketSheetState extends ConsumerState<PocketSheet> {
         content: Text(ctx.l10n.svDeletePocketBody(savedText)),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(ctx.l10n.cancel)),
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(ctx.l10n.cancel),
+          ),
           FilledButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: Text(ctx.l10n.delete)),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(ctx.l10n.delete),
+          ),
         ],
       ),
     );

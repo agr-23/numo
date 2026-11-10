@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/numo_palette.dart';
-import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
+import '../../../core/l10n/l10n.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/app_settings.dart';
@@ -41,7 +43,9 @@ class BudgetsScreen extends ConsumerWidget {
           // Selector de mes
           Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: Dimens.screenPaddingH, vertical: 8),
+              horizontal: Dimens.screenPaddingH,
+              vertical: 8,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -49,8 +53,10 @@ class BudgetsScreen extends ConsumerWidget {
                   icon: const Icon(Icons.chevron_left),
                   onPressed: () => _changeMonth(ref, -1),
                 ),
-                Text(DateFormatter.monthYear(month),
-                    style: theme.textTheme.titleMedium),
+                Text(
+                  DateFormatter.monthYear(month),
+                  style: theme.textTheme.titleMedium,
+                ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
                   onPressed: () => _changeMonth(ref, 1),
@@ -68,14 +74,19 @@ class BudgetsScreen extends ConsumerWidget {
                   )
                 : ListView(
                     padding: const EdgeInsets.fromLTRB(
-                        Dimens.screenPaddingH, 4, Dimens.screenPaddingH, 96),
+                      Dimens.screenPaddingH,
+                      4,
+                      Dimens.screenPaddingH,
+                      96,
+                    ),
                     children: [
                       _summaryCard(context, summary, settings, l10n),
                       const SizedBox(height: Dimens.sectionGap),
                       for (final v in views)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: Dimens.itemGap),
+                          padding: const EdgeInsets.only(
+                            bottom: Dimens.itemGap,
+                          ),
                           child: Dismissible(
                             key: ValueKey('budget-${v.budget.id}'),
                             direction: DismissDirection.endToStart,
@@ -84,19 +95,24 @@ class BudgetsScreen extends ConsumerWidget {
                               padding: const EdgeInsets.only(right: 20),
                               decoration: BoxDecoration(
                                 color: context.palette.expense,
-                                borderRadius:
-                                    BorderRadius.circular(Dimens.cardRadius),
+                                borderRadius: BorderRadius.circular(
+                                  Dimens.cardRadius,
+                                ),
                               ),
-                              child:
-                                  const Icon(Icons.delete, color: Colors.white),
+                              child: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
                             ),
-                            confirmDismiss: (_) =>
-                                _confirmDelete(context, categoryLabel(v.category, l10n)),
+                            confirmDismiss: (_) => _confirmDelete(
+                              context,
+                              categoryLabel(v.category, l10n),
+                            ),
                             onDismissed: (_) async {
                               await ref
                                   .read(budgetRepositoryProvider)
                                   .delete(v.budget.id);
-                              HapticFeedback.mediumImpact();
+                              unawaited(HapticFeedback.mediumImpact());
                             },
                             child: BudgetCard(
                               view: v,
@@ -115,12 +131,18 @@ class BudgetsScreen extends ConsumerWidget {
 
   void _changeMonth(WidgetRef ref, int delta) {
     final current = ref.read(budgetMonthProvider);
-    ref.read(budgetMonthProvider.notifier).state =
-        DateTime(current.year, current.month + delta);
+    ref.read(budgetMonthProvider.notifier).state = DateTime(
+      current.year,
+      current.month + delta,
+    );
   }
 
-  Widget _summaryCard(BuildContext context, BudgetSummary summary,
-      AppSettings settings, AppLocalizations l10n) {
+  Widget _summaryCard(
+    BuildContext context,
+    BudgetSummary summary,
+    AppSettings settings,
+    AppLocalizations l10n,
+  ) {
     final p = context.palette;
     return Container(
       width: double.infinity,
@@ -132,15 +154,24 @@ class BudgetsScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _summaryRow(p, l10n.budTotal,
-              CurrencyFormatter.format(summary.total, settings)),
+          _summaryRow(
+            p,
+            l10n.budTotal,
+            CurrencyFormatter.format(summary.total, settings),
+          ),
           const SizedBox(height: 6),
-          _summaryRow(p,
-              l10n.budSpent, CurrencyFormatter.format(summary.spent, settings)),
+          _summaryRow(
+            p,
+            l10n.budSpent,
+            CurrencyFormatter.format(summary.spent, settings),
+          ),
           const SizedBox(height: 6),
-          _summaryRow(p, l10n.available,
-              CurrencyFormatter.format(summary.available, settings),
-              highlight: true),
+          _summaryRow(
+            p,
+            l10n.available,
+            CurrencyFormatter.format(summary.available, settings),
+            highlight: true,
+          ),
           const SizedBox(height: 14),
           BudgetProgressBar(
             spent: summary.spent,
@@ -153,19 +184,27 @@ class BudgetsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _summaryRow(NumoPalette p, String label, String value,
-      {bool highlight = false}) {
+  Widget _summaryRow(
+    NumoPalette p,
+    String label,
+    String value, {
+    bool highlight = false,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label,
-            style: TextStyle(
-                color: p.onInk.withValues(alpha: 0.7), fontSize: 13)),
-        Text(value,
-            style: TextStyle(
-                color: p.onInk,
-                fontSize: highlight ? 18 : 15,
-                fontWeight: FontWeight.w700)),
+        Text(
+          label,
+          style: TextStyle(color: p.onInk.withValues(alpha: 0.7), fontSize: 13),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            color: p.onInk,
+            fontSize: highlight ? 18 : 15,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ],
     );
   }
@@ -178,11 +217,13 @@ class BudgetsScreen extends ConsumerWidget {
         content: Text(context.l10n.budDeleteBody(name)),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(context.l10n.cancel)),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(context.l10n.cancel),
+          ),
           FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(context.l10n.delete)),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(context.l10n.delete),
+          ),
         ],
       ),
     );
@@ -190,15 +231,20 @@ class BudgetsScreen extends ConsumerWidget {
   }
 
   void _showCategoryTransactions(
-      BuildContext context, WidgetRef ref, BudgetView view) {
+    BuildContext context,
+    WidgetRef ref,
+    BudgetView view,
+  ) {
     final all = ref.read(transactionsProvider).valueOrNull ?? const [];
     final month = ref.read(budgetMonthProvider);
     final items = all
-        .where((t) =>
-            t.type == TransactionType.expense &&
-            t.category.value?.id == view.category?.id &&
-            t.date.year == month.year &&
-            t.date.month == month.month)
+        .where(
+          (t) =>
+              t.type == TransactionType.expense &&
+              t.category.value?.id == view.category?.id &&
+              t.date.year == month.year &&
+              t.date.month == month.month,
+        )
         .toList();
 
     showModalBottomSheet(
@@ -212,19 +258,22 @@ class BudgetsScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(Dimens.screenPaddingH),
           children: [
             Text(
-                context.l10n.budSheetTitle(
-                    view.category == null
-                        ? context.l10n.category
-                        : categoryLabel(view.category, context.l10n),
-                    DateFormatter.monthYear(month)),
-                style: Theme.of(context).textTheme.titleMedium),
+              context.l10n.budSheetTitle(
+                view.category == null
+                    ? context.l10n.category
+                    : categoryLabel(view.category, context.l10n),
+                DateFormatter.monthYear(month),
+              ),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             if (items.isEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 24),
                 child: EmptyState(
-                    icon: Icons.receipt_long,
-                    message: context.l10n.budNoCategoryExpenses),
+                  icon: Icons.receipt_long,
+                  message: context.l10n.budNoCategoryExpenses,
+                ),
               )
             else
               ...items.map((t) => TransactionItem(transaction: t)),

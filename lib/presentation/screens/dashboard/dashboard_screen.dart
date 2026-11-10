@@ -34,21 +34,30 @@ class DashboardScreen extends ConsumerWidget {
           padding: const EdgeInsets.only(top: 8, bottom: 24),
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: Dimens.screenPaddingH, right: 8),
+              padding: const EdgeInsets.only(
+                left: Dimens.screenPaddingH,
+                right: 8,
+              ),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
                       DateFormatter.greeting(DateTime.now(), l10n),
-                      style: AppTextStyles.labelFrom(15)
-                          .copyWith(fontWeight: FontWeight.w500, color: p.inkMuted),
+                      style: AppTextStyles.labelFrom(15).copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: p.inkMuted,
+                      ),
                     ),
                   ),
                   IconButton(
-                    tooltip: hidden ? l10n.dashShowAmounts : l10n.dashHideAmounts,
-                    icon: Icon(hidden
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined),
+                    tooltip: hidden
+                        ? l10n.dashShowAmounts
+                        : l10n.dashHideAmounts,
+                    icon: Icon(
+                      hidden
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
                     onPressed: () =>
                         ref.read(hideAmountsProvider.notifier).state = !hidden,
                   ),
@@ -96,7 +105,10 @@ class DashboardScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
             if (recent.isEmpty)
-              EmptyState(icon: Icons.receipt_long, message: l10n.dashNoTransactions)
+              EmptyState(
+                icon: Icons.receipt_long,
+                message: l10n.dashNoTransactions,
+              )
             else
               for (final t in recent)
                 Padding(
@@ -124,7 +136,7 @@ class _QuickActions extends ConsumerWidget {
     // "Pagar" abre el pago de la tarjeta con más deuda.
     final cards = accounts.where((a) => a.isCredit).toList()
       ..sort((a, b) => b.balance.compareTo(a.balance));
-    final Account? card = cards.isEmpty ? null : cards.first;
+    final card = cards.isEmpty ? null : cards.first;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -160,8 +172,11 @@ class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _ActionButton(
-      {required this.icon, required this.label, required this.onTap});
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -187,10 +202,12 @@ class _ActionButton extends StatelessWidget {
                 child: Icon(icon, size: 20, color: p.ink),
               ),
               const SizedBox(height: 8),
-              Text(label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.captionStrong.copyWith(color: p.ink)),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.captionStrong.copyWith(color: p.ink),
+              ),
             ],
           ),
         ),
@@ -203,8 +220,11 @@ class _SectionHeader extends StatelessWidget {
   final String title;
   final String action;
   final VoidCallback onAction;
-  const _SectionHeader(
-      {required this.title, required this.action, required this.onAction});
+  const _SectionHeader({
+    required this.title,
+    required this.action,
+    required this.onAction,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +232,11 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-            child: Text(title, style: AppTextStyles.section.copyWith(color: p.ink))),
+          child: Text(
+            title,
+            style: AppTextStyles.section.copyWith(color: p.ink),
+          ),
+        ),
         TextButton(
           onPressed: onAction,
           style: TextButton.styleFrom(
@@ -232,7 +256,11 @@ class _LinkRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _LinkRow({required this.icon, required this.label, required this.onTap});
+  const _LinkRow({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -250,13 +278,19 @@ class _LinkRow extends StatelessWidget {
             Container(
               width: 32,
               height: 32,
-              decoration: BoxDecoration(color: p.linkSoft, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: p.linkSoft,
+                shape: BoxShape.circle,
+              ),
               child: Icon(icon, size: 16, color: p.link),
             ),
             const SizedBox(width: 12),
             Expanded(
-                child: Text(label,
-                    style: AppTextStyles.rowTitle.copyWith(color: p.ink))),
+              child: Text(
+                label,
+                style: AppTextStyles.rowTitle.copyWith(color: p.ink),
+              ),
+            ),
             Icon(Icons.chevron_right_rounded, color: p.inkHint),
           ],
         ),

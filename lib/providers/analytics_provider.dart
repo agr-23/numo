@@ -8,11 +8,13 @@ import 'transactions_provider.dart';
 
 enum AnalyticsPeriod { week, month, year, custom }
 
-final analyticsPeriodProvider =
-    StateProvider<AnalyticsPeriod>((ref) => AnalyticsPeriod.month);
+final analyticsPeriodProvider = StateProvider<AnalyticsPeriod>(
+  (ref) => AnalyticsPeriod.month,
+);
 
-final analyticsCustomRangeProvider =
-    StateProvider<DateTimeRange?>((ref) => null);
+final analyticsCustomRangeProvider = StateProvider<DateTimeRange?>(
+  (ref) => null,
+);
 
 /// Rango de fechas efectivo según el período seleccionado.
 final analyticsRangeProvider = Provider<DateTimeRange>((ref) {
@@ -24,12 +26,12 @@ final analyticsRangeProvider = Provider<DateTimeRange>((ref) {
       final start = today.subtract(Duration(days: today.weekday - 1));
       return DateTimeRange(start: start, end: today);
     case AnalyticsPeriod.month:
-      return DateTimeRange(start: DateTime(now.year, now.month, 1), end: today);
+      return DateTimeRange(start: DateTime(now.year, now.month), end: today);
     case AnalyticsPeriod.year:
-      return DateTimeRange(start: DateTime(now.year, 1, 1), end: today);
+      return DateTimeRange(start: DateTime(now.year), end: today);
     case AnalyticsPeriod.custom:
       return ref.watch(analyticsCustomRangeProvider) ??
-          DateTimeRange(start: DateTime(now.year, now.month, 1), end: today);
+          DateTimeRange(start: DateTime(now.year, now.month), end: today);
   }
 });
 
@@ -111,8 +113,11 @@ final analyticsSeriesProvider = Provider<List<PeriodBar>>((ref) {
 
   if (period == AnalyticsPeriod.week) {
     final bars = <PeriodBar>[];
-    final thisWeekStart =
-        DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
+    final thisWeekStart = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: now.weekday - 1));
     for (var i = 5; i >= 0; i--) {
       final start = thisWeekStart.subtract(Duration(days: 7 * i));
       final end = start.add(const Duration(days: 6));
@@ -131,7 +136,7 @@ final analyticsSeriesProvider = Provider<List<PeriodBar>>((ref) {
 
   final bars = <PeriodBar>[];
   for (var i = 5; i >= 0; i--) {
-    final month = DateTime(now.year, now.month - i, 1);
+    final month = DateTime(now.year, now.month - i);
     var income = 0.0;
     var expense = 0.0;
     for (final t in txs) {

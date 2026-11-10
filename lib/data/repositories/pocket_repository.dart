@@ -19,8 +19,8 @@ class PocketRepository {
 
   Future<int> _nextGroupOrder() async =>
       ((await _isar.savingsGroups.where().sortBySortOrderDesc().findFirst())
-                  ?.sortOrder ??
-              -1) +
+              ?.sortOrder ??
+          -1) +
       1;
 
   Future<int> _nextPocketOrder(int groupId) async {
@@ -65,7 +65,8 @@ class PocketRepository {
       _isar.writeTxn(() => _isar.pockets.delete(id));
 
   void _updateCompleted(Pocket p) {
-    p.isCompleted = p.kind == PocketKind.goal &&
+    p.isCompleted =
+        p.kind == PocketKind.goal &&
         p.targetAmount > 0 &&
         p.savedAmount >= p.targetAmount;
   }
@@ -102,7 +103,10 @@ class PocketRepository {
   /// Reparte un aporte entre varios bolsillos según lo que le falta a cada
   /// uno. Devuelve true si alguna meta quedó completa.
   Future<bool> distribute(
-      List<Pocket> pockets, double amount, int? accountId) async {
+    List<Pocket> pockets,
+    double amount,
+    int? accountId,
+  ) async {
     final shares = PocketMath.distribute(pockets, amount);
     var anyCompleted = false;
     await _isar.writeTxn(() async {
@@ -111,7 +115,8 @@ class PocketRepository {
         if (p == null || entry.value <= 0) continue;
         final was = p.isCompleted;
         p.savedAmount += entry.value;
-        if (accountId != null && (p.accountId == null || p.savedAmount == entry.value)) {
+        if (accountId != null &&
+            (p.accountId == null || p.savedAmount == entry.value)) {
           p.accountId = accountId;
         }
         _updateCompleted(p);

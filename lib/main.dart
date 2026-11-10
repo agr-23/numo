@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'app.dart';
-import 'data/services/isar_service.dart';
 import 'data/repositories/pocket_repository.dart';
+import 'data/services/isar_service.dart';
 import 'data/services/recurrence_service.dart';
 
 Future<void> main() async {
