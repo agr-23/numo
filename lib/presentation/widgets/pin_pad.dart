@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/l10n/l10n.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
@@ -89,7 +90,7 @@ class _PinPadState extends State<PinPad> {
         if (_error)
           Padding(
             padding: const EdgeInsets.only(top: 12),
-            child: Text('PIN incorrecto',
+            child: Text(context.l10n.wrongPin,
                 style: theme.textTheme.bodySmall
                     ?.copyWith(color: AppColors.expense)),
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
@@ -53,6 +54,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     final hasFilters = ref.watch(transactionFilterProvider).hasActiveFilters;
     final visible = filtered.take(_visible).toList();
     final groups = groupByDay(visible);
+    final l10n = context.l10n;
+    final filtering = hasFilters || _searchCtrl.text.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
@@ -60,14 +63,14 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
             ? TextField(
                 controller: _searchCtrl,
                 autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Buscar...',
+                decoration: InputDecoration(
+                  hintText: l10n.txSearch,
                   border: InputBorder.none,
                 ),
                 onChanged: (q) =>
                     ref.read(transactionFilterProvider.notifier).setQuery(q),
               )
-            : const Text('Movimientos'),
+            : Text(l10n.txTitle),
         actions: [
           IconButton(
             icon: Icon(_searching ? Icons.close : Icons.search),
@@ -104,13 +107,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
       body: filtered.isEmpty
           ? EmptyState(
               icon: Icons.receipt_long,
-              message: hasFilters || _searchCtrl.text.isNotEmpty
-                  ? 'No hay movimientos con esos filtros'
-                  : 'Aún no hay movimientos',
-              actionLabel: hasFilters || _searchCtrl.text.isNotEmpty
-                  ? null
-                  : 'Agregar el primero',
-              onAction: hasFilters || _searchCtrl.text.isNotEmpty
+              message: filtering ? l10n.txNoMatches : l10n.dashNoTransactions,
+              actionLabel: filtering ? null : l10n.txAddFirst,
+              onAction: filtering
                   ? null
                   : () => context.push('/add-transaction'),
             )
@@ -136,7 +135,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(DateFormatter.groupHeader(group.day),
+              Text(DateFormatter.groupHeader(group.day, context.l10n),
                   style: theme.textTheme.titleMedium),
               Text(
                 CurrencyFormatter.signed(net, settings, isIncome: net >= 0),
@@ -193,6 +192,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   Future<void> _deleteWithUndo(Transaction t) async {
     final repo = ref.read(transactionRepositoryProvider);
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
 
     // Snapshot para poder restaurar.
     final snapshot = Transaction()
@@ -214,10 +214,10 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
 
     messenger.showSnackBar(
       SnackBar(
-        content: const Text('Movimiento eliminado'),
+        content: Text(l10n.txDeleted),
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
-          label: 'Deshacer',
+          label: l10n.undo,
           textColor: AppColors.accent,
           onPressed: () {
             if (accountId != null) {

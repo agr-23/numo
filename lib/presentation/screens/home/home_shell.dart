@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 
@@ -18,6 +19,7 @@ class HomeShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       body: navigationShell,
       floatingActionButton: SizedBox(
@@ -41,14 +43,14 @@ class HomeShell extends StatelessWidget {
             _NavItem(
               icon: Icons.home_outlined,
               activeIcon: Icons.home,
-              label: 'Inicio',
+              label: l10n.navHome,
               selected: navigationShell.currentIndex == 0,
               onTap: () => _goBranch(0),
             ),
             _NavItem(
               icon: Icons.receipt_long_outlined,
               activeIcon: Icons.receipt_long,
-              label: 'Movimientos',
+              label: l10n.navTransactions,
               selected: navigationShell.currentIndex == 1,
               onTap: () => _goBranch(1),
             ),
@@ -56,14 +58,14 @@ class HomeShell extends StatelessWidget {
             _NavItem(
               icon: Icons.pie_chart_outline,
               activeIcon: Icons.pie_chart,
-              label: 'Analíticas',
+              label: l10n.navAnalytics,
               selected: navigationShell.currentIndex == 2,
               onTap: () => _goBranch(2),
             ),
             _NavItem(
               icon: Icons.account_balance_wallet_outlined,
               activeIcon: Icons.account_balance_wallet,
-              label: 'Cuentas',
+              label: l10n.navAccounts,
               selected: navigationShell.currentIndex == 3,
               onTap: () => _goBranch(3),
             ),

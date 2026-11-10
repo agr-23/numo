@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
@@ -41,24 +42,25 @@ class _AddSavingsGoalScreenState extends ConsumerState<AddSavingsGoalScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Nueva meta')),
+      appBar: AppBar(title: Text(l10n.goalNew)),
       body: ListView(
         padding: const EdgeInsets.all(Dimens.screenPaddingH),
         children: [
           TextField(
             controller: _nameCtrl,
-            decoration: const InputDecoration(
-                labelText: 'Nombre', hintText: 'Ej: Viaje a Cartagena'),
+            decoration: InputDecoration(
+                labelText: l10n.name, hintText: l10n.goalNameHint),
           ),
           const SizedBox(height: 16),
-          AmountField(controller: _targetCtrl, label: 'Monto objetivo'),
+          AmountField(controller: _targetCtrl, label: l10n.goalTarget),
           const SizedBox(height: 16),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Fecha límite (opcional)'),
+            title: Text(l10n.goalDeadlineOptional),
             subtitle: Text(_targetDate == null
-                ? 'Sin fecha'
+                ? l10n.goalNoDate
                 : DateFormatter.longDay(_targetDate!)),
             trailing: _targetDate == null
                 ? const Icon(Icons.calendar_today_outlined)
@@ -77,14 +79,14 @@ class _AddSavingsGoalScreenState extends ConsumerState<AddSavingsGoalScreen> {
             },
           ),
           const SizedBox(height: 16),
-          Text('Color', style: theme.textTheme.titleMedium),
+          Text(l10n.color, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           ColorPickerRow(
             selectedHex: _colorHex,
             onSelected: (hex) => setState(() => _colorHex = hex),
           ),
           const SizedBox(height: 16),
-          Text('Icono', style: theme.textTheme.titleMedium),
+          Text(l10n.icon, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           IconPickerGrid(
             selectedIcon: _iconName,
@@ -93,7 +95,7 @@ class _AddSavingsGoalScreenState extends ConsumerState<AddSavingsGoalScreen> {
           const SizedBox(height: 16),
           AmountField(
               controller: _initialCtrl,
-              label: 'Monto ya ahorrado (opcional)'),
+              label: l10n.goalInitialOptional),
           const SizedBox(height: 24),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -102,7 +104,7 @@ class _AddSavingsGoalScreenState extends ConsumerState<AddSavingsGoalScreen> {
               minimumSize: const Size.fromHeight(50),
             ),
             onPressed: _save,
-            child: const Text('Crear meta'),
+            child: Text(l10n.goalCreate),
           ),
         ],
       ),
@@ -117,13 +119,13 @@ class _AddSavingsGoalScreenState extends ConsumerState<AddSavingsGoalScreen> {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Escribe un nombre para la meta')));
+          SnackBar(content: Text(context.l10n.goalNameMissing)));
       return;
     }
     final target = _parse(_targetCtrl.text);
     if (target <= 0) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Ingresa un monto objetivo mayor a 0')));
+          SnackBar(content: Text(context.l10n.goalTargetMissing)));
       return;
     }
     final initial = _parse(_initialCtrl.text);

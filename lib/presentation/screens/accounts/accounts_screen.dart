@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
@@ -20,14 +21,15 @@ class AccountsScreen extends ConsumerWidget {
     final accounts = ref.watch(accountsProvider).valueOrNull ?? const [];
     final net = ref.watch(netBalanceProvider);
     final settings = ref.watch(settingsProvider);
+    final l10n = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis cuentas'),
+        title: Text(l10n.accTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            tooltip: 'Agregar cuenta',
+            tooltip: l10n.accAdd,
             onPressed: () => AddAccountSheet.show(context),
           ),
         ],
@@ -35,8 +37,8 @@ class AccountsScreen extends ConsumerWidget {
       body: accounts.isEmpty
           ? EmptyState(
               icon: Icons.account_balance_wallet,
-              message: 'Aún no tienes cuentas',
-              actionLabel: 'Crear cuenta',
+              message: l10n.accNone,
+              actionLabel: l10n.accCreate,
               onAction: () => AddAccountSheet.show(context),
             )
           : ListView(
@@ -53,7 +55,7 @@ class AccountsScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Balance neto total',
+                      Text(l10n.accNetTotal,
                           style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.7),
                               fontSize: 13)),
@@ -108,17 +110,16 @@ class AccountsScreen extends ConsumerWidget {
     final result = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Archivar cuenta'),
-        content: Text(
-            'La cuenta "$name" se archivará. Su historial se conserva, pero ya no aparecerá en las listas.'),
+        title: Text(context.l10n.accArchiveTitle),
+        content: Text(context.l10n.accArchiveBody(name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(context.l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Archivar'),
+            child: Text(context.l10n.accArchive),
           ),
         ],
       ),

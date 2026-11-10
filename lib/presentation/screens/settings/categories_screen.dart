@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
@@ -15,12 +16,13 @@ class CategoriesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final categories = ref.watch(categoriesProvider).valueOrNull ?? const [];
     final expense = categories.where((c) => c.type == CategoryType.expense).toList();
     final income = categories.where((c) => c.type == CategoryType.income).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Categorías')),
+      appBar: AppBar(title: Text(l10n.categories)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addCategory(context, ref),
         child: const Icon(Icons.add),
@@ -29,10 +31,10 @@ class CategoriesScreen extends ConsumerWidget {
         padding: const EdgeInsets.fromLTRB(
             Dimens.screenPaddingH, 8, Dimens.screenPaddingH, 96),
         children: [
-          _sectionTitle(theme, 'Gastos'),
+          _sectionTitle(theme, l10n.expenses),
           ...expense.map((c) => _tile(context, ref, c)),
           const SizedBox(height: Dimens.sectionGap),
-          _sectionTitle(theme, 'Ingresos'),
+          _sectionTitle(theme, l10n.incomes),
           ...income.map((c) => _tile(context, ref, c)),
         ],
       ),
@@ -50,8 +52,9 @@ class CategoriesScreen extends ConsumerWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: CategoryIcon(iconName: c.iconName, colorHex: c.colorHex, size: 40),
-      title: Text(c.name),
-      subtitle: Text(c.isCustom ? 'Personalizada' : 'Predefinida'),
+      title: Text(categoryLabel(c, context.l10n)),
+      subtitle:
+          Text(c.isCustom ? context.l10n.catCustom : context.l10n.catPredefined),
       trailing: c.isCustom
           ? IconButton(
               icon: const Icon(Icons.delete_outline, color: AppColors.expense),
@@ -60,9 +63,8 @@ class CategoriesScreen extends ConsumerWidget {
                     .read(categoryRepositoryProvider)
                     .delete(c.id);
                 if (!ok && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content:
-                          Text('Las categorías predefinidas no se pueden borrar')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(context.l10n.catCannotDelete)));
                 }
               },
             )
@@ -101,6 +103,7 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.8,
@@ -109,38 +112,38 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
         controller: controller,
         padding: const EdgeInsets.all(Dimens.screenPaddingH),
         children: [
-          Text('Nueva categoría', style: theme.textTheme.titleLarge),
+          Text(l10n.catNew, style: theme.textTheme.titleLarge),
           const SizedBox(height: 16),
           TextField(
             controller: _nameCtrl,
-            decoration: const InputDecoration(labelText: 'Nombre'),
+            decoration: InputDecoration(labelText: l10n.name),
           ),
           const SizedBox(height: 16),
           Wrap(
             spacing: 8,
             children: [
               ChoiceChip(
-                label: const Text('Gasto'),
+                label: Text(l10n.expense),
                 selected: _type == CategoryType.expense,
                 onSelected: (_) =>
                     setState(() => _type = CategoryType.expense),
               ),
               ChoiceChip(
-                label: const Text('Ingreso'),
+                label: Text(l10n.income),
                 selected: _type == CategoryType.income,
                 onSelected: (_) => setState(() => _type = CategoryType.income),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          Text('Color', style: theme.textTheme.titleMedium),
+          Text(l10n.color, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           ColorPickerRow(
             selectedHex: _colorHex,
             onSelected: (hex) => setState(() => _colorHex = hex),
           ),
           const SizedBox(height: 16),
-          Text('Icono', style: theme.textTheme.titleMedium),
+          Text(l10n.icon, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           IconPickerGrid(
             selectedIcon: _iconName,
@@ -155,7 +158,7 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
               minimumSize: const Size.fromHeight(50),
             ),
             onPressed: _save,
-            child: const Text('Crear categoría'),
+            child: Text(l10n.catCreate),
           ),
           const SizedBox(height: 8),
         ],
@@ -168,7 +171,7 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
       messenger
-          .showSnackBar(const SnackBar(content: Text('Escribe un nombre')));
+          .showSnackBar(SnackBar(content: Text(context.l10n.writeName)));
       return;
     }
     final category = Category()

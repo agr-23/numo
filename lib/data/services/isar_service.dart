@@ -62,7 +62,23 @@ class IsarService {
       await isar.writeTxn(() async {
         await isar.categorys.putAll(buildDefaultCategories());
       });
+    } else {
+      await _backfillCategoryKeys();
     }
+  }
+
+  /// Instalaciones anteriores a los idiomas: asigna la clave a las
+  /// categorías predefinidas reconociéndolas por su nombre en español.
+  Future<void> _backfillCategoryKeys() async {
+    final predefined =
+        await isar.categorys.filter().isCustomEqualTo(false).findAll();
+    final missing = predefined.where((c) => c.key == null).toList();
+    if (missing.isEmpty) return;
+    final byName = {for (final s in kDefaultCategories) s.name: s.key};
+    for (final c in missing) {
+      c.key = byName[c.name];
+    }
+    await isar.writeTxn(() => isar.categorys.putAll(missing));
   }
 
   /// Borra todas las colecciones (usado por "Borrar todos los datos").

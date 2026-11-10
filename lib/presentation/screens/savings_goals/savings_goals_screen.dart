@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../data/models/savings_goal.dart';
@@ -50,7 +51,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
     final goals = ref.watch(sortedSavingsGoalsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mis metas')),
+      appBar: AppBar(title: Text(context.l10n.goalTitle)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/add-savings-goal'),
         child: const Icon(Icons.add),
@@ -60,8 +61,8 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
           if (goals.isEmpty)
             EmptyState(
               icon: Icons.savings,
-              message: 'Aún no tienes metas de ahorro',
-              actionLabel: 'Crear meta',
+              message: context.l10n.goalNone,
+              actionLabel: context.l10n.goalCreate,
               onAction: () => context.push('/add-savings-goal'),
             )
           else

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/transaction.dart';
@@ -16,6 +17,7 @@ class TransactionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final isTransfer = transaction.type == TransactionType.transfer;
     final category = transaction.category.value;
     final account = transaction.account.value;
@@ -26,7 +28,7 @@ class TransactionItem extends StatelessWidget {
 
     final subtitle = isTransfer
         ? '${account?.name ?? '—'} → ${transaction.toAccount.value?.name ?? '—'}'
-        : [category?.name, account?.name]
+        : [categoryLabel(category, l10n), account?.name]
             .where((e) => e != null && e.isNotEmpty)
             .join(' · ');
 

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/amount_input.dart';
@@ -44,13 +45,14 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
     final theme = Theme.of(context);
     final categories =
         ref.watch(categoriesByTypeProvider(CategoryType.expense));
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Nuevo presupuesto')),
+      appBar: AppBar(title: Text(l10n.budNew)),
       body: ListView(
         padding: const EdgeInsets.all(Dimens.screenPaddingH),
         children: [
-          Text('Categoría', style: theme.textTheme.titleMedium),
+          Text(l10n.category, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Wrap(
             spacing: 12,
@@ -77,7 +79,7 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
                       ),
                       SizedBox(
                         width: 64,
-                        child: Text(c.name,
+                        child: Text(categoryLabel(c, l10n),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
@@ -89,11 +91,11 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
             ],
           ),
           const SizedBox(height: Dimens.sectionGap),
-          AmountField(controller: _limitCtrl, label: 'Monto límite'),
+          AmountField(controller: _limitCtrl, label: l10n.budLimit),
           const SizedBox(height: 16),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Mes'),
+            title: Text(l10n.budMonth),
             subtitle: Text(DateFormatter.monthYear(_month)),
             trailing: const Icon(Icons.calendar_month),
             onTap: _pickMonth,
@@ -106,7 +108,7 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
               minimumSize: const Size.fromHeight(50),
             ),
             onPressed: _save,
-            child: const Text('Guardar presupuesto'),
+            child: Text(l10n.budSave),
           ),
         ],
       ),
@@ -119,7 +121,7 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
       initialDate: _month,
       firstDate: DateTime(2015),
       lastDate: DateTime(2100),
-      helpText: 'Selecciona un mes',
+      helpText: context.l10n.budPickMonth,
     );
     if (picked != null) {
       setState(() => _month = DateTime(picked.year, picked.month));
@@ -131,14 +133,14 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
     final repo = ref.read(budgetRepositoryProvider);
     if (_category == null) {
       messenger
-          .showSnackBar(const SnackBar(content: Text('Selecciona una categoría')));
+          .showSnackBar(SnackBar(content: Text(context.l10n.selectCategory)));
       return;
     }
     final limit = AmountInput.of(ref.read(settingsProvider).currency)
         .parse(_limitCtrl.text);
     if (limit <= 0) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Ingresa un monto mayor a 0')));
+          SnackBar(content: Text(context.l10n.amountMustBePositive)));
       return;
     }
 
@@ -149,16 +151,17 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
       final replace = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('Ya existe un presupuesto'),
-          content: Text(
-              'Ya tienes un presupuesto para "${_category!.name}" en ${DateFormatter.monthYear(_month)}. ¿Reemplazarlo?'),
+          title: Text(context.l10n.budExistsTitle),
+          content: Text(context.l10n.budExistsBody(
+              categoryLabel(_category, context.l10n),
+              DateFormatter.monthYear(_month))),
           actions: [
             TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Cancelar')),
+                child: Text(context.l10n.cancel)),
             FilledButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Reemplazar')),
+                child: Text(context.l10n.budReplace)),
           ],
         ),
       );

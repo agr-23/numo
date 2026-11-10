@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/currencies.dart';
 import '../../../core/constants/dimens.dart';
@@ -61,7 +62,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Ponle un nombre a tu primera cuenta')));
+          SnackBar(content: Text(context.l10n.onbAccountNameMissing)));
       _pageCtrl.jumpToPage(_accountPage);
       return;
     }
@@ -89,6 +90,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -104,7 +106,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeOut)
                       : null,
-                  child: const Text('Saltar'),
+                  child: Text(l10n.onbSkip),
                 ),
               ),
             ),
@@ -117,21 +119,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   _stepWelcome(),
                   _stepIntro(
                     icon: Icons.bolt,
-                    title: 'Registra en segundos',
-                    points: const [
-                      (Icons.dialpad, 'Teclado rápido: monto, categoría y listo'),
-                      (Icons.repeat, 'Movimientos recurrentes automáticos'),
-                      (Icons.swap_horiz, 'Transferencias y pagos entre tus cuentas'),
+                    title: l10n.onbFastTitle,
+                    points: [
+                      (Icons.dialpad, l10n.onbFast1),
+                      (Icons.repeat, l10n.onbFast2),
+                      (Icons.swap_horiz, l10n.onbFast3),
                     ],
                   ),
                   _stepIntro(
                     icon: Icons.insights,
-                    title: 'Controla, ahorra y protege',
-                    points: const [
-                      (Icons.pie_chart_outline, 'Presupuestos con alertas al 80 %'),
-                      (Icons.credit_card, 'Tarjetas con cupo, corte y fecha de pago'),
-                      (Icons.savings_outlined, 'Metas de ahorro con tu progreso'),
-                      (Icons.lock_outline, 'Todo queda en tu teléfono, con PIN o huella'),
+                    title: l10n.onbControlTitle,
+                    points: [
+                      (Icons.pie_chart_outline, l10n.onbControl1),
+                      (Icons.credit_card, l10n.onbControl2),
+                      (Icons.savings_outlined, l10n.onbControl3),
+                      (Icons.lock_outline, l10n.onbControl4),
                     ],
                   ),
                   _stepCurrency(),
@@ -155,9 +157,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   ),
                   onPressed: _next,
                   child: Text(switch (_page) {
-                    0 => 'Empezar',
-                    _accountPage => '¡Listo! Comenzar',
-                    _ => 'Continuar',
+                    0 => l10n.onbStart,
+                    _accountPage => l10n.onbFinish,
+                    _ => l10n.continueLabel,
                   }),
                 ),
               ),
@@ -210,14 +212,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ),
           ),
           const SizedBox(height: 32),
-          Text('Tus finanzas, por fin claras.',
+          Text(context.l10n.onbWelcomeTitle,
               textAlign: TextAlign.center, style: theme.textTheme.titleLarge),
           const SizedBox(height: 12),
           Text(
-            'Registra gastos, controla presupuestos y ahorra hacia tus metas.',
+            context.l10n.onbWelcomeBody,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyLarge
                 ?.copyWith(color: theme.textTheme.bodySmall?.color),
+          ),
+          const SizedBox(height: 32),
+          Text(context.l10n.onbLanguage, style: theme.textTheme.bodySmall),
+          const SizedBox(height: 8),
+          SegmentedButton<String>(
+            segments: [
+              ButtonSegment(value: 'es', label: Text(context.l10n.languageEs)),
+              ButtonSegment(value: 'en', label: Text(context.l10n.languageEn)),
+            ],
+            selected: {Localizations.localeOf(context).languageCode},
+            showSelectedIcon: false,
+            onSelectionChanged: (s) =>
+                ref.read(settingsProvider.notifier).setLanguage(s.first),
           ),
         ],
       ),
@@ -270,23 +285,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       padding: const EdgeInsets.all(Dimens.screenPaddingH),
       children: [
         const SizedBox(height: 24),
-        Text('¿Cómo se llama tu primera cuenta?',
-            style: theme.textTheme.titleLarge),
+        Text(context.l10n.onbAccountTitle, style: theme.textTheme.titleLarge),
         const SizedBox(height: 24),
         TextField(
           controller: _nameCtrl,
-          decoration: const InputDecoration(
-              labelText: 'Nombre', hintText: 'Ej: Mi billetera, Bancolombia'),
+          decoration: InputDecoration(
+              labelText: context.l10n.name,
+              hintText: context.l10n.onbAccountHint),
         ),
         const SizedBox(height: 20),
-        Text('Tipo', style: theme.textTheme.titleMedium),
+        Text(context.l10n.type, style: theme.textTheme.titleMedium),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           children: [
-            _typeChip('Efectivo', AccountType.cash),
-            _typeChip('Banco', AccountType.bank),
-            _typeChip('Tarjeta de crédito', AccountType.credit),
+            _typeChip(context.l10n.accountTypeCash, AccountType.cash),
+            _typeChip(context.l10n.accountTypeBank, AccountType.bank),
+            _typeChip(context.l10n.accountTypeCredit, AccountType.credit),
           ],
         ),
         const SizedBox(height: 20),
@@ -294,20 +309,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           AmountField(
             controller: _limitCtrl,
             currency: _currency,
-            label: 'Cupo total (opcional)',
+            label: context.l10n.onbLimitOptional,
           ),
           const SizedBox(height: 16),
           AmountField(
             controller: _balanceCtrl,
             currency: _currency,
-            label: 'Deuda actual (opcional)',
-            helper: 'Fechas de corte y pago se configuran luego en la cuenta',
+            label: context.l10n.onbDebtOptional,
+            helper: context.l10n.onbDatesLater,
           ),
         ] else
           AmountField(
             controller: _balanceCtrl,
             currency: _currency,
-            label: 'Balance inicial (opcional)',
+            label: context.l10n.onbBalanceOptional,
           ),
       ],
     );
@@ -333,8 +348,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       padding: const EdgeInsets.all(Dimens.screenPaddingH),
       children: [
         const SizedBox(height: 24),
-        Text('¿En qué moneda llevas tus finanzas?',
-            style: theme.textTheme.titleLarge),
+        Text(context.l10n.onbCurrencyTitle, style: theme.textTheme.titleLarge),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(Dimens.cardPadding),
@@ -345,7 +359,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Así se verán tus montos:',
+              Text(context.l10n.onbCurrencyPreview,
                   style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 13)),
@@ -366,7 +380,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             contentPadding: EdgeInsets.zero,
             onTap: () => setState(() => _currency = c),
             leading: Text(c.symbol, style: theme.textTheme.titleMedium),
-            title: Text('${c.code} — ${c.name}'),
+            title: Text('${c.code} — ${currencyName(c.code, context.l10n)}'),
             trailing: _currency.code == c.code
                 ? const Icon(Icons.check_circle, color: AppColors.accent)
                 : const Icon(Icons.circle_outlined, color: Colors.grey),

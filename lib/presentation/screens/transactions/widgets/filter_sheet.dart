@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/constants/dimens.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/date_formatter.dart';
@@ -28,6 +29,7 @@ class FilterSheet extends ConsumerWidget {
     final categories = ref.watch(categoriesProvider).valueOrNull ?? const [];
     final accounts = ref.watch(accountsProvider).valueOrNull ?? const [];
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return DraggableScrollableSheet(
       expand: false,
@@ -51,29 +53,29 @@ class FilterSheet extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Filtros', style: theme.textTheme.titleLarge),
+              Text(l10n.filters, style: theme.textTheme.titleLarge),
               TextButton(
                 onPressed: notifier.clearFilters,
-                child: const Text('Limpiar'),
+                child: Text(l10n.clear),
               ),
             ],
           ),
           const SizedBox(height: 8),
 
-          Text('Tipo', style: theme.textTheme.titleMedium),
+          Text(l10n.type, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             children: [
-              _typeChip(context, ref, 'Todos', null, filter.type),
-              _typeChip(context, ref, 'Gastos', TransactionType.expense, filter.type),
-              _typeChip(context, ref, 'Ingresos', TransactionType.income, filter.type),
-              _typeChip(context, ref, 'Transferencias', TransactionType.transfer, filter.type),
+              _typeChip(context, ref, l10n.all, null, filter.type),
+              _typeChip(context, ref, l10n.expenses, TransactionType.expense, filter.type),
+              _typeChip(context, ref, l10n.incomes, TransactionType.income, filter.type),
+              _typeChip(context, ref, l10n.transfers, TransactionType.transfer, filter.type),
             ],
           ),
           const SizedBox(height: Dimens.sectionGap),
 
-          Text('Categoría', style: theme.textTheme.titleMedium),
+          Text(l10n.category, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -81,7 +83,7 @@ class FilterSheet extends ConsumerWidget {
             children: [
               for (final c in categories)
                 FilterChip(
-                  label: Text(c.name),
+                  label: Text(categoryLabel(c, l10n)),
                   selected: filter.categoryIds.contains(c.id),
                   onSelected: (_) => notifier.toggleCategory(c.id),
                 ),
@@ -89,7 +91,7 @@ class FilterSheet extends ConsumerWidget {
           ),
           const SizedBox(height: Dimens.sectionGap),
 
-          Text('Cuenta', style: theme.textTheme.titleMedium),
+          Text(l10n.account, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -105,13 +107,13 @@ class FilterSheet extends ConsumerWidget {
           ),
           const SizedBox(height: Dimens.sectionGap),
 
-          Text('Rango de fechas', style: theme.textTheme.titleMedium),
+          Text(l10n.dateRange, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           OutlinedButton.icon(
             icon: const Icon(Icons.date_range),
             label: Text(
               filter.dateRange == null
-                  ? 'Cualquier fecha'
+                  ? l10n.anyDate
                   : '${DateFormatter.shortDay(filter.dateRange!.start)} — ${DateFormatter.shortDay(filter.dateRange!.end)}',
             ),
             onPressed: () async {
@@ -127,7 +129,7 @@ class FilterSheet extends ConsumerWidget {
           if (filter.dateRange != null)
             TextButton(
               onPressed: () => notifier.setDateRange(null),
-              child: const Text('Quitar rango'),
+              child: Text(l10n.removeRange),
             ),
           const SizedBox(height: Dimens.sectionGap),
 
@@ -138,7 +140,7 @@ class FilterSheet extends ConsumerWidget {
               minimumSize: const Size.fromHeight(50),
             ),
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Aplicar filtros'),
+            child: Text(l10n.applyFilters),
           ),
           const SizedBox(height: 8),
         ],

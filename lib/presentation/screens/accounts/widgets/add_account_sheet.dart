@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/constants/dimens.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -69,6 +70,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final isCredit = _type == AccountType.credit;
 
     return Padding(
@@ -82,44 +84,44 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
           controller: controller,
           padding: const EdgeInsets.all(Dimens.screenPaddingH),
           children: [
-            Text(_isEdit ? 'Editar cuenta' : 'Nueva cuenta',
+            Text(_isEdit ? l10n.accEdit : l10n.accNew,
                 style: theme.textTheme.titleLarge),
             const SizedBox(height: 16),
             TextField(
               controller: _nameCtrl,
-              decoration: const InputDecoration(
-                  labelText: 'Nombre', hintText: 'Ej: Bancolombia'),
+              decoration: InputDecoration(
+                  labelText: l10n.name, hintText: l10n.accNameHint),
             ),
             const SizedBox(height: 16),
-            Text('Tipo', style: theme.textTheme.titleMedium),
+            Text(l10n.type, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               children: [
-                _typeChip('Efectivo', AccountType.cash),
-                _typeChip('Banco', AccountType.bank),
-                _typeChip('Tarjeta de crédito', AccountType.credit),
+                _typeChip(l10n.accountTypeCash, AccountType.cash),
+                _typeChip(l10n.accountTypeBank, AccountType.bank),
+                _typeChip(l10n.accountTypeCredit, AccountType.credit),
               ],
             ),
             const SizedBox(height: 16),
             if (isCredit) ...[
               AmountField(
                 controller: _limitCtrl,
-                label: 'Cupo total',
-                helper: 'El límite de crédito de la tarjeta',
+                label: l10n.accCreditLimit,
+                helper: l10n.accLimitHelper,
               ),
               const SizedBox(height: 16),
               AmountField(
                 controller: _balanceCtrl,
-                label: 'Deuda actual',
-                helper: 'Lo que ya debes hoy. Los gastos la aumentan.',
+                label: l10n.accCurrentDebt,
+                helper: l10n.accDebtHelper,
               ),
               const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
                     child: _dayField(
-                      label: 'Día de corte',
+                      label: l10n.accStatementDay,
                       value: _statementDay,
                       onChanged: (d) => setState(() => _statementDay = d),
                     ),
@@ -127,7 +129,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _dayField(
-                      label: 'Día límite de pago',
+                      label: l10n.accPaymentDay,
                       value: _paymentDueDay,
                       onChanged: (d) => setState(() => _paymentDueDay = d),
                     ),
@@ -137,17 +139,17 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             ] else
               AmountField(
                 controller: _balanceCtrl,
-                label: _isEdit ? 'Saldo actual' : 'Balance inicial',
+                label: _isEdit ? l10n.accCurrentBalance : l10n.accInitialBalance,
               ),
             const SizedBox(height: 16),
-            Text('Color', style: theme.textTheme.titleMedium),
+            Text(l10n.color, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
             ColorPickerRow(
               selectedHex: _colorHex,
               onSelected: (hex) => setState(() => _colorHex = hex),
             ),
             const SizedBox(height: 16),
-            Text('Icono', style: theme.textTheme.titleMedium),
+            Text(l10n.icon, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
             IconPickerGrid(
               selectedIcon: _iconName,
@@ -161,7 +163,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
                 minimumSize: const Size.fromHeight(50),
               ),
               onPressed: _save,
-              child: Text(_isEdit ? 'Guardar cambios' : 'Crear cuenta'),
+              child: Text(_isEdit ? l10n.accSaveChanges : l10n.accCreate),
             ),
             const SizedBox(height: 8),
           ],
@@ -191,7 +193,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
       menuMaxHeight: 320,
       items: [
         for (var d = 1; d <= 31; d++)
-          DropdownMenuItem(value: d, child: Text('Día $d')),
+          DropdownMenuItem(value: d, child: Text(context.l10n.dayN(d))),
       ],
       onChanged: onChanged,
     );
@@ -203,14 +205,14 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Escribe un nombre para la cuenta')));
+          SnackBar(content: Text(context.l10n.accNameMissing)));
       return;
     }
     final isCredit = _type == AccountType.credit;
     final limit = rules.parse(_limitCtrl.text);
     if (isCredit && limit <= 0) {
       messenger.showSnackBar(
-          const SnackBar(content: Text('Ingresa el cupo total de la tarjeta')));
+          SnackBar(content: Text(context.l10n.accLimitMissing)));
       return;
     }
 

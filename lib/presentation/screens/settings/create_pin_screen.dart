@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../widgets/pin_pad.dart';
 
@@ -39,8 +40,8 @@ class _CreatePinScreenState extends ConsumerState<CreatePinScreen> {
             child: PinPad(
               key: ValueKey(_first == null ? 'enter' : 'confirm'),
               title: _first == null
-                  ? 'Crea un PIN de 4 dígitos'
-                  : 'Confirma tu PIN',
+                  ? context.l10n.createPin
+                  : context.l10n.confirmPin,
               onCompleted: (pin) async {
                 if (_first == null) {
                   setState(() => _first = pin);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_formatter.dart';
@@ -37,12 +38,13 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
     String fmt(double v) => CurrencyFormatter.format(v, settings);
+    final l10n = context.l10n;
 
     final pages = <Widget>[
-      _netPage(settings, fmt),
-      _moneyPage(settings, fmt),
-      _debtPage(settings, fmt),
-      _goalsPage(settings, fmt),
+      _netPage(settings, fmt, l10n),
+      _moneyPage(settings, fmt, l10n),
+      _debtPage(settings, fmt, l10n),
+      _goalsPage(settings, fmt, l10n),
     ];
     assert(pages.length == _pageCount);
 
@@ -86,83 +88,88 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
   }
 
   // 1. Balance neto: efectivo + banco − deuda, con flujo del mes.
-  Widget _netPage(AppSettings settings, String Function(double) fmt) {
+  Widget _netPage(
+      AppSettings settings, String Function(double) fmt, AppLocalizations l10n) {
     final net = ref.watch(netBalanceProvider);
     final month = ref.watch(currentMonthSummaryProvider);
     return _OverviewCard(
-      label: 'Balance neto',
+      label: l10n.ovNetBalance,
       icon: Icons.account_balance_wallet_outlined,
       amount: net,
       settings: settings,
       stats: [
         _Stat(Icons.arrow_upward, AppColors.income, fmt(month.income),
-            'ingresos del mes'),
+            l10n.ovMonthIncome),
         _Stat(Icons.arrow_downward, AppColors.expense, fmt(month.expense),
-            'gastos del mes'),
+            l10n.ovMonthExpense),
       ],
     );
   }
 
   // 2. Dinero total: cuentas + metas.
-  Widget _moneyPage(AppSettings settings, String Function(double) fmt) {
+  Widget _moneyPage(
+      AppSettings settings, String Function(double) fmt, AppLocalizations l10n) {
     final money = ref.watch(moneyOverviewProvider);
     return _OverviewCard(
-      label: 'Dinero total',
+      label: l10n.ovTotalMoney,
       icon: Icons.paid_outlined,
       amount: money.total,
       settings: settings,
       stats: [
         _Stat(Icons.account_balance_outlined, Colors.white,
-            fmt(money.inAccounts), 'en cuentas'),
+            fmt(money.inAccounts), l10n.ovInAccounts),
         _Stat(Icons.savings_outlined, AppColors.accent, fmt(money.inGoals),
-            'en metas'),
+            l10n.ovInGoals),
       ],
     );
   }
 
   // 3. Deudas de tarjetas de crédito.
-  Widget _debtPage(AppSettings settings, String Function(double) fmt) {
+  Widget _debtPage(
+      AppSettings settings, String Function(double) fmt, AppLocalizations l10n) {
     final debt = ref.watch(debtOverviewProvider);
     final hasCards = debt.cardCount > 0;
     return _OverviewCard(
-      label: 'Deudas',
+      label: l10n.ovDebts,
       icon: Icons.credit_card,
       amount: debt.debt,
       amountColor: debt.debt > 0 ? AppColors.expense : Colors.white,
       settings: settings,
       onTap: () => context.go('/home/accounts'),
-      message: hasCards ? null : 'No tienes tarjetas de crédito',
+      message: hasCards ? null : l10n.ovNoCards,
       stats: [
         if (debt.available != null)
           _Stat(Icons.check_circle_outline, AppColors.income,
-              fmt(debt.available!), 'cupo disponible'),
+              fmt(debt.available!), l10n.ovAvailableCredit),
         if (debt.nextPayment != null)
           _Stat(
             Icons.event_outlined,
             AppColors.accent,
             DateFormatter.shortDay(debt.nextPayment!),
-            'pago ${debt.nextPaymentCard}',
+            l10n.ovPaymentOf(debt.nextPaymentCard ?? ''),
           ),
       ],
     );
   }
 
   // 4. Metas de ahorro.
-  Widget _goalsPage(AppSettings settings, String Function(double) fmt) {
+  Widget _goalsPage(
+      AppSettings settings, String Function(double) fmt, AppLocalizations l10n) {
     final goals = ref.watch(goalsOverviewProvider);
     return _OverviewCard(
-      label: 'Ahorrado en metas',
+      label: l10n.ovSavedInGoals,
       icon: Icons.savings_outlined,
       amount: goals.saved,
       settings: settings,
       onTap: () => context.push('/savings-goals'),
-      message: goals.count == 0 ? 'Crea tu primera meta de ahorro' : null,
+      message: goals.count == 0 ? l10n.ovCreateFirstGoal : null,
       progress: goals.count == 0 ? null : goals.progress,
       stats: [
         _Stat(Icons.flag_outlined, AppColors.accent, fmt(goals.target),
-            'objetivo · ${(goals.progress * 100).toStringAsFixed(0)}%'),
+            l10n.ovGoalTarget((goals.progress * 100).toStringAsFixed(0))),
         _Stat(Icons.emoji_events_outlined, AppColors.income,
-            '${goals.completed} de ${goals.count}', 'completadas'),
+            l10n.amountOf('${goals.completed}', '${goals.count}'),
+            l10n.ovCompleted),
       ],
     );
   }

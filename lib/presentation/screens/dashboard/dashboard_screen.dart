@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
@@ -24,6 +25,7 @@ class DashboardScreen extends ConsumerWidget {
     final net = ref.watch(netBalanceProvider);
     final recent = ref.watch(recentTransactionsProvider(5));
     final settings = ref.watch(settingsProvider);
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -38,7 +40,7 @@ class DashboardScreen extends ConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(DateFormatter.greeting(now),
+                    Text(DateFormatter.greeting(now, l10n),
                         style: theme.textTheme.titleMedium),
                     Text(DateFormatter.longDay(now),
                         style: theme.textTheme.bodySmall),
@@ -58,10 +60,10 @@ class DashboardScreen extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Presupuestos', style: theme.textTheme.titleMedium),
+                Text(l10n.dashBudgets, style: theme.textTheme.titleMedium),
                 TextButton(
                   onPressed: () => context.push('/budgets'),
-                  child: const Text('Ver todos'),
+                  child: Text(l10n.seeAll),
                 ),
               ],
             ),
@@ -73,7 +75,7 @@ class DashboardScreen extends ConsumerWidget {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.savings, color: AppColors.accent),
-                title: const Text('Metas de ahorro'),
+                title: Text(l10n.dashSavingsGoals),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => context.push('/savings-goals'),
               ),
@@ -84,20 +86,20 @@ class DashboardScreen extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Últimos movimientos', style: theme.textTheme.titleMedium),
+                Text(l10n.dashRecent, style: theme.textTheme.titleMedium),
                 TextButton(
                   onPressed: () => context.go('/home/transactions'),
-                  child: const Text('Ver todos →'),
+                  child: Text(l10n.seeAll),
                 ),
               ],
             ),
             const SizedBox(height: 4),
             if (recent.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 24),
+              Padding(
+                padding: const EdgeInsets.only(top: 24),
                 child: EmptyState(
                   icon: Icons.receipt_long,
-                  message: 'Aún no hay movimientos',
+                  message: l10n.dashNoTransactions,
                 ),
               )
             else
@@ -111,7 +113,7 @@ class DashboardScreen extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
-                  'Balance neto: ${CurrencyFormatter.format(net, settings)}',
+                  l10n.dashNetBalanceLine(CurrencyFormatter.format(net, settings)),
                   style: theme.textTheme.bodySmall,
                 ),
               ),
