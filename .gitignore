@@ -46,3 +46,6 @@ app.*.map.json
 
 # Reportes de Gradle
 /android/build/
+
+# Capturas generadas por tool/screenshots
+/tool/screenshots/out/

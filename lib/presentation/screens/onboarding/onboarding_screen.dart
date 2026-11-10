@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/currencies.dart';
@@ -148,13 +149,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 width: double.infinity,
                 height: 52,
                 child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Dimens.chipRadius),
-                    ),
-                  ),
+                  
                   onPressed: _next,
                   child: Text(switch (_page) {
                     0 => l10n.onbStart,
@@ -181,7 +176,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             width: _page == i ? 22 : 8,
             height: 8,
             decoration: BoxDecoration(
-              color: _page == i ? AppColors.accent : Theme.of(context).dividerColor,
+              color: _page == i ? context.palette.ink : Theme.of(context).dividerColor,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -200,13 +195,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             width: 96,
             height: 96,
             decoration: BoxDecoration(
-              color: AppColors.primary,
+              color: context.palette.ink,
               borderRadius: BorderRadius.circular(28),
             ),
-            child: const Center(
+            child: Center(
               child: Text('N',
                   style: TextStyle(
-                      color: AppColors.accent,
+                      color: context.palette.onInk,
                       fontSize: 48,
                       fontWeight: FontWeight.w700)),
             ),
@@ -255,10 +250,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: AppColors.accent.withValues(alpha: 0.15),
+              color: context.palette.ink.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(22),
             ),
-            child: Icon(icon, color: AppColors.accent, size: 38),
+            child: Icon(icon, color: context.palette.ink, size: 38),
           ),
           const SizedBox(height: 24),
           Text(title, style: theme.textTheme.titleLarge),
@@ -353,7 +348,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         Container(
           padding: const EdgeInsets.all(Dimens.cardPadding),
           decoration: BoxDecoration(
-            color: AppColors.primary,
+            color: context.palette.ink,
             borderRadius: BorderRadius.circular(Dimens.cardRadius),
           ),
           child: Column(
@@ -361,13 +356,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             children: [
               Text(context.l10n.onbCurrencyPreview,
                   style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.7),
+                      color: context.palette.onInk.withValues(alpha: 0.7),
                       fontSize: 13)),
               const SizedBox(height: 4),
               Text(
                 CurrencyFormatter.format(1250000, previewSettings),
-                style: const TextStyle(
-                    color: Colors.white,
+                style: TextStyle(
+                    color: context.palette.onInk,
                     fontSize: 26,
                     fontWeight: FontWeight.w700),
               ),
@@ -382,8 +377,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             leading: Text(c.symbol, style: theme.textTheme.titleMedium),
             title: Text('${c.code} — ${currencyName(c.code, context.l10n)}'),
             trailing: _currency.code == c.code
-                ? const Icon(Icons.check_circle, color: AppColors.accent)
-                : const Icon(Icons.circle_outlined, color: Colors.grey),
+                ? Icon(Icons.check_circle, color: context.palette.ink)
+                : Icon(Icons.circle_outlined, color: context.palette.inkHint),
           ),
       ],
     );

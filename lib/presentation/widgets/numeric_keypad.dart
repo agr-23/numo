@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/constants/dimens.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/theme/numo_palette.dart';
 
-/// Teclado numérico custom de 12 botones (1-9, ., 0, ⌫).
+/// Teclado numérico de 12 teclas: 1-9, decimal (o 000), 0 y borrar.
 class NumericKeypad extends StatelessWidget {
   final bool showDecimal;
 
@@ -12,7 +14,6 @@ class NumericKeypad extends StatelessWidget {
   final String decimalLabel;
   final void Function(String digit) onDigit;
   final VoidCallback onBackspace;
-  final Color accentColor;
 
   const NumericKeypad({
     super.key,
@@ -20,44 +21,58 @@ class NumericKeypad extends StatelessWidget {
     this.decimalLabel = '.',
     required this.onDigit,
     required this.onBackspace,
-    required this.accentColor,
   });
+
+  static const _backspace = 'del';
 
   @override
   Widget build(BuildContext context) {
+    // Sin decimales (COP, CLP) la tecla libre se usa para "000", que
+    // acelera escribir montos grandes.
     final keys = [
       '1', '2', '3', //
       '4', '5', '6', //
       '7', '8', '9', //
-      showDecimal ? decimalLabel : '', '0', '⌫', //
+      showDecimal ? decimalLabel : '000', '0', _backspace, //
     ];
 
     return GridView.count(
       crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 1.9,
-      children: keys.map((k) => _key(context, k)).toList(),
+      mainAxisSpacing: 6,
+      crossAxisSpacing: 6,
+      childAspectRatio: 2.3,
+      children: [for (final k in keys) _key(context, k)],
     );
   }
 
   Widget _key(BuildContext context, String label) {
-    if (label.isEmpty) return const SizedBox.shrink();
-    final isBackspace = label == '⌫';
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () {
-        HapticFeedback.selectionClick();
-        if (isBackspace) {
-          onBackspace();
-        } else {
-          onDigit(label == decimalLabel ? '.' : label);
-        }
-      },
-      child: Center(
-        child: isBackspace
-            ? Icon(Icons.backspace_outlined, color: accentColor)
-            : Text(label, style: AppTextStyles.keypadDigit),
+    final p = context.palette;
+    final isBackspace = label == _backspace;
+    return Material(
+      color: p.surfaceMuted,
+      borderRadius: BorderRadius.circular(Dimens.chipRadius),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(Dimens.chipRadius),
+        onTap: () {
+          HapticFeedback.selectionClick();
+          if (isBackspace) {
+            onBackspace();
+          } else if (label == '000') {
+            for (var i = 0; i < 3; i++) {
+              onDigit('0');
+            }
+          } else {
+            onDigit(label == decimalLabel ? '.' : label);
+          }
+        },
+        child: Center(
+          child: isBackspace
+              ? Icon(Icons.backspace_outlined, color: p.ink, size: 22)
+              : Text(label,
+                  style: AppTextStyles.keypadDigit.copyWith(color: p.ink)),
+        ),
       ),
     );
   }

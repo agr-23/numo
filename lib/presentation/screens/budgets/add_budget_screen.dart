@@ -3,9 +3,9 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/amount_input.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/budget.dart';
@@ -68,7 +68,7 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: _category?.id == c.id
-                                ? AppColors.accent
+                                ? context.palette.ink
                                 : Colors.transparent,
                             width: 2.5,
                           ),
@@ -103,10 +103,7 @@ class _AddBudgetScreenState extends ConsumerState<AddBudgetScreen> {
           const SizedBox(height: Dimens.sectionGap),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              minimumSize: const Size.fromHeight(50),
-            ),
+                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
             onPressed: _save,
             child: Text(l10n.budSave),
           ),

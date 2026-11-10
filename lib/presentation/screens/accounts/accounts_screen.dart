@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../providers/accounts_provider.dart';
 import '../../../providers/settings_provider.dart';
@@ -49,7 +49,7 @@ class AccountsScreen extends ConsumerWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: context.palette.ink,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
@@ -57,13 +57,13 @@ class AccountsScreen extends ConsumerWidget {
                     children: [
                       Text(l10n.accNetTotal,
                           style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.7),
+                              color: context.palette.onInk.withValues(alpha: 0.7),
                               fontSize: 13)),
                       const SizedBox(height: 6),
                       Text(
                         CurrencyFormatter.format(net, settings),
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: context.palette.onInk,
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
                         ),
@@ -82,7 +82,7 @@ class AccountsScreen extends ConsumerWidget {
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.only(right: 20),
                         decoration: BoxDecoration(
-                          color: AppColors.warning,
+                          color: context.palette.warning,
                           borderRadius:
                               BorderRadius.circular(Dimens.cardRadius),
                         ),

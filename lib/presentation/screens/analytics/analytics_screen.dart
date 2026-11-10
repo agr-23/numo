@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/dimens.dart';
 import '../../../core/theme/app_colors.dart';
@@ -136,12 +137,12 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
     return Row(
       children: [
-        card(context.l10n.incomes, summary.income, AppColors.income),
+        card(context.l10n.incomes, summary.income, context.palette.income),
         const SizedBox(width: 8),
-        card(context.l10n.expenses, summary.expense, AppColors.expense),
+        card(context.l10n.expenses, summary.expense, context.palette.expense),
         const SizedBox(width: 8),
         card(context.l10n.balance, summary.net,
-            summary.net >= 0 ? AppColors.income : AppColors.expense),
+            summary.net >= 0 ? context.palette.income : context.palette.expense),
       ],
     );
   }
@@ -303,13 +304,13 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 barRods: [
                   BarChartRodData(
                     toY: series[i].income,
-                    color: AppColors.income,
+                    color: context.palette.income,
                     width: 7,
                     borderRadius: BorderRadius.circular(2),
                   ),
                   BarChartRodData(
                     toY: series[i].expense,
-                    color: AppColors.expense,
+                    color: context.palette.expense,
                     width: 7,
                     borderRadius: BorderRadius.circular(2),
                   ),

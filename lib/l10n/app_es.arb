@@ -1,10 +1,14 @@
 {
   "@@locale": "es",
-
   "appTagline": "Numo — Finanzas personales simples",
   "appVersion": "Versión {version}",
-  "@appVersion": {"placeholders": {"version": {"type": "String"}}},
-
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "cancel": "Cancelar",
   "continueLabel": "Continuar",
   "save": "Guardar",
@@ -38,29 +42,46 @@
   "tomorrow": "mañana",
   "todayLower": "hoy",
   "inDays": "{days, plural, =1{en 1 día} other{en {days} días}}",
-  "@inDays": {"placeholders": {"days": {"type": "int"}}},
+  "@inDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "dayN": "Día {day}",
-  "@dayN": {"placeholders": {"day": {"type": "int"}}},
+  "@dayN": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
   "amountOf": "{part} de {total}",
-  "@amountOf": {"placeholders": {"part": {"type": "String"}, "total": {"type": "String"}}},
+  "@amountOf": {
+    "placeholders": {
+      "part": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "amountMustBePositive": "Ingresa un monto mayor a 0",
   "selectCategory": "Selecciona una categoría",
   "selectAccount": "Selecciona una cuenta",
   "writeName": "Escribe un nombre",
-
   "greetingMorning": "Buenos días",
   "greetingAfternoon": "Buenas tardes",
   "greetingEvening": "Buenas noches",
-
   "navHome": "Inicio",
   "navTransactions": "Movimientos",
   "navAnalytics": "Analíticas",
   "navAccounts": "Cuentas",
-
   "accountTypeCash": "Efectivo",
   "accountTypeBank": "Banco",
   "accountTypeCredit": "Tarjeta de crédito",
-
   "catFood": "Comida",
   "catTransport": "Transporte",
   "catGroceries": "Mercado",
@@ -77,7 +98,6 @@
   "catFreelance": "Freelance",
   "catInvestments": "Inversiones",
   "catOtherIncome": "Otros ingresos",
-
   "currencyCOP": "Peso colombiano",
   "currencyUSD": "Dólar estadounidense",
   "currencyEUR": "Euro",
@@ -88,18 +108,15 @@
   "currencyBRL": "Real brasileño",
   "currencyGBP": "Libra esterlina",
   "currencyCAD": "Dólar canadiense",
-
   "languageSystem": "Automático (idioma del teléfono)",
   "languageEs": "Español",
   "languageEn": "English",
-
   "unlockReason": "Desbloquea Numo",
   "enterPin": "Ingresa tu PIN",
   "wrongPin": "PIN incorrecto",
   "createPin": "Crea un PIN de 4 dígitos",
   "confirmPin": "Confirma tu PIN",
   "confirmCurrentPin": "Confirma tu PIN actual",
-
   "onbSkip": "Saltar",
   "onbStart": "Empezar",
   "onbFinish": "¡Listo! Comenzar",
@@ -124,14 +141,18 @@
   "onbDebtOptional": "Deuda actual (opcional)",
   "onbDatesLater": "Las fechas de corte y pago se configuran luego en la cuenta",
   "onbBalanceOptional": "Balance inicial (opcional)",
-
   "dashBudgets": "Presupuestos",
   "dashSavingsGoals": "Metas de ahorro",
   "dashRecent": "Últimos movimientos",
   "dashNoTransactions": "Aún no hay movimientos",
   "dashNetBalanceLine": "Balance neto: {amount}",
-  "@dashNetBalanceLine": {"placeholders": {"amount": {"type": "String"}}},
-
+  "@dashNetBalanceLine": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "ovNetBalance": "Balance neto",
   "ovMonthIncome": "ingresos del mes",
   "ovMonthExpense": "gastos del mes",
@@ -142,26 +163,35 @@
   "ovNoCards": "No tienes tarjetas de crédito",
   "ovAvailableCredit": "cupo disponible",
   "ovPaymentOf": "pago {card}",
-  "@ovPaymentOf": {"placeholders": {"card": {"type": "String"}}},
+  "@ovPaymentOf": {
+    "placeholders": {
+      "card": {
+        "type": "String"
+      }
+    }
+  },
   "ovSavedInGoals": "Ahorrado en metas",
   "ovCreateFirstGoal": "Crea tu primera meta de ahorro",
   "ovGoalTarget": "objetivo, {percent} %",
-  "@ovGoalTarget": {"placeholders": {"percent": {"type": "String"}}},
+  "@ovGoalTarget": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
   "ovCompleted": "completadas",
-
   "txTitle": "Movimientos",
   "txSearch": "Buscar…",
   "txNoMatches": "No hay movimientos con esos filtros",
   "txAddFirst": "Agregar el primero",
   "txDeleted": "Movimiento eliminado",
-
   "filters": "Filtros",
   "clear": "Limpiar",
   "dateRange": "Rango de fechas",
   "anyDate": "Cualquier fecha",
   "removeRange": "Quitar rango",
   "applyFilters": "Aplicar filtros",
-
   "addTxNew": "Nuevo movimiento",
   "addTxEdit": "Editar movimiento",
   "addTxTitleHint": "Ej: Almuerzo",
@@ -169,7 +199,13 @@
   "addTxToAccount": "Cuenta destino",
   "addTxPickAccount": "Selecciona una cuenta",
   "addTxAvailableCredit": "Cupo disponible: {amount}",
-  "@addTxAvailableCredit": {"placeholders": {"amount": {"type": "String"}}},
+  "@addTxAvailableCredit": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "addTxRecurring": "Recurrente",
   "freqDaily": "Diario",
   "freqWeekly": "Semanal",
@@ -184,12 +220,20 @@
   "addTxWriteTitle": "Escribe un título",
   "addTxOverLimitTitle": "Supera el cupo",
   "addTxOverLimitBody": "Este gasto supera el cupo disponible de \"{account}\" ({amount}). ¿Guardarlo igual?",
-  "@addTxOverLimitBody": {"placeholders": {"account": {"type": "String"}, "amount": {"type": "String"}}},
+  "@addTxOverLimitBody": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "addTxSaveAnyway": "Guardar igual",
   "addTxSavedExpense": "Gasto guardado",
   "addTxSavedIncome": "Ingreso guardado",
   "addTxSavedTransfer": "Transferencia realizada",
-
   "anTitle": "Analíticas",
   "anByCategory": "Gastos por categoría",
   "anSeriesWeeks": "Ingresos y gastos (6 semanas)",
@@ -201,9 +245,14 @@
   "anCustom": "Personalizado",
   "anNoExpenses": "Sin gastos en este período",
   "anTotal": "Total\n{amount}",
-  "@anTotal": {"placeholders": {"amount": {"type": "String"}}},
+  "@anTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "anNoChartData": "Sin datos para el gráfico",
-
   "accTitle": "Mis cuentas",
   "accAdd": "Agregar cuenta",
   "accNone": "Aún no tienes cuentas",
@@ -211,7 +260,13 @@
   "accNetTotal": "Balance neto total",
   "accArchiveTitle": "Archivar cuenta",
   "accArchiveBody": "La cuenta \"{name}\" se archivará. Su historial se conserva, pero ya no aparecerá en las listas.",
-  "@accArchiveBody": {"placeholders": {"name": {"type": "String"}}},
+  "@accArchiveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "accArchive": "Archivar",
   "accNotFound": "Cuenta no encontrada",
   "accEdit": "Editar cuenta",
@@ -226,9 +281,21 @@
   "accCompleteHint": "Toca el lápiz de arriba para completar cupo y fechas.",
   "accPayCard": "Pagar tarjeta",
   "accDebtAmount": "Deuda {amount}",
-  "@accDebtAmount": {"placeholders": {"amount": {"type": "String"}}},
+  "@accDebtAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "accLimitAmount": "Cupo {amount}",
-  "@accLimitAmount": {"placeholders": {"amount": {"type": "String"}}},
+  "@accLimitAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "accNew": "Nueva cuenta",
   "accNameHint": "Ej: Bancolombia",
   "accLimitHelper": "El límite de crédito de la tarjeta",
@@ -240,7 +307,6 @@
   "accSaveChanges": "Guardar cambios",
   "accNameMissing": "Escribe un nombre para la cuenta",
   "accLimitMissing": "Ingresa el cupo total de la tarjeta",
-
   "budTitle": "Presupuestos",
   "budNone": "Sin presupuestos para este mes",
   "budCreate": "Crear presupuesto",
@@ -248,14 +314,38 @@
   "budSpent": "Gastado",
   "budDeleteTitle": "Eliminar presupuesto",
   "budDeleteBody": "¿Eliminar el presupuesto de \"{name}\"?",
-  "@budDeleteBody": {"placeholders": {"name": {"type": "String"}}},
+  "@budDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "budNoCategoryExpenses": "Sin gastos en esta categoría",
   "budSheetTitle": "{category}, {month}",
-  "@budSheetTitle": {"placeholders": {"category": {"type": "String"}, "month": {"type": "String"}}},
+  "@budSheetTitle": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
   "budExceeded": "Excedido",
   "budNearLimit": "Cerca del límite",
   "budSpentOf": "Gastado {spent} de {limit}",
-  "@budSpentOf": {"placeholders": {"spent": {"type": "String"}, "limit": {"type": "String"}}},
+  "@budSpentOf": {
+    "placeholders": {
+      "spent": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
   "budShort": "Presupuesto",
   "budNew": "Nuevo presupuesto",
   "budLimit": "Monto límite",
@@ -264,19 +354,42 @@
   "budSave": "Guardar presupuesto",
   "budExistsTitle": "Ya existe un presupuesto",
   "budExistsBody": "Ya tienes un presupuesto para \"{category}\" en {month}. ¿Reemplazarlo?",
-  "@budExistsBody": {"placeholders": {"category": {"type": "String"}, "month": {"type": "String"}}},
+  "@budExistsBody": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
   "budReplace": "Reemplazar",
-
   "goalTitle": "Mis metas",
   "goalNone": "Aún no tienes metas de ahorro",
   "goalCreate": "Crear meta",
   "goalCompleted": "Completada",
   "goalSavedOf": "Ahorrado {saved} de {target}",
-  "@goalSavedOf": {"placeholders": {"saved": {"type": "String"}, "target": {"type": "String"}}},
+  "@goalSavedOf": {
+    "placeholders": {
+      "saved": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
   "goalOverdue": "Fecha límite vencida",
   "goalDueToday": "Vence hoy",
   "goalDaysLeft": "{days, plural, =1{Queda 1 día} other{Quedan {days} días}}",
-  "@goalDaysLeft": {"placeholders": {"days": {"type": "int"}}},
+  "@goalDaysLeft": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "goalContribute": "Aportar",
   "goalNew": "Nueva meta",
   "goalNameHint": "Ej: Viaje a Cartagena",
@@ -287,8 +400,13 @@
   "goalNameMissing": "Escribe un nombre para la meta",
   "goalTargetMissing": "Ingresa un monto objetivo mayor a 0",
   "goalContributeQuestion": "¿Cuánto quieres aportar a \"{name}\"?",
-  "@goalContributeQuestion": {"placeholders": {"name": {"type": "String"}}},
-
+  "@goalContributeQuestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "setTitle": "Ajustes",
   "setSecurity": "Seguridad",
   "setPin": "PIN de acceso",
@@ -308,24 +426,115 @@
   "setExport": "Exportar mis datos",
   "setExportSubtitle": "Genera un CSV con todos tus movimientos",
   "setExportFailed": "No se pudo exportar: {error}",
-  "@setExportFailed": {"placeholders": {"error": {"type": "String"}}},
+  "@setExportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "setDeleteAll": "Borrar todos los datos",
   "setDeleteAllBody": "Esto eliminará todas tus cuentas, movimientos, presupuestos y metas. Esta acción no se puede deshacer.",
   "setFinalConfirm": "Confirmación final",
   "setTypeToConfirm": "Escribe {word} para confirmar:",
-  "@setTypeToConfirm": {"placeholders": {"word": {"type": "String"}}},
+  "@setTypeToConfirm": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
   "setConfirmWord": "BORRAR",
   "setDeleteEverything": "Borrar todo",
   "setAllDeleted": "Todos los datos fueron borrados",
   "setAbout": "Acerca de",
-
   "catCustom": "Personalizada",
   "catPredefined": "Predefinida",
   "catCannotDelete": "Las categorías predefinidas no se pueden borrar",
   "catNew": "Nueva categoría",
   "catCreate": "Crear categoría",
-
   "exportSubject": "Exportación de Numo",
   "exportText": "Mis movimientos de Numo",
-  "exportDestAccount": "Cuenta destino"
+  "exportDestAccount": "Cuenta destino",
+  "ovNetFormula": "Cuentas − deudas",
+  "ovIncomeArrow": "↑ {amount} ingresos",
+  "@ovIncomeArrow": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "ovExpenseArrow": "↓ {amount} gastos",
+  "@ovExpenseArrow": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "ovMoneySub": "{accounts} en cuentas y {goals} en metas",
+  "@ovMoneySub": {
+    "placeholders": {
+      "accounts": {
+        "type": "String"
+      },
+      "goals": {
+        "type": "String"
+      }
+    }
+  },
+  "ovDebtNext": "{card} se paga el {date}",
+  "@ovDebtNext": {
+    "placeholders": {
+      "card": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "ovGoalsSub": "{percent} % de {target}",
+  "@ovGoalsSub": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "dashHideAmounts": "Ocultar montos",
+  "dashShowAmounts": "Mostrar montos",
+  "actPay": "Pagar",
+  "dashCreateBudget": "Crear un presupuesto",
+  "addTxHowMuchExpense": "¿Cuánto gastaste?",
+  "addTxHowMuchIncome": "¿Cuánto recibiste?",
+  "addTxHowMuchTransfer": "¿Cuánto vas a mover?",
+  "addTxRepeat": "Repetir",
+  "addTxRepeatNever": "No",
+  "addTxFrom": "Desde",
+  "addTxTo": "Hacia",
+  "addTxAdd": "Agregar",
+  "addTxRepeatUntil": "{frequency}, hasta el {date}",
+  "@addTxRepeatUntil": {
+    "placeholders": {
+      "frequency": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "accBalanceShort": "Saldo {amount}",
+  "@accBalanceShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  }
 }

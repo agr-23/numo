@@ -158,10 +158,7 @@ class _AddAccountSheetState extends ConsumerState<AddAccountSheet> {
             const SizedBox(height: 24),
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(50),
-              ),
+                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
               onPressed: _save,
               child: Text(_isEdit ? l10n.accSaveChanges : l10n.accCreate),
             ),

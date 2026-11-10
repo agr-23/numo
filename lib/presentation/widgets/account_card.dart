@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/theme/numo_palette.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../data/models/account.dart';
 import '../../providers/settings_provider.dart';
@@ -55,7 +55,7 @@ class AccountCard extends ConsumerWidget {
                           amount: available,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.w700,
-                            color: available < 0 ? AppColors.expense : null,
+                            color: available < 0 ? context.palette.expense : null,
                           ),
                         ),
                         Text(l10n.available, style: theme.textTheme.bodySmall),
@@ -70,14 +70,14 @@ class AccountCard extends ConsumerWidget {
                           style: theme.textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: account.isCredit || account.balance < 0
-                                ? AppColors.expense
+                                ? context.palette.expense
                                 : theme.textTheme.bodyLarge?.color,
                           ),
                         ),
                         if (account.isCredit)
                           Text(l10n.debt,
                               style: theme.textTheme.bodySmall
-                                  ?.copyWith(color: AppColors.expense)),
+                                  ?.copyWith(color: context.palette.expense)),
                       ],
                     ),
                 ],
@@ -94,7 +94,7 @@ class AccountCard extends ConsumerWidget {
                       l10n.accDebtAmount(
                           CurrencyFormatter.format(account.balance, settings)),
                       style: theme.textTheme.bodySmall
-                          ?.copyWith(color: AppColors.expense),
+                          ?.copyWith(color: context.palette.expense),
                     ),
                     Text(
                       l10n.accLimitAmount(CurrencyFormatter.format(

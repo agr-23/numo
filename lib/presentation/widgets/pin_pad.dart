@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/theme/numo_palette.dart';
 import '../../core/l10n/l10n.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 
 /// Teclado de PIN de 4 dígitos con indicadores y biometría opcional.
@@ -75,11 +75,11 @@ class _PinPadState extends State<PinPad> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: i < _pin.length
-                      ? (_error ? AppColors.expense : AppColors.accent)
+                      ? (_error ? context.palette.expense : context.palette.ink)
                       : Colors.transparent,
                   border: Border.all(
                     color: _error
-                        ? AppColors.expense
+                        ? context.palette.expense
                         : theme.colorScheme.onSurface.withValues(alpha: 0.4),
                     width: 2,
                   ),
@@ -92,7 +92,7 @@ class _PinPadState extends State<PinPad> {
             padding: const EdgeInsets.only(top: 12),
             child: Text(context.l10n.wrongPin,
                 style: theme.textTheme.bodySmall
-                    ?.copyWith(color: AppColors.expense)),
+                    ?.copyWith(color: context.palette.expense)),
           ),
         const SizedBox(height: 32),
         _keypad(),

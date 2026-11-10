@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/theme/numo_palette.dart';
 import '../../core/l10n/l10n.dart';
 import '../../core/constants/dimens.dart';
 import '../../core/theme/app_colors.dart';
@@ -47,12 +48,12 @@ class SavingsGoalCard extends ConsumerWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.income.withValues(alpha: 0.15),
+                      color: context.palette.income.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(Dimens.chipRadius),
                     ),
                     child: Text(l10n.goalCompleted,
-                        style: const TextStyle(
-                            color: AppColors.income,
+                        style: TextStyle(
+                            color: context.palette.income,
                             fontSize: 11,
                             fontWeight: FontWeight.w600)),
                   ),
@@ -97,8 +98,13 @@ class SavingsGoalCard extends ConsumerWidget {
               const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerRight,
-                child: FilledButton.tonal(
+                child: FilledButton(
                   onPressed: onContribute,
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(0, 40),
+                    textStyle: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
                   child: Text(l10n.goalContribute),
                 ),
               ),

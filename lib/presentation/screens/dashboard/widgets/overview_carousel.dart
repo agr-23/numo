@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/dimens.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/numo_palette.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_formatter.dart';
-import '../../../../data/models/app_settings.dart';
 import '../../../../providers/accounts_provider.dart';
 import '../../../../providers/overview_provider.dart';
 import '../../../../providers/settings_provider.dart';
 import '../../../../providers/transactions_provider.dart';
 
-/// Carrusel deslizable del dashboard: vistazo rápido a balance neto,
-/// dinero total, deudas y metas.
+/// Oculta los montos del carrusel (para mostrar el teléfono sin exponerlos).
+final hideAmountsProvider = StateProvider<bool>((ref) => false);
+
+/// Carrusel deslizable del Inicio: balance neto (tarjeta protagonista en
+/// tinta), dinero total, deudas y metas.
 class OverviewCarousel extends ConsumerStatefulWidget {
   const OverviewCarousel({super.key});
 
@@ -23,9 +27,9 @@ class OverviewCarousel extends ConsumerStatefulWidget {
 
 class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
   static const _pageCount = 4;
-  static const _height = 176.0;
+  static const _height = 156.0;
 
-  final _controller = PageController(viewportFraction: 0.93);
+  final _controller = PageController(viewportFraction: 0.88);
   int _page = 0;
 
   @override
@@ -36,48 +40,92 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
-    String fmt(double v) => CurrencyFormatter.format(v, settings);
+    final p = context.palette;
     final l10n = context.l10n;
+    final settings = ref.watch(settingsProvider);
+    final hidden = ref.watch(hideAmountsProvider);
+    String fmt(double v) =>
+        hidden ? '••••••' : CurrencyFormatter.format(v, settings);
+
+    final net = ref.watch(netBalanceProvider);
+    final month = ref.watch(currentMonthSummaryProvider);
+    final money = ref.watch(moneyOverviewProvider);
+    final debt = ref.watch(debtOverviewProvider);
+    final goals = ref.watch(goalsOverviewProvider);
+
+    final debtSub = debt.cardCount == 0
+        ? l10n.ovNoCards
+        : debt.nextPayment != null
+            ? l10n.ovDebtNext(debt.nextPaymentCard ?? '',
+                DateFormatter.shortDay(debt.nextPayment!))
+            : debt.available != null
+                ? '${l10n.accCreditAvailable} ${fmt(debt.available!)}'
+                : '';
 
     final pages = <Widget>[
-      _netPage(settings, fmt, l10n),
-      _moneyPage(settings, fmt, l10n),
-      _debtPage(settings, fmt, l10n),
-      _goalsPage(settings, fmt, l10n),
+      _HeroCard(
+        label: l10n.ovNetBalance,
+        caption: l10n.ovNetFormula,
+        amount: fmt(net),
+        income: l10n.ovIncomeArrow(fmt(month.income)),
+        expense: l10n.ovExpenseArrow(fmt(month.expense)),
+      ),
+      _OutlineCard(
+        label: l10n.ovTotalMoney,
+        amount: fmt(money.total),
+        sub: l10n.ovMoneySub(fmt(money.inAccounts), fmt(money.inGoals)),
+      ),
+      _OutlineCard(
+        label: l10n.ovDebts,
+        amount: fmt(debt.debt),
+        amountColor: debt.debt > 0 ? p.expense : null,
+        sub: debtSub,
+        onTap: () => context.go('/home/accounts'),
+      ),
+      _OutlineCard(
+        label: l10n.ovSavedInGoals,
+        amount: fmt(goals.saved),
+        sub: goals.count == 0
+            ? l10n.ovCreateFirstGoal
+            : l10n.ovGoalsSub(
+                (goals.progress * 100).toStringAsFixed(0), fmt(goals.target)),
+        onTap: () => context.push('/savings-goals'),
+      ),
     ];
-    assert(pages.length == _pageCount);
+
+    final scale =
+        (MediaQuery.textScalerOf(context).scale(14) / 14).clamp(1.0, 1.6);
 
     return Column(
       children: [
         SizedBox(
-          // Crece con el tamaño de letra del sistema para no desbordar.
-          height: _height *
-              (MediaQuery.textScalerOf(context).scale(14) / 14).clamp(1.0, 1.6),
-          child: PageView(
-            controller: _controller,
-            padEnds: false,
-            onPageChanged: (i) => setState(() => _page = i),
-            children: [
-              for (final p in pages)
-                Padding(padding: const EdgeInsets.only(right: 10), child: p),
-            ],
+          height: _height * scale,
+          child: Padding(
+            padding: const EdgeInsets.only(left: Dimens.screenPaddingH),
+            child: PageView(
+              controller: _controller,
+              padEnds: false,
+              clipBehavior: Clip.none,
+              onPageChanged: (i) => setState(() => _page = i),
+              children: [
+                for (final page in pages)
+                  Padding(padding: const EdgeInsets.only(right: 10), child: page),
+              ],
+            ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             for (var i = 0; i < _pageCount; i++)
               AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
+                duration: const Duration(milliseconds: 220),
                 margin: const EdgeInsets.symmetric(horizontal: 3),
                 width: _page == i ? 18 : 6,
                 height: 6,
                 decoration: BoxDecoration(
-                  color: _page == i
-                      ? AppColors.accent
-                      : Theme.of(context).dividerColor,
+                  color: _page == i ? p.ink : p.borderStrong,
                   borderRadius: BorderRadius.circular(3),
                 ),
               ),
@@ -86,226 +134,132 @@ class _OverviewCarouselState extends ConsumerState<OverviewCarousel> {
       ],
     );
   }
-
-  // 1. Balance neto: efectivo + banco − deuda, con flujo del mes.
-  Widget _netPage(
-      AppSettings settings, String Function(double) fmt, AppLocalizations l10n) {
-    final net = ref.watch(netBalanceProvider);
-    final month = ref.watch(currentMonthSummaryProvider);
-    return _OverviewCard(
-      label: l10n.ovNetBalance,
-      icon: Icons.account_balance_wallet_outlined,
-      amount: net,
-      settings: settings,
-      stats: [
-        _Stat(Icons.arrow_upward, AppColors.income, fmt(month.income),
-            l10n.ovMonthIncome),
-        _Stat(Icons.arrow_downward, AppColors.expense, fmt(month.expense),
-            l10n.ovMonthExpense),
-      ],
-    );
-  }
-
-  // 2. Dinero total: cuentas + metas.
-  Widget _moneyPage(
-      AppSettings settings, String Function(double) fmt, AppLocalizations l10n) {
-    final money = ref.watch(moneyOverviewProvider);
-    return _OverviewCard(
-      label: l10n.ovTotalMoney,
-      icon: Icons.paid_outlined,
-      amount: money.total,
-      settings: settings,
-      stats: [
-        _Stat(Icons.account_balance_outlined, Colors.white,
-            fmt(money.inAccounts), l10n.ovInAccounts),
-        _Stat(Icons.savings_outlined, AppColors.accent, fmt(money.inGoals),
-            l10n.ovInGoals),
-      ],
-    );
-  }
-
-  // 3. Deudas de tarjetas de crédito.
-  Widget _debtPage(
-      AppSettings settings, String Function(double) fmt, AppLocalizations l10n) {
-    final debt = ref.watch(debtOverviewProvider);
-    final hasCards = debt.cardCount > 0;
-    return _OverviewCard(
-      label: l10n.ovDebts,
-      icon: Icons.credit_card,
-      amount: debt.debt,
-      amountColor: debt.debt > 0 ? AppColors.expense : Colors.white,
-      settings: settings,
-      onTap: () => context.go('/home/accounts'),
-      message: hasCards ? null : l10n.ovNoCards,
-      stats: [
-        if (debt.available != null)
-          _Stat(Icons.check_circle_outline, AppColors.income,
-              fmt(debt.available!), l10n.ovAvailableCredit),
-        if (debt.nextPayment != null)
-          _Stat(
-            Icons.event_outlined,
-            AppColors.accent,
-            DateFormatter.shortDay(debt.nextPayment!),
-            l10n.ovPaymentOf(debt.nextPaymentCard ?? ''),
-          ),
-      ],
-    );
-  }
-
-  // 4. Metas de ahorro.
-  Widget _goalsPage(
-      AppSettings settings, String Function(double) fmt, AppLocalizations l10n) {
-    final goals = ref.watch(goalsOverviewProvider);
-    return _OverviewCard(
-      label: l10n.ovSavedInGoals,
-      icon: Icons.savings_outlined,
-      amount: goals.saved,
-      settings: settings,
-      onTap: () => context.push('/savings-goals'),
-      message: goals.count == 0 ? l10n.ovCreateFirstGoal : null,
-      progress: goals.count == 0 ? null : goals.progress,
-      stats: [
-        _Stat(Icons.flag_outlined, AppColors.accent, fmt(goals.target),
-            l10n.ovGoalTarget((goals.progress * 100).toStringAsFixed(0))),
-        _Stat(Icons.emoji_events_outlined, AppColors.income,
-            l10n.amountOf('${goals.completed}', '${goals.count}'),
-            l10n.ovCompleted),
-      ],
-    );
-  }
 }
 
-class _Stat {
-  final IconData icon;
-  final Color color;
-  final String value;
-  final String caption;
-  const _Stat(this.icon, this.color, this.value, this.caption);
-}
-
-class _OverviewCard extends StatelessWidget {
+/// Tarjeta protagonista, en tinta (negra en claro, clara en oscuro).
+class _HeroCard extends StatelessWidget {
   final String label;
-  final IconData icon;
-  final double amount;
-  final Color amountColor;
-  final AppSettings settings;
-  final List<_Stat> stats;
-  final String? message;
-  final double? progress;
+  final String caption;
+  final String amount;
+  final String income;
+  final String expense;
+
+  const _HeroCard({
+    required this.label,
+    required this.caption,
+    required this.amount,
+    required this.income,
+    required this.expense,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final muted = p.onInk.withValues(alpha: 0.7);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+      decoration: BoxDecoration(
+        color: p.ink,
+        borderRadius: BorderRadius.circular(Dimens.heroRadius),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(label,
+                    style: AppTextStyles.captionStrong
+                        .copyWith(fontSize: 13, color: muted)),
+              ),
+              Flexible(
+                child: Text(caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.caption.copyWith(color: muted)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(amount,
+                style: AppTextStyles.amountHero.copyWith(color: p.onInk)),
+          ),
+          const Spacer(),
+          Wrap(
+            spacing: 14,
+            runSpacing: 2,
+            children: [
+              Text(income,
+                  style: AppTextStyles.captionStrong
+                      .copyWith(fontSize: 13, color: p.onInkIncome)),
+              Text(expense,
+                  style: AppTextStyles.captionStrong
+                      .copyWith(fontSize: 13, color: p.onInkExpense)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Las demás vistas: tarjeta blanca con borde.
+class _OutlineCard extends StatelessWidget {
+  final String label;
+  final String amount;
+  final String sub;
+  final Color? amountColor;
   final VoidCallback? onTap;
 
-  const _OverviewCard({
+  const _OutlineCard({
     required this.label,
-    required this.icon,
     required this.amount,
-    required this.settings,
-    required this.stats,
-    this.amountColor = Colors.white,
-    this.message,
-    this.progress,
+    required this.sub,
+    this.amountColor,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final muted = Colors.white.withValues(alpha: 0.7);
+    final p = context.palette;
     return Material(
-      color: AppColors.primary,
-      borderRadius: BorderRadius.circular(20),
+      color: p.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Dimens.heroRadius),
+        side: BorderSide(color: p.borderStrong),
+      ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(label,
-                        style: TextStyle(color: muted, fontSize: 13)),
-                  ),
-                  Icon(icon, color: muted, size: 18),
-                ],
+              Text(label,
+                  style: AppTextStyles.captionStrong
+                      .copyWith(fontSize: 13, color: p.inkMuted)),
+              const SizedBox(height: 8),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(amount,
+                    style: AppTextStyles.amountHero
+                        .copyWith(color: amountColor ?? p.ink)),
               ),
-              const SizedBox(height: 6),
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: amount),
-                duration: const Duration(milliseconds: 600),
-                curve: Curves.easeOut,
-                builder: (_, value, __) => FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    CurrencyFormatter.format(value, settings),
-                    style: TextStyle(
-                      color: amountColor,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-              if (progress != null) ...[
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(3),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 5,
-                    backgroundColor: Colors.white.withValues(alpha: 0.15),
-                    valueColor:
-                        const AlwaysStoppedAnimation(AppColors.accent),
-                  ),
-                ),
-              ],
               const Spacer(),
-              if (message != null)
-                Text(message!, style: TextStyle(color: muted, fontSize: 13))
-              else
-                Row(
-                  children: [
-                    for (var i = 0; i < stats.length; i++) ...[
-                      if (i > 0) const SizedBox(width: 16),
-                      Flexible(child: _stat(stats[i])),
-                    ],
-                  ],
-                ),
+              Text(sub,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.caption
+                      .copyWith(fontSize: 13, color: p.inkMuted)),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _stat(_Stat s) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(s.icon, color: s.color, size: 18),
-        const SizedBox(width: 6),
-        Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(s.value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      color: s.color,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15)),
-              Text(s.caption,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.6),
-                      fontSize: 12)),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

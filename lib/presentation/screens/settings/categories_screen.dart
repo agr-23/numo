@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/dimens.dart';
@@ -57,7 +58,7 @@ class CategoriesScreen extends ConsumerWidget {
           Text(c.isCustom ? context.l10n.catCustom : context.l10n.catPredefined),
       trailing: c.isCustom
           ? IconButton(
-              icon: const Icon(Icons.delete_outline, color: AppColors.expense),
+              icon: Icon(Icons.delete_outline, color: context.palette.expense),
               onPressed: () async {
                 final ok = await ref
                     .read(categoryRepositoryProvider)
@@ -153,10 +154,7 @@ class _AddCategorySheetState extends ConsumerState<_AddCategorySheet> {
           const SizedBox(height: 24),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              minimumSize: const Size.fromHeight(50),
-            ),
+                minimumSize: const Size.fromHeight(Dimens.buttonHeight)),
             onPressed: _save,
             child: Text(l10n.catCreate),
           ),

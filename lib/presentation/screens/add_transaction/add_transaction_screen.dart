@@ -3,13 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/l10n/l10n.dart';
+import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/dimens.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/l10n/l10n.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/amount_input.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/models/account.dart';
+import '../../../data/models/app_settings.dart';
 import '../../../data/models/category.dart';
 import '../../../data/models/transaction.dart';
 import '../../../providers/accounts_provider.dart';
@@ -23,8 +26,11 @@ class AddTransactionScreen extends ConsumerStatefulWidget {
   /// Si se pasa, la pantalla edita esa transacción.
   final int? editId;
 
-  /// Modo inicial: si true, abre directamente en Transferencia.
+  /// Abre directamente en Transferencia.
   final bool startAsTransfer;
+
+  /// Abre directamente en Ingreso.
+  final bool startAsIncome;
 
   /// Cuenta destino preseleccionada (ej. "Pagar tarjeta").
   final int? initialToAccountId;
@@ -33,6 +39,7 @@ class AddTransactionScreen extends ConsumerStatefulWidget {
     super.key,
     this.editId,
     this.startAsTransfer = false,
+    this.startAsIncome = false,
     this.initialToAccountId,
   });
 
@@ -48,8 +55,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   Account? _account;
   Account? _toAccount;
   DateTime _date = DateTime.now();
-  final _titleCtrl = TextEditingController();
-  final _noteCtrl = TextEditingController();
+  String _title = '';
+  String _note = '';
   bool _titleEditedByUser = false;
 
   bool _isRecurring = false;
@@ -58,23 +65,19 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
   bool _loaded = false;
 
+  bool get _isTransfer => _type == TransactionType.transfer;
+  double get _amount => double.tryParse(_amountStr) ?? 0;
+
   @override
   void initState() {
     super.initState();
     if (widget.startAsTransfer) _type = TransactionType.transfer;
-  }
-
-  @override
-  void dispose() {
-    _titleCtrl.dispose();
-    _noteCtrl.dispose();
-    super.dispose();
+    if (widget.startAsIncome) _type = TransactionType.income;
   }
 
   Future<void> _loadForEdit() async {
-    final tx = await ref
-        .read(transactionRepositoryProvider)
-        .getById(widget.editId!);
+    final tx =
+        await ref.read(transactionRepositoryProvider).getById(widget.editId!);
     if (tx == null || !mounted) return;
     setState(() {
       _type = tx.type;
@@ -83,8 +86,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       _account = tx.account.value;
       _toAccount = tx.toAccount.value;
       _date = tx.date;
-      _titleCtrl.text = tx.title;
-      _noteCtrl.text = tx.note ?? '';
+      _title = tx.title;
+      _note = tx.note ?? '';
       _titleEditedByUser = true;
       _isRecurring = tx.isRecurring;
       _frequency = tx.recurrenceFrequency ?? 'monthly';
@@ -97,142 +100,12 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     return v.toString();
   }
 
-  double get _amount => double.tryParse(_amountStr) ?? 0;
-
-  Color get _accentColor {
-    switch (_type) {
-      case TransactionType.expense:
-        return AppColors.expense;
-      case TransactionType.income:
-        return AppColors.income;
-      case TransactionType.transfer:
-        return AppColors.transfer;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
-    if (widget.editId != null && !_loaded) {
-      _loaded = true;
-      _loadForEdit();
-    }
-
-    final accounts = ref.watch(accountsProvider).valueOrNull ?? const [];
-    _pickDefaultAccounts(accounts);
-    final amountRules = AmountInput.of(settings.currency);
-
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _topBar(),
-            _tabs(),
-            const SizedBox(height: 8),
-            _amountDisplay(settings.currencySymbol,
-                settings.currencySymbolBefore, amountRules),
-            const SizedBox(height: 4),
-            NumericKeypad(
-              showDecimal: settings.currencyDecimals > 0,
-              decimalLabel: amountRules.decimalSep,
-              accentColor: _accentColor,
-              onDigit: _onDigit,
-              onBackspace: _onBackspace,
-            ),
-            const Divider(height: 1),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                    Dimens.screenPaddingH, 16, Dimens.screenPaddingH, 16),
-                child: _type == TransactionType.transfer
-                    ? _transferFields(accounts)
-                    : _normalFields(accounts),
-              ),
-            ),
-            _saveBar(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _topBar() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => context.pop(),
-          ),
-          Expanded(
-            child: Text(
-              widget.editId != null ? context.l10n.addTxEdit : context.l10n.addTxNew,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _tabs() {
-    if (widget.editId != null && _type == TransactionType.transfer) {
-      return const SizedBox.shrink();
-    }
-    Widget tab(String label, TransactionType type) {
-      final selected = _type == type;
-      return Expanded(
-        child: GestureDetector(
-          onTap: () {
-            HapticFeedback.lightImpact();
-            setState(() {
-              _type = type;
-              if (type != TransactionType.expense &&
-                  type != TransactionType.income) {
-                _category = null;
-              }
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: selected ? _accentColor : Colors.transparent,
-                  width: 2.5,
-                ),
-              ),
-            ),
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: selected
-                        ? _accentColor
-                        : Theme.of(context).textTheme.bodySmall?.color,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                  ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    // En edición no permitimos cambiar a transferencia ni desde ella.
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.screenPaddingH),
-      child: Row(
-        children: [
-          tab(context.l10n.expense, TransactionType.expense),
-          tab(context.l10n.income, TransactionType.income),
-          if (widget.editId == null)
-            tab(context.l10n.transfer, TransactionType.transfer),
-        ],
-      ),
-    );
-  }
+  /// Color del monto y de la pestaña activa según el tipo.
+  Color _typeColor(NumoPalette p) => switch (_type) {
+        TransactionType.expense => p.expense,
+        TransactionType.income => p.income,
+        TransactionType.transfer => p.ink,
+      };
 
   /// Cuentas por defecto. Origen = primera activa; si se abrió con un
   /// destino (pagar tarjeta), el origen es la primera cuenta que no sea
@@ -246,34 +119,536 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       }
     }
     if (_account == null) {
-      final candidates =
-          accounts.where((a) => a.id != _toAccount?.id).toList();
-      if (targetId != null) {
-        _account = candidates.firstWhere((a) => !a.isCredit,
-            orElse: () => candidates.isNotEmpty ? candidates.first : accounts.first);
-      } else {
-        _account = accounts.first;
-      }
+      final candidates = accounts.where((a) => a.id != _toAccount?.id).toList();
+      _account = targetId != null && candidates.isNotEmpty
+          ? candidates.firstWhere((a) => !a.isCredit,
+              orElse: () => candidates.first)
+          : accounts.first;
+    }
+    if (_isTransfer && _toAccount == null && accounts.length > 1) {
+      _toAccount = accounts.firstWhere((a) => a.id != _account?.id);
     }
   }
 
-  Widget _amountDisplay(String symbol, bool before, AmountInput rules) {
-    final formatted = rules.groupRaw(_amountStr);
-    final text = before ? '$symbol $formatted' : '$formatted $symbol';
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: FittedBox(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 40,
-            fontWeight: FontWeight.w700,
-            color: _accentColor,
+  @override
+  Widget build(BuildContext context) {
+    final settings = ref.watch(settingsProvider);
+    if (widget.editId != null && !_loaded) {
+      _loaded = true;
+      _loadForEdit();
+    }
+    final accounts = ref.watch(accountsProvider).valueOrNull ?? const [];
+    _pickDefaultAccounts(accounts);
+    final rules = AmountInput.of(settings.currency);
+
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+              Dimens.screenPaddingH, 4, Dimens.screenPaddingH, 16),
+          child: Column(
+            children: [
+              _header(),
+              const SizedBox(height: 8),
+              _typeSelector(),
+              const SizedBox(height: 12),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _amountBox(settings, rules),
+                      const SizedBox(height: 12),
+                      if (!_isTransfer) ...[
+                        _categoryChips(),
+                        const SizedBox(height: 12),
+                      ],
+                      _fields(accounts, settings),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              NumericKeypad(
+                showDecimal: settings.currencyDecimals > 0,
+                decimalLabel: rules.decimalSep,
+                onDigit: _onDigit,
+                onBackspace: _onBackspace,
+              ),
+              const SizedBox(height: 12),
+              _saveButton(),
+            ],
           ),
         ),
       ),
     );
   }
+
+  Widget _header() {
+    final p = context.palette;
+    final l10n = context.l10n;
+    return SizedBox(
+      height: 48,
+      child: Row(
+        children: [
+          IconButton(
+            tooltip: l10n.cancel,
+            icon: const Icon(Icons.close_rounded),
+            onPressed: () => context.pop(),
+            style: IconButton.styleFrom(padding: EdgeInsets.zero),
+          ),
+          Expanded(
+            child: Text(
+              widget.editId != null ? l10n.addTxEdit : l10n.addTxNew,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.title.copyWith(color: p.ink),
+            ),
+          ),
+          const SizedBox(width: 48),
+        ],
+      ),
+    );
+  }
+
+  /// Gasto / Ingreso / Transferir. Al editar no se puede cambiar a
+  /// transferencia ni desde ella (cambiaría las cuentas afectadas).
+  Widget _typeSelector() {
+    final p = context.palette;
+    final l10n = context.l10n;
+    final editing = widget.editId != null;
+    if (editing && _isTransfer) return const SizedBox.shrink();
+
+    final options = [
+      (TransactionType.expense, l10n.expense),
+      (TransactionType.income, l10n.income),
+      if (!editing) (TransactionType.transfer, l10n.addTxDoTransfer),
+    ];
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: p.surfaceMuted,
+        borderRadius: BorderRadius.circular(Dimens.chipRadius),
+      ),
+      child: Row(
+        children: [
+          for (final (type, label) in options)
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  setState(() {
+                    _type = type;
+                    _category = null;
+                    if (!_titleEditedByUser) _title = '';
+                  });
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  height: 36,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: _type == type ? p.surface : Colors.transparent,
+                    borderRadius: BorderRadius.circular(9),
+                    boxShadow: _type == type
+                        ? [
+                            BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.10),
+                                blurRadius: 3,
+                                offset: const Offset(0, 1))
+                          ]
+                        : null,
+                  ),
+                  child: Text(
+                    label,
+                    style: AppTextStyles.labelFrom(13).copyWith(
+                        color: _type == type ? _typeColor(p) : p.inkMuted),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _amountBox(AppSettings settings, AmountInput rules) {
+    final p = context.palette;
+    final l10n = context.l10n;
+    final formatted = rules.groupRaw(_amountStr);
+    final symbol = settings.currencySymbol;
+    final text = settings.currencySymbolBefore
+        ? '$symbol$formatted'
+        : '$formatted $symbol';
+    final question = switch (_type) {
+      TransactionType.expense => l10n.addTxHowMuchExpense,
+      TransactionType.income => l10n.addTxHowMuchIncome,
+      TransactionType.transfer => l10n.addTxHowMuchTransfer,
+    };
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      decoration: BoxDecoration(
+        border: Border.all(color: p.border),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
+      ),
+      child: Column(
+        children: [
+          Text(question,
+              style: AppTextStyles.captionStrong.copyWith(color: p.inkMuted)),
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(text,
+                style: AppTextStyles.amountInput
+                    .copyWith(color: _amountStr.isEmpty ? p.inkHint : _typeColor(p))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _categoryChips() {
+    final p = context.palette;
+    final l10n = context.l10n;
+    final kind = _type == TransactionType.income
+        ? CategoryType.income
+        : CategoryType.expense;
+    final categories = ref.watch(categoriesByTypeProvider(kind));
+
+    return SizedBox(
+      height: 44,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (_, i) {
+          final c = categories[i];
+          final selected = _category?.id == c.id;
+          final name = categoryLabel(c, l10n);
+          return Semantics(
+            selected: selected,
+            button: true,
+            child: Material(
+              color: selected ? p.ink : p.surface,
+              shape: StadiumBorder(
+                  side: BorderSide(color: selected ? p.ink : p.borderStrong)),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  setState(() {
+                    _category = c;
+                    if (!_titleEditedByUser) _title = name;
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 6, right: 14),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: selected
+                              ? p.onInk.withValues(alpha: 0.14)
+                              : p.surfaceSubtle,
+                        ),
+                        child: Icon(
+                          AppIcons.resolve(c.iconName),
+                          size: 16,
+                          color: selected ? p.onInk : p.ink,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(name,
+                          style: AppTextStyles.labelFrom(13).copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: selected ? p.onInk : p.ink)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  /// Lista de campos: cuenta(s), fecha, repetir, título y nota.
+  Widget _fields(List<Account> accounts, AppSettings settings) {
+    final p = context.palette;
+    final l10n = context.l10n;
+
+    final rows = <_FieldRow>[
+      if (_isTransfer) ...[
+        _FieldRow(
+          icon: Icons.account_balance_wallet_outlined,
+          label: l10n.addTxFrom,
+          value: _account?.name ?? l10n.addTxPickAccount,
+          onTap: () => _pickAccount(accounts, from: true),
+        ),
+        _FieldRow(
+          icon: Icons.login_rounded,
+          label: l10n.addTxTo,
+          value: _toAccount?.name ?? l10n.addTxPickAccount,
+          onTap: () => _pickAccount(
+              accounts.where((a) => a.id != _account?.id).toList(),
+              from: false),
+        ),
+      ] else
+        _FieldRow(
+          icon: Icons.account_balance_wallet_outlined,
+          label: l10n.account,
+          value: _account?.name ?? l10n.addTxPickAccount,
+          hint: _account?.available == null
+              ? null
+              : l10n.addTxAvailableCredit(
+                  CurrencyFormatter.format(_account!.available!, settings)),
+          onTap: () => _pickAccount(accounts, from: true),
+        ),
+      _FieldRow(
+        icon: Icons.calendar_today_outlined,
+        label: l10n.date,
+        value: _isToday(_date) ? l10n.today : DateFormatter.longDay(_date),
+        onTap: _pickDate,
+      ),
+      if (!_isTransfer) ...[
+        _FieldRow(
+          icon: Icons.repeat_rounded,
+          label: l10n.addTxRepeat,
+          value: _repeatLabel(l10n),
+          onTap: _pickRepeat,
+        ),
+        _FieldRow(
+          icon: Icons.short_text_rounded,
+          label: l10n.title,
+          value: _title.isEmpty ? l10n.addTxAdd : _title,
+          muted: _title.isEmpty,
+          onTap: () => _editText(l10n.title, _title, l10n.addTxTitleHint,
+              (v) => setState(() {
+                    _title = v;
+                    _titleEditedByUser = v.isNotEmpty;
+                  })),
+        ),
+      ],
+      _FieldRow(
+        icon: Icons.notes_rounded,
+        label: l10n.note,
+        value: _note.isEmpty ? l10n.addTxAdd : _note,
+        muted: _note.isEmpty,
+        onTap: () =>
+            _editText(l10n.note, _note, '', (v) => setState(() => _note = v)),
+      ),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        border: Border.all(color: p.border),
+        borderRadius: BorderRadius.circular(Dimens.cardRadius),
+      ),
+      child: Column(
+        children: [
+          for (var i = 0; i < rows.length; i++)
+            _FieldRowView(row: rows[i], divider: i < rows.length - 1),
+        ],
+      ),
+    );
+  }
+
+  bool _isToday(DateTime d) {
+    final n = DateTime.now();
+    return d.year == n.year && d.month == n.month && d.day == n.day;
+  }
+
+  String _frequencyLabel(String f, AppLocalizations l10n) => switch (f) {
+        'daily' => l10n.freqDaily,
+        'weekly' => l10n.freqWeekly,
+        'yearly' => l10n.freqYearly,
+        _ => l10n.freqMonthly,
+      };
+
+  String _repeatLabel(AppLocalizations l10n) {
+    if (!_isRecurring) return l10n.addTxRepeatNever;
+    final f = _frequencyLabel(_frequency, l10n);
+    if (_recurrenceEnd == null) return f;
+    return l10n.addTxRepeatUntil(f, DateFormatter.shortDay(_recurrenceEnd!));
+  }
+
+  Widget _saveButton() {
+    final l10n = context.l10n;
+    final label = switch (_type) {
+      TransactionType.expense => l10n.addTxSaveExpense,
+      TransactionType.income => l10n.addTxSaveIncome,
+      TransactionType.transfer => l10n.addTxDoTransfer,
+    };
+    return SizedBox(
+      width: double.infinity,
+      child: FilledButton.icon(
+        onPressed: _save,
+        icon: const Icon(Icons.check_rounded, size: 18),
+        label: Text(label),
+      ),
+    );
+  }
+
+  // ---------------- Selectores ----------------
+
+  Future<void> _pickAccount(List<Account> accounts, {required bool from}) async {
+    final settings = ref.read(settingsProvider);
+    final l10n = context.l10n;
+    final current = from ? _account : _toAccount;
+    final picked = await showModalBottomSheet<Account>(
+      context: context,
+      builder: (sheet) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
+          children: [
+            for (final a in accounts)
+              ListTile(
+                leading: CategoryIcon(iconName: a.iconName),
+                title: Text(a.name),
+                subtitle: Text(a.available != null
+                    ? l10n.addTxAvailableCredit(
+                        CurrencyFormatter.format(a.available!, settings))
+                    : l10n.accBalanceShort(
+                        CurrencyFormatter.format(a.balance, settings))),
+                trailing: a.id == current?.id
+                    ? Icon(Icons.check_rounded, color: sheet.palette.ink)
+                    : null,
+                onTap: () => Navigator.of(sheet).pop(a),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (picked == null) return;
+    setState(() {
+      if (from) {
+        _account = picked;
+        if (_toAccount?.id == picked.id) _toAccount = null;
+      } else {
+        _toAccount = picked;
+      }
+    });
+  }
+
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _date,
+      firstDate: DateTime(2015),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) setState(() => _date = picked);
+  }
+
+  Future<void> _pickRepeat() async {
+    final l10n = context.l10n;
+    const freqs = ['daily', 'weekly', 'monthly', 'yearly'];
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (sheet) => StatefulBuilder(
+        builder: (sheet, setSheet) {
+          void update(VoidCallback fn) {
+            setState(fn);
+            setSheet(() {});
+          }
+
+          final check = Icon(Icons.check_rounded, color: sheet.palette.ink);
+          return SafeArea(
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
+              children: [
+                ListTile(
+                  title: Text(l10n.addTxRepeatNever),
+                  trailing: _isRecurring ? null : check,
+                  onTap: () {
+                    update(() => _isRecurring = false);
+                    Navigator.of(sheet).pop();
+                  },
+                ),
+                for (final f in freqs)
+                  ListTile(
+                    title: Text(_frequencyLabel(f, l10n)),
+                    trailing: _isRecurring && _frequency == f ? check : null,
+                    onTap: () => update(() {
+                      _isRecurring = true;
+                      _frequency = f;
+                    }),
+                  ),
+                if (_isRecurring)
+                  ListTile(
+                    leading: const Icon(Icons.event_busy_outlined),
+                    title: Text(l10n.addTxEndsOn),
+                    subtitle: Text(_recurrenceEnd == null
+                        ? l10n.addTxNoEnd
+                        : DateFormatter.longDay(_recurrenceEnd!)),
+                    trailing: _recurrenceEnd == null
+                        ? null
+                        : IconButton(
+                            tooltip: l10n.clear,
+                            icon: const Icon(Icons.clear_rounded),
+                            onPressed: () => update(() => _recurrenceEnd = null),
+                          ),
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: sheet,
+                        initialDate: _recurrenceEnd ?? _date,
+                        firstDate: _date,
+                        lastDate: DateTime(2100),
+                      );
+                      if (picked != null) update(() => _recurrenceEnd = picked);
+                    },
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _editText(String label, String initial, String hint,
+      ValueChanged<String> onSaved) async {
+    final ctrl = TextEditingController(text: initial);
+    final result = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheet) => Padding(
+        padding: EdgeInsets.fromLTRB(Dimens.screenPaddingH, 0,
+            Dimens.screenPaddingH, MediaQuery.of(sheet).viewInsets.bottom + 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: ctrl,
+              autofocus: true,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                  labelText: label, hintText: hint.isEmpty ? null : hint),
+              onSubmitted: (v) => Navigator.of(sheet).pop(v.trim()),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () => Navigator.of(sheet).pop(ctrl.text.trim()),
+                child: Text(sheet.l10n.save),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    ctrl.dispose();
+    if (result != null) onSaved(result);
+  }
+
+  // ---------------- Teclado ----------------
 
   void _onDigit(String d) {
     setState(() {
@@ -283,385 +658,93 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         }
         return;
       }
-      // Limita a 2 decimales tras el punto.
+      // Hasta 2 decimales y 13 dígitos enteros.
       if (_amountStr.contains('.')) {
-        final dec = _amountStr.split('.')[1];
-        if (dec.length >= 2) return;
+        if (_amountStr.split('.')[1].length >= 2) return;
+      } else if (_amountStr.length >= 13) {
+        return;
       }
-      if (!_amountStr.contains('.') && _amountStr.length >= 13) return;
-      if (_amountStr == '0') {
-        _amountStr = d;
-      } else {
-        _amountStr += d;
-      }
+      _amountStr = _amountStr == '0' ? d : _amountStr + d;
     });
   }
 
   void _onBackspace() {
-    setState(() {
-      if (_amountStr.isNotEmpty) {
-        _amountStr = _amountStr.substring(0, _amountStr.length - 1);
-      }
-    });
+    if (_amountStr.isEmpty) return;
+    setState(() => _amountStr = _amountStr.substring(0, _amountStr.length - 1));
   }
 
-  // -------- Campos para gasto / ingreso --------
-  Widget _normalFields(List<Account> accounts) {
-    final type = _type == TransactionType.income
-        ? CategoryType.income
-        : CategoryType.expense;
-    final categories = ref.watch(categoriesByTypeProvider(type));
-    final l10n = context.l10n;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l10n.category, style: Theme.of(context).textTheme.bodySmall),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 78,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
-            itemBuilder: (_, i) {
-              final c = categories[i];
-              final selected = _category?.id == c.id;
-              return GestureDetector(
-                onTap: () {
-                  HapticFeedback.selectionClick();
-                  setState(() {
-                    _category = c;
-                    if (!_titleEditedByUser) {
-                      _titleCtrl.text = categoryLabel(c, l10n);
-                    }
-                  });
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: selected ? _accentColor : Colors.transparent,
-                          width: 2.5,
-                        ),
-                      ),
-                      padding: const EdgeInsets.all(2),
-                      child: CategoryIcon(iconName: c.iconName, colorHex: c.colorHex),
-                    ),
-                    const SizedBox(height: 4),
-                    SizedBox(
-                      width: 64,
-                      child: Text(
-                        categoryLabel(c, l10n),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 16),
-        TextField(
-          controller: _titleCtrl,
-          onChanged: (_) => _titleEditedByUser = true,
-          decoration: InputDecoration(
-              labelText: l10n.title, hintText: l10n.addTxTitleHint),
-        ),
-        const SizedBox(height: 12),
-        _accountDropdown(accounts, _account, (a) => setState(() => _account = a),
-            label: l10n.account),
-        const SizedBox(height: 12),
-        _dateField(),
-        const SizedBox(height: 12),
-        TextField(
-          controller: _noteCtrl,
-          maxLines: 2,
-          decoration: InputDecoration(labelText: l10n.noteOptional),
-        ),
-        const SizedBox(height: 16),
-        _recurringSection(),
-      ],
-    );
-  }
-
-  // -------- Campos para transferencia --------
-  Widget _transferFields(List<Account> accounts) {
-    _toAccount ??= accounts.length > 1
-        ? accounts.firstWhere((a) => a.id != _account?.id,
-            orElse: () => accounts.last)
-        : null;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _accountDropdown(accounts, _account, (a) => setState(() => _account = a),
-            label: context.l10n.addTxFromAccount),
-        const SizedBox(height: 12),
-        _accountDropdown(
-          accounts.where((a) => a.id != _account?.id).toList(),
-          _toAccount,
-          (a) => setState(() => _toAccount = a),
-          label: context.l10n.addTxToAccount,
-        ),
-        const SizedBox(height: 12),
-        _dateField(),
-        const SizedBox(height: 12),
-        TextField(
-          controller: _noteCtrl,
-          maxLines: 2,
-          decoration: InputDecoration(labelText: context.l10n.noteOptional),
-        ),
-      ],
-    );
-  }
-
-  Widget _accountDropdown(
-    List<Account> accounts,
-    Account? value,
-    ValueChanged<Account?> onChanged, {
-    required String label,
-  }) {
-    final items = accounts;
-    final safeValue =
-        items.any((a) => a.id == value?.id) ? value : null;
-    final available = safeValue?.available;
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: label,
-        helperText: available == null
-            ? null
-            : context.l10n.addTxAvailableCredit(
-                CurrencyFormatter.format(available, ref.read(settingsProvider))),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<Account>(
-          isExpanded: true,
-          value: safeValue,
-          hint: Text(context.l10n.addTxPickAccount),
-          items: [
-            for (final a in items)
-              DropdownMenuItem(value: a, child: Text(a.name)),
-          ],
-          onChanged: onChanged,
-        ),
-      ),
-    );
-  }
-
-  Widget _dateField() {
-    return InkWell(
-      onTap: () async {
-        final picked = await showDatePicker(
-          context: context,
-          initialDate: _date,
-          firstDate: DateTime(2015),
-          lastDate: DateTime(2100),
-        );
-        if (picked != null) setState(() => _date = picked);
-      },
-      child: InputDecorator(
-        decoration: InputDecoration(labelText: context.l10n.date),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(DateFormatter.longDay(_date)),
-            const Icon(Icons.calendar_today_outlined, size: 18),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _recurringSection() {
-    final l10n = context.l10n;
-    final freqs = {
-      'daily': l10n.freqDaily,
-      'weekly': l10n.freqWeekly,
-      'monthly': l10n.freqMonthly,
-      'yearly': l10n.freqYearly,
-    };
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).dividerColor),
-        borderRadius: BorderRadius.circular(Dimens.chipRadius),
-      ),
-      child: Column(
-        children: [
-          SwitchListTile(
-            value: _isRecurring,
-            activeThumbColor: _accentColor,
-            title: Text(l10n.addTxRecurring),
-            secondary: const Icon(Icons.repeat),
-            onChanged: (v) => setState(() => _isRecurring = v),
-          ),
-          if (_isRecurring) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Wrap(
-                spacing: 8,
-                children: [
-                  for (final entry in freqs.entries)
-                    ChoiceChip(
-                      label: Text(entry.value),
-                      selected: _frequency == entry.key,
-                      onSelected: (_) => setState(() => _frequency = entry.key),
-                    ),
-                ],
-              ),
-            ),
-            ListTile(
-              title: Text(l10n.addTxEndsOn),
-              subtitle: Text(_recurrenceEnd == null
-                  ? l10n.addTxNoEnd
-                  : DateFormatter.longDay(_recurrenceEnd!)),
-              trailing: _recurrenceEnd == null
-                  ? const Icon(Icons.add)
-                  : IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () => setState(() => _recurrenceEnd = null),
-                    ),
-              onTap: () async {
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: _recurrenceEnd ?? _date,
-                  firstDate: _date,
-                  lastDate: DateTime(2100),
-                );
-                if (picked != null) setState(() => _recurrenceEnd = picked);
-              },
-            ),
-            const SizedBox(height: 8),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _saveBar() {
-    final label = switch (_type) {
-      TransactionType.expense => context.l10n.addTxSaveExpense,
-      TransactionType.income => context.l10n.addTxSaveIncome,
-      TransactionType.transfer => context.l10n.addTxDoTransfer,
-    };
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(Dimens.screenPaddingH, 8,
-            Dimens.screenPaddingH, 12),
-        child: SizedBox(
-          width: double.infinity,
-          height: 52,
-          child: FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: _accentColor,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Dimens.chipRadius),
-              ),
-            ),
-            onPressed: _save,
-            child: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-          ),
-        ),
-      ),
-    );
-  }
+  // ---------------- Guardar ----------------
 
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
     final repo = ref.read(transactionRepositoryProvider);
     final l10n = context.l10n;
 
-    if (_amount <= 0) {
-      _showError(messenger, l10n.amountMustBePositive);
-      return;
-    }
-    if (_account == null) {
-      _showError(messenger, l10n.selectAccount);
-      return;
-    }
+    if (_amount <= 0) return _showError(messenger, l10n.amountMustBePositive);
+    if (_account == null) return _showError(messenger, l10n.selectAccount);
 
-    if (_type == TransactionType.transfer) {
+    if (_isTransfer) {
       if (_toAccount == null || _toAccount!.id == _account!.id) {
-        _showError(messenger, l10n.addTxDifferentDestination);
-        return;
+        return _showError(messenger, l10n.addTxDifferentDestination);
       }
     } else {
-      if (_category == null) {
-        _showError(messenger, l10n.selectCategory);
-        return;
-      }
-      if (_titleCtrl.text.trim().isEmpty) {
-        _showError(messenger, l10n.addTxWriteTitle);
-        return;
-      }
+      if (_category == null) return _showError(messenger, l10n.selectCategory);
       if (!await _confirmOverLimit()) return;
       if (!mounted) return;
     }
 
-    final isTransfer = _type == TransactionType.transfer;
+    final recurring = !_isTransfer && _isRecurring;
+    final note = _note.trim();
+    final title = _isTransfer
+        ? (note.isEmpty ? l10n.transfer : note)
+        : (_title.trim().isEmpty
+            ? categoryLabel(_category, l10n)
+            : _title.trim());
+
     final tx = Transaction()
-      ..title = isTransfer
-          ? (_noteCtrl.text.trim().isEmpty ? l10n.transfer : _noteCtrl.text.trim())
-          : _titleCtrl.text.trim()
+      ..title = title
       ..amount = _amount
       ..type = _type
       ..date = _date
-      ..note = _noteCtrl.text.trim().isEmpty ? null : _noteCtrl.text.trim()
-      ..isRecurring = !isTransfer && _isRecurring
-      ..recurrenceFrequency = (!isTransfer && _isRecurring) ? _frequency : null
-      ..recurrenceEndDate = (!isTransfer && _isRecurring) ? _recurrenceEnd : null
-      ..nextRecurrenceDate = (!isTransfer && _isRecurring)
-          ? _nextDate(_date, _frequency)
-          : null;
+      ..note = note.isEmpty ? null : note
+      ..isRecurring = recurring
+      ..recurrenceFrequency = recurring ? _frequency : null
+      ..recurrenceEndDate = recurring ? _recurrenceEnd : null
+      ..nextRecurrenceDate = recurring ? _nextDate(_date, _frequency) : null;
 
+    final categoryId = _isTransfer ? null : _category?.id;
+    final toAccountId = _isTransfer ? _toAccount?.id : null;
     if (widget.editId != null) {
       tx.id = widget.editId!;
-      await repo.update(
-        tx,
-        accountId: _account!.id,
-        categoryId: isTransfer ? null : _category?.id,
-        toAccountId: isTransfer ? _toAccount?.id : null,
-      );
+      await repo.update(tx,
+          accountId: _account!.id,
+          categoryId: categoryId,
+          toAccountId: toAccountId);
     } else {
-      await repo.add(
-        tx,
-        accountId: _account!.id,
-        categoryId: isTransfer ? null : _category?.id,
-        toAccountId: isTransfer ? _toAccount?.id : null,
-      );
+      await repo.add(tx,
+          accountId: _account!.id,
+          categoryId: categoryId,
+          toAccountId: toAccountId);
     }
 
     HapticFeedback.mediumImpact();
     if (!mounted) return;
 
-    final word = switch (_type) {
+    final done = switch (_type) {
       TransactionType.expense => l10n.addTxSavedExpense,
       TransactionType.income => l10n.addTxSavedIncome,
       TransactionType.transfer => l10n.addTxSavedTransfer,
     };
     context.pop();
-
     final createdId = tx.id;
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(word),
-        duration: const Duration(seconds: 5),
-        action: widget.editId == null
-            ? SnackBarAction(
-                label: l10n.undo,
-                textColor: AppColors.accent,
-                onPressed: () => repo.delete(createdId),
-              )
-            : null,
-      ),
-    );
+    messenger.showSnackBar(SnackBar(
+      content: Text(done),
+      duration: const Duration(seconds: 5),
+      action: widget.editId == null
+          ? SnackBarAction(
+              label: l10n.undo, onPressed: () => repo.delete(createdId))
+          : null,
+    ));
   }
 
   /// Si el gasto nuevo supera el cupo disponible de la tarjeta, pide
@@ -712,5 +795,70 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       default:
         return from;
     }
+  }
+}
+
+class _FieldRow {
+  final IconData icon;
+  final String label;
+  final String value;
+  final String? hint;
+  final bool muted;
+  final VoidCallback onTap;
+  const _FieldRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.onTap,
+    this.hint,
+    this.muted = false,
+  });
+}
+
+class _FieldRowView extends StatelessWidget {
+  final _FieldRow row;
+  final bool divider;
+  const _FieldRowView({required this.row, required this.divider});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return InkWell(
+      onTap: row.onTap,
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 48),
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          border: divider ? Border(bottom: BorderSide(color: p.track)) : null,
+        ),
+        child: Row(
+          children: [
+            Icon(row.icon, size: 18, color: p.inkMuted),
+            const SizedBox(width: 12),
+            Text(row.label,
+                style: AppTextStyles.bodyMedium.copyWith(color: p.inkMuted)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(row.value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
+                      style: AppTextStyles.rowTitle
+                          .copyWith(color: row.muted ? p.inkHint : p.ink)),
+                  if (row.hint != null)
+                    Text(row.hint!,
+                        style: AppTextStyles.caption.copyWith(color: p.inkMuted)),
+                ],
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(Icons.chevron_right_rounded, size: 18, color: p.inkHint),
+          ],
+        ),
+      ),
+    );
   }
 }
