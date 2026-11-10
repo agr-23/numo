@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.png binary
+*.ttf binary
+*.jar binary
+# Código generado: se colapsa en los diffs de GitHub.
+*.g.dart linguist-generated=true
+lib/l10n/app_localizations*.dart linguist-generated=true
