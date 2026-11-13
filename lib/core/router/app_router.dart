@@ -5,6 +5,9 @@ import '../../presentation/screens/accounts/account_detail_screen.dart';
 import '../../presentation/screens/accounts/accounts_screen.dart';
 import '../../presentation/screens/add_transaction/add_transaction_screen.dart';
 import '../../presentation/screens/analytics/analytics_screen.dart';
+import '../../presentation/screens/auto_movements/auto_movements_screen.dart';
+import '../../presentation/screens/auto_movements/capture_apps_screen.dart';
+import '../../presentation/screens/auto_movements/captured_notices_screen.dart';
 import '../../presentation/screens/budgets/add_budget_screen.dart';
 import '../../presentation/screens/budgets/budgets_screen.dart';
 import '../../presentation/screens/dashboard/dashboard_screen.dart';
@@ -123,6 +126,21 @@ final appRouter = GoRouter(
       path: '/settings',
       parentNavigatorKey: _rootKey,
       builder: (_, __) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: '/auto-movements',
+      parentNavigatorKey: _rootKey,
+      builder: (_, __) => const AutoMovementsScreen(),
+    ),
+    GoRoute(
+      path: '/auto-movements/apps',
+      parentNavigatorKey: _rootKey,
+      builder: (_, __) => const CaptureAppsScreen(),
+    ),
+    GoRoute(
+      path: '/auto-movements/notices',
+      parentNavigatorKey: _rootKey,
+      builder: (_, __) => const CapturedNoticesScreen(),
     ),
     GoRoute(
       path: '/categories',

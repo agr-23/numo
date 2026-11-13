@@ -1304,4 +1304,105 @@ class AppLocalizationsEn extends AppLocalizations {
   String svOfAmount(String amount) {
     return 'of $amount';
   }
+
+  @override
+  String get amTitle => 'Automatic transactions';
+
+  @override
+  String get amSettingsSubtitle => 'Detect purchases from bank notifications';
+
+  @override
+  String get amIntro =>
+      'Numo can read notifications from your bank apps to detect purchases and transfers. For now it only saves them to learn their format: it doesn\'t record transactions yet.';
+
+  @override
+  String get amPrivacyTitle => 'Your privacy';
+
+  @override
+  String get amPrivacyApps =>
+      'It only reads the apps you choose. Everything else is ignored unread.';
+
+  @override
+  String get amPrivacyCodes =>
+      'Notifications with verification codes or passwords are always discarded.';
+
+  @override
+  String get amPrivacyOffline =>
+      'Everything stays on your phone: Numo has no internet access.';
+
+  @override
+  String get amPrivacyRetention =>
+      'Saved notifications are deleted after 7 days and aren\'t included in cloud backups.';
+
+  @override
+  String get amAccess => 'Notification access';
+
+  @override
+  String get amAccessOn => 'On';
+
+  @override
+  String get amAccessOff => 'Off';
+
+  @override
+  String get amAccessEnable => 'Turn on';
+
+  @override
+  String get amAccessManage => 'Manage';
+
+  @override
+  String get amAccessDialogTitle => 'Before you continue';
+
+  @override
+  String get amAccessDialogBody =>
+      'Android will warn you that Numo can read all your notifications. That\'s the standard system text: Numo only reads the apps you choose here.\n\nFind Numo in the list and turn it on.';
+
+  @override
+  String get amSetup => 'Setup';
+
+  @override
+  String get amAppsChoose => 'Choose apps';
+
+  @override
+  String get amAppsNone => 'None. Numo reads nothing.';
+
+  @override
+  String get amAppsSearch => 'Search apps';
+
+  @override
+  String get amAppsHint => 'Choose only the apps of your banks or wallets.';
+
+  @override
+  String get amNotices => 'Detected messages';
+
+  @override
+  String amNoticesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count messages',
+      one: '1 message',
+      zero: 'None yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get amNoticesEmpty =>
+      'No messages yet. When one of the chosen apps sends you a notification, it will show up here.';
+
+  @override
+  String get amNoticesShareWarning =>
+      'Before sharing a message, replace your name, ID number and account numbers.';
+
+  @override
+  String get amCopy => 'Copy';
+
+  @override
+  String get amCopied => 'Copied';
+
+  @override
+  String get amClearAll => 'Delete all';
+
+  @override
+  String get amClearAllBody => 'All detected messages will be deleted.';
 }
