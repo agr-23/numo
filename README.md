@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/brand/numo-icon.svg" width="88" alt="">
+
 # Numo
 
 **Finanzas personales simples, privadas y sin conexión.**
@@ -122,6 +124,10 @@ git config core.hooksPath tool/hooks
 ```
 
 Para publicar versiones, ver [docs/RELEASING.md](docs/RELEASING.md).
+
+## Marca
+
+Ícono, colores y reglas de uso en [docs/brand](docs/brand/README.md).
 
 ## Licencia
 
