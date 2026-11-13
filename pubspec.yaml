@@ -38,7 +38,7 @@ dependencies:
   intl: ^0.20.3
 
   # Confeti para metas completadas
-  confetti: ^0.7.0
+  confetti: ^0.8.0
 
   # Exportar CSV
   csv: ^6.0.0
