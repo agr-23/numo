@@ -776,5 +776,40 @@
         "type": "String"
       }
     }
-  }
+  },
+  "amTitle": "Movimientos automáticos",
+  "amSettingsSubtitle": "Detectar compras desde los avisos del banco",
+  "amIntro": "Numo puede leer los avisos de las apps de tu banco para detectar compras y transferencias. En esta versión solo los guarda para conocer su formato: todavía no registra movimientos.",
+  "amPrivacyTitle": "Tu privacidad",
+  "amPrivacyApps": "Solo lee las apps que tú elijas. Las demás se ignoran sin leerlas.",
+  "amPrivacyCodes": "Descarta siempre los avisos con códigos de verificación o claves.",
+  "amPrivacyOffline": "Todo queda en el teléfono: Numo no tiene acceso a internet.",
+  "amPrivacyRetention": "Los avisos guardados se borran solos a los 7 días y no van a la copia en la nube.",
+  "amAccess": "Acceso a notificaciones",
+  "amAccessOn": "Activado",
+  "amAccessOff": "Desactivado",
+  "amAccessEnable": "Activar",
+  "amAccessManage": "Gestionar",
+  "amAccessDialogTitle": "Antes de continuar",
+  "amAccessDialogBody": "Android te mostrará un aviso que dice que Numo podrá leer todas tus notificaciones. Es el texto estándar del sistema: Numo solo leerá las apps que elijas aquí.\n\nBusca Numo en la lista y actívalo.",
+  "amSetup": "Configuración",
+  "amAppsChoose": "Elegir apps",
+  "amAppsNone": "Ninguna. Numo no lee nada.",
+  "amAppsSearch": "Buscar app",
+  "amAppsHint": "Elige solo las apps de tus bancos o billeteras.",
+  "amNotices": "Mensajes detectados",
+  "amNoticesCount": "{count, plural, =0{Ninguno todavía} =1{1 mensaje} other{{count} mensajes}}",
+  "@amNoticesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "amNoticesEmpty": "Aún no hay mensajes. Cuando una de las apps elegidas te envíe una notificación, aparecerá aquí.",
+  "amNoticesShareWarning": "Antes de compartir un mensaje, cambia tu nombre, tu cédula y los números de cuenta.",
+  "amCopy": "Copiar",
+  "amCopied": "Copiado",
+  "amClearAll": "Borrar todo",
+  "amClearAllBody": "Se borrarán todos los mensajes detectados."
 }

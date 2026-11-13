@@ -2413,6 +2413,174 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'de {amount}'**
   String svOfAmount(String amount);
+
+  /// No description provided for @amTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Movimientos automáticos'**
+  String get amTitle;
+
+  /// No description provided for @amSettingsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Detectar compras desde los avisos del banco'**
+  String get amSettingsSubtitle;
+
+  /// No description provided for @amIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Numo puede leer los avisos de las apps de tu banco para detectar compras y transferencias. En esta versión solo los guarda para conocer su formato: todavía no registra movimientos.'**
+  String get amIntro;
+
+  /// No description provided for @amPrivacyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu privacidad'**
+  String get amPrivacyTitle;
+
+  /// No description provided for @amPrivacyApps.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo lee las apps que tú elijas. Las demás se ignoran sin leerlas.'**
+  String get amPrivacyApps;
+
+  /// No description provided for @amPrivacyCodes.
+  ///
+  /// In es, this message translates to:
+  /// **'Descarta siempre los avisos con códigos de verificación o claves.'**
+  String get amPrivacyCodes;
+
+  /// No description provided for @amPrivacyOffline.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo queda en el teléfono: Numo no tiene acceso a internet.'**
+  String get amPrivacyOffline;
+
+  /// No description provided for @amPrivacyRetention.
+  ///
+  /// In es, this message translates to:
+  /// **'Los avisos guardados se borran solos a los 7 días y no van a la copia en la nube.'**
+  String get amPrivacyRetention;
+
+  /// No description provided for @amAccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso a notificaciones'**
+  String get amAccess;
+
+  /// No description provided for @amAccessOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Activado'**
+  String get amAccessOn;
+
+  /// No description provided for @amAccessOff.
+  ///
+  /// In es, this message translates to:
+  /// **'Desactivado'**
+  String get amAccessOff;
+
+  /// No description provided for @amAccessEnable.
+  ///
+  /// In es, this message translates to:
+  /// **'Activar'**
+  String get amAccessEnable;
+
+  /// No description provided for @amAccessManage.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar'**
+  String get amAccessManage;
+
+  /// No description provided for @amAccessDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de continuar'**
+  String get amAccessDialogTitle;
+
+  /// No description provided for @amAccessDialogBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Android te mostrará un aviso que dice que Numo podrá leer todas tus notificaciones. Es el texto estándar del sistema: Numo solo leerá las apps que elijas aquí.\n\nBusca Numo en la lista y actívalo.'**
+  String get amAccessDialogBody;
+
+  /// No description provided for @amSetup.
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración'**
+  String get amSetup;
+
+  /// No description provided for @amAppsChoose.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir apps'**
+  String get amAppsChoose;
+
+  /// No description provided for @amAppsNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna. Numo no lee nada.'**
+  String get amAppsNone;
+
+  /// No description provided for @amAppsSearch.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar app'**
+  String get amAppsSearch;
+
+  /// No description provided for @amAppsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige solo las apps de tus bancos o billeteras.'**
+  String get amAppsHint;
+
+  /// No description provided for @amNotices.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes detectados'**
+  String get amNotices;
+
+  /// No description provided for @amNoticesCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =0{Ninguno todavía} =1{1 mensaje} other{{count} mensajes}}'**
+  String amNoticesCount(int count);
+
+  /// No description provided for @amNoticesEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay mensajes. Cuando una de las apps elegidas te envíe una notificación, aparecerá aquí.'**
+  String get amNoticesEmpty;
+
+  /// No description provided for @amNoticesShareWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de compartir un mensaje, cambia tu nombre, tu cédula y los números de cuenta.'**
+  String get amNoticesShareWarning;
+
+  /// No description provided for @amCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar'**
+  String get amCopy;
+
+  /// No description provided for @amCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiado'**
+  String get amCopied;
+
+  /// No description provided for @amClearAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Borrar todo'**
+  String get amClearAll;
+
+  /// No description provided for @amClearAllBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Se borrarán todos los mensajes detectados.'**
+  String get amClearAllBody;
 }
 
 class _AppLocalizationsDelegate

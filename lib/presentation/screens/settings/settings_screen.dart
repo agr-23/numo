@@ -11,6 +11,7 @@ import '../../../core/utils/pin_hasher.dart';
 import '../../../data/models/app_settings.dart';
 import '../../../data/services/export_service.dart';
 import '../../../data/services/isar_service.dart';
+import '../../../providers/capture_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../widgets/pin_pad.dart';
 
@@ -100,6 +101,13 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: Text(l10n.dayN(settings.budgetStartDay)),
             onTap: () => _pickStartDay(context, ref, settings.budgetStartDay),
           ),
+          ListTile(
+            leading: const Icon(Icons.notifications_active_outlined),
+            title: Text(l10n.amTitle),
+            subtitle: Text(l10n.amSettingsSubtitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/auto-movements'),
+          ),
 
           _header(theme, l10n.categories),
           ListTile(
@@ -122,7 +130,7 @@ class SettingsScreen extends ConsumerWidget {
               l10n.setDeleteAll,
               style: TextStyle(color: context.palette.expense),
             ),
-            onTap: () => _deleteAll(context),
+            onTap: () => _deleteAll(context, ref),
           ),
 
           _header(theme, l10n.setAbout),
@@ -306,7 +314,7 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _deleteAll(BuildContext context) async {
+  Future<void> _deleteAll(BuildContext context, WidgetRef ref) async {
     final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     final step1 = await showDialog<bool>(
@@ -368,6 +376,7 @@ class SettingsScreen extends ConsumerWidget {
     controller.dispose();
     if (step2 == true) {
       await IsarService.instance.clearAll();
+      await ref.read(captureServiceProvider).clear();
       messenger.showSnackBar(SnackBar(content: Text(l10n.setAllDeleted)));
     }
   }
