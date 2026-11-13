@@ -31,7 +31,7 @@ dependencies:
   fl_chart: ^0.68.0
 
   # Biometría y PIN
-  local_auth: ^2.2.0
+  local_auth: ^3.0.2
   crypto: ^3.0.8
 
   # Formato internacional (moneda, fechas)
@@ -40,10 +40,9 @@ dependencies:
   # Confeti para metas completadas
   confetti: ^0.8.0
 
-  # Exportar CSV
-  csv: ^6.0.0
+  # Exportar y compartir
   path_provider: ^2.1.6
-  share_plus: ^9.0.0
+  share_plus: ^13.3.1
 
 dev_dependencies:
   flutter_test:
