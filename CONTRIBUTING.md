@@ -75,3 +75,16 @@ docs: explicar cómo firmar el APK
   commitea los `.g.dart`. Los campos nuevos deben aceptar nulos o tener
   migración, para no perder datos de quien actualiza.
 - Comentarios y documentación en español.
+
+## Permisos y dependencias
+
+Numo no tiene permiso de internet: es la garantía de que los datos no salen
+del teléfono. La CI compila el APK y falla si:
+
+- aparece `INTERNET` o `ACCESS_NETWORK_STATE` (prohibidos siempre);
+- aparece un permiso que no esté en `tool/allowed_permissions.txt`;
+- cambian las dependencias directas sin actualizar
+  `tool/allowed_dependencies.txt`.
+
+Agregar un permiso o una dependencia exige actualizar la lista en el mismo PR
+y explicar por qué, para que quede a la vista en la revisión.
