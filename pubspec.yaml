@@ -32,7 +32,7 @@ dependencies:
 
   # Biometría y PIN
   local_auth: ^2.2.0
-  crypto: ^3.0.3
+  crypto: ^3.0.8
 
   # Formato internacional (moneda, fechas)
   intl: ^0.20.3
