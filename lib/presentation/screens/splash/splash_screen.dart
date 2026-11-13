@@ -51,7 +51,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       if (!canCheck) return;
       final ok = await auth.authenticate(
         localizedReason: reason,
-        options: const AuthenticationOptions(biometricOnly: true),
+        biometricOnly: true,
       );
       if (ok && mounted) context.go('/home/dashboard');
     } catch (_) {
