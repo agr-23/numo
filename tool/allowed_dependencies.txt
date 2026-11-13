@@ -1,0 +1,26 @@
+# Dependencias directas aprobadas (pubspec.yaml), una por línea.
+# tool/check_dependencies.sh falla si se agrega o quita una sin
+# actualizar esta lista en el mismo PR.
+
+# dependencies
+confetti
+crypto
+csv
+cupertino_icons
+fl_chart
+flutter
+flutter_localizations
+flutter_riverpod
+go_router
+intl
+isar
+isar_flutter_libs
+local_auth
+path_provider
+share_plus
+
+# dev_dependencies
+build_runner
+flutter_lints
+flutter_test
+isar_generator
