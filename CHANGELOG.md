@@ -13,6 +13,8 @@ Todos los cambios relevantes de Numo. El formato sigue
   avisos a los 7 días.
 
 ### Seguridad
+- Los datos de Numo ya no se copian a la nube de Google ni a otro teléfono
+  con la copia automática de Android.
 - La CI falla si el APK pide permiso de internet, un permiso no aprobado o
   una dependencia nueva sin revisar.
 
