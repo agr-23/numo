@@ -6,6 +6,11 @@ Todos los cambios relevantes de Numo. El formato sigue
 
 ## [Sin publicar]
 
+### Agregado
+- Marca propia (dirección «Punto»): ícono adaptativo con versión temática
+  para Android 13+ y pantalla de arranque con el símbolo. Los colores de la
+  app no cambian.
+
 ## [1.1.0] - 2026-11-10
 
 ### Agregado

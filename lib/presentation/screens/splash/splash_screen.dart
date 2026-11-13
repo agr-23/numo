@@ -6,9 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 
 import '../../../core/l10n/l10n.dart';
+import '../../../core/theme/numo_brand.dart';
 import '../../../core/theme/numo_palette.dart';
 import '../../../core/utils/pin_hasher.dart';
 import '../../../providers/settings_provider.dart';
+import '../../widgets/numo_mark.dart';
 import '../../widgets/pin_pad.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -64,18 +66,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final settings = ref.watch(settingsProvider);
 
     if (!_decided) {
-      return Scaffold(
-        backgroundColor: context.palette.ink,
-        body: Center(
-          child: Text(
-            'Numo',
-            style: TextStyle(
-              color: context.palette.onInk,
-              fontSize: 40,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
+      // Continúa el arranque de Android: mismo fondo y mismo símbolo, en
+      // modo claro y oscuro.
+      return const Scaffold(
+        backgroundColor: NumoBrand.ink,
+        body: Center(child: NumoMark(size: 180)),
       );
     }
 
