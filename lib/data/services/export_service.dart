@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:csv/csv.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/l10n/l10n.dart';
+import '../../core/utils/csv_writer.dart';
 import '../models/transaction.dart';
 import '../services/isar_service.dart';
 
@@ -22,7 +22,7 @@ class ExportService {
     }
 
     final dateFmt = DateFormat('yyyy-MM-dd');
-    final rows = <List<dynamic>>[
+    final rows = <List<Object?>>[
       [
         l10n.date,
         l10n.title,
@@ -46,16 +46,18 @@ class ExportService {
         ],
     ];
 
-    final csv = const ListToCsvConverter().convert(rows);
+    final csv = CsvWriter.encode(rows);
     final dir = await getTemporaryDirectory();
     final stamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
     final file = File('${dir.path}/numo_export_$stamp.csv');
     await file.writeAsString(csv);
 
-    await Share.shareXFiles(
-      [XFile(file.path, mimeType: 'text/csv')],
-      subject: l10n.exportSubject,
-      text: l10n.exportText,
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path, mimeType: 'text/csv')],
+        subject: l10n.exportSubject,
+        text: l10n.exportText,
+      ),
     );
   }
 
