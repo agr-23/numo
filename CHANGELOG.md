@@ -6,6 +6,18 @@ Todos los cambios relevantes de Numo. El formato sigue
 
 ## [Sin publicar]
 
+### Agregado
+- Movimientos automáticos, modo captura: Numo puede leer los avisos de las
+  apps del banco que elijas y mostrarlos, para conocer su formato. Todavía no
+  registra movimientos. Descarta los códigos de verificación y borra los
+  avisos a los 7 días.
+
+### Seguridad
+- Los datos de Numo ya no se copian a la nube de Google ni a otro teléfono
+  con la copia automática de Android.
+- La CI falla si el APK pide permiso de internet, un permiso no aprobado o
+  una dependencia nueva sin revisar.
+
 ## [1.1.0] - 2026-11-10
 
 ### Agregado

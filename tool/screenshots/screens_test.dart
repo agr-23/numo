@@ -25,9 +25,13 @@ import 'package:numo/data/models/category.dart';
 import 'package:numo/data/models/pocket.dart';
 import 'package:numo/data/models/savings_group.dart';
 import 'package:numo/data/models/transaction.dart';
+import 'package:numo/data/services/capture_service.dart';
 import 'package:numo/presentation/screens/accounts/accounts_screen.dart';
 import 'package:numo/presentation/screens/add_transaction/add_transaction_screen.dart';
 import 'package:numo/presentation/screens/analytics/analytics_screen.dart';
+import 'package:numo/presentation/screens/auto_movements/auto_movements_screen.dart';
+import 'package:numo/presentation/screens/auto_movements/capture_apps_screen.dart';
+import 'package:numo/presentation/screens/auto_movements/captured_notices_screen.dart';
 import 'package:numo/presentation/screens/budgets/budgets_screen.dart';
 import 'package:numo/presentation/screens/dashboard/dashboard_screen.dart';
 import 'package:numo/presentation/screens/home/home_shell.dart';
@@ -37,6 +41,7 @@ import 'package:numo/presentation/screens/settings/settings_screen.dart';
 import 'package:numo/presentation/screens/transactions/transactions_screen.dart';
 import 'package:numo/providers/accounts_provider.dart';
 import 'package:numo/providers/budgets_provider.dart';
+import 'package:numo/providers/capture_provider.dart';
 import 'package:numo/providers/categories_provider.dart';
 import 'package:numo/providers/savings_provider.dart';
 import 'package:numo/providers/settings_provider.dart';
@@ -286,6 +291,7 @@ Widget _app({
       budgetsProvider.overrideWith((ref) => Stream.value(data.budgets)),
       savingsGroupsProvider.overrideWith((ref) => Stream.value(data.groups)),
       pocketsProvider.overrideWith((ref) => Stream.value(data.pockets)),
+      captureServiceProvider.overrideWithValue(_FakeCapture()),
     ],
     child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -303,6 +309,46 @@ Widget _app({
       routerConfig: router,
     ),
   );
+}
+
+/// Datos inventados para las pantallas de movimientos automáticos.
+class _FakeCapture extends CaptureService {
+  static final _now = DateTime(2026, 11, 13, 18, 40);
+
+  @override
+  Future<bool> accessGranted() async => true;
+
+  @override
+  Future<Set<String>> selectedApps() async => {'ej.banco', 'ej.billetera'};
+
+  @override
+  Future<List<InstalledApp>> installedApps() async => const [
+    InstalledApp(packageName: 'ej.banco', label: 'Banco Ejemplo'),
+    InstalledApp(packageName: 'ej.billetera', label: 'Billetera Demo'),
+    InstalledApp(packageName: 'ej.calendario', label: 'Calendario'),
+    InstalledApp(packageName: 'ej.musica', label: 'Música'),
+    InstalledApp(packageName: 'ej.notas', label: 'Notas'),
+  ];
+
+  @override
+  Future<List<CapturedNotice>> notices() async => [
+    CapturedNotice(
+      id: '1',
+      packageName: 'ej.banco',
+      appLabel: 'Banco Ejemplo',
+      title: 'Compra aprobada',
+      text: 'Compraste \$45.000 en TIENDA EJEMPLO con tu tarjeta *1234.',
+      postedAt: _now,
+    ),
+    CapturedNotice(
+      id: '2',
+      packageName: 'ej.billetera',
+      appLabel: 'Billetera Demo',
+      title: 'Te enviaron plata',
+      text: 'Recibiste \$120.000 de ANA P.',
+      postedAt: _now.subtract(const Duration(hours: 3)),
+    ),
+  ];
 }
 
 Future<void> _shoot(WidgetTester tester, Widget app, String name) async {
@@ -354,6 +400,9 @@ void main() {
       ('ahorros', const SavingsScreen()),
       ('grupo', const GroupScreen(groupId: 1)),
       ('ajustes', const SettingsScreen()),
+      ('auto', const AutoMovementsScreen()),
+      ('auto_apps', const CaptureAppsScreen()),
+      ('auto_avisos', const CapturedNoticesScreen()),
     ]) {
       testWidgets('$name $suffix', (tester) async {
         Intl.defaultLocale = locale.languageCode;

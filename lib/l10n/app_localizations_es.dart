@@ -1304,4 +1304,106 @@ class AppLocalizationsEs extends AppLocalizations {
   String svOfAmount(String amount) {
     return 'de $amount';
   }
+
+  @override
+  String get amTitle => 'Movimientos automáticos';
+
+  @override
+  String get amSettingsSubtitle =>
+      'Detectar compras desde los avisos del banco';
+
+  @override
+  String get amIntro =>
+      'Numo puede leer los avisos de las apps de tu banco para detectar compras y transferencias. En esta versión solo los guarda para conocer su formato: todavía no registra movimientos.';
+
+  @override
+  String get amPrivacyTitle => 'Tu privacidad';
+
+  @override
+  String get amPrivacyApps =>
+      'Solo lee las apps que tú elijas. Las demás se ignoran sin leerlas.';
+
+  @override
+  String get amPrivacyCodes =>
+      'Descarta siempre los avisos con códigos de verificación o claves.';
+
+  @override
+  String get amPrivacyOffline =>
+      'Todo queda en el teléfono: Numo no tiene acceso a internet.';
+
+  @override
+  String get amPrivacyRetention =>
+      'Los avisos guardados se borran solos a los 7 días y no van a la copia en la nube.';
+
+  @override
+  String get amAccess => 'Acceso a notificaciones';
+
+  @override
+  String get amAccessOn => 'Activado';
+
+  @override
+  String get amAccessOff => 'Desactivado';
+
+  @override
+  String get amAccessEnable => 'Activar';
+
+  @override
+  String get amAccessManage => 'Gestionar';
+
+  @override
+  String get amAccessDialogTitle => 'Antes de continuar';
+
+  @override
+  String get amAccessDialogBody =>
+      'Android te mostrará un aviso que dice que Numo podrá leer todas tus notificaciones. Es el texto estándar del sistema: Numo solo leerá las apps que elijas aquí.\n\nBusca Numo en la lista y actívalo.';
+
+  @override
+  String get amSetup => 'Configuración';
+
+  @override
+  String get amAppsChoose => 'Elegir apps';
+
+  @override
+  String get amAppsNone => 'Ninguna. Numo no lee nada.';
+
+  @override
+  String get amAppsSearch => 'Buscar app';
+
+  @override
+  String get amAppsHint => 'Elige solo las apps de tus bancos o billeteras.';
+
+  @override
+  String get amNotices => 'Mensajes detectados';
+
+  @override
+  String amNoticesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mensajes',
+      one: '1 mensaje',
+      zero: 'Ninguno todavía',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get amNoticesEmpty =>
+      'Aún no hay mensajes. Cuando una de las apps elegidas te envíe una notificación, aparecerá aquí.';
+
+  @override
+  String get amNoticesShareWarning =>
+      'Antes de compartir un mensaje, cambia tu nombre, tu cédula y los números de cuenta.';
+
+  @override
+  String get amCopy => 'Copiar';
+
+  @override
+  String get amCopied => 'Copiado';
+
+  @override
+  String get amClearAll => 'Borrar todo';
+
+  @override
+  String get amClearAllBody => 'Se borrarán todos los mensajes detectados.';
 }
